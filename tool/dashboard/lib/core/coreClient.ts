@@ -33,7 +33,7 @@ export async function checkCoreHealth(): Promise<{
       outdated = true;
     }
     return {
-      online: data.status === "healthy",
+      online: data.status === "healthy" || data.status === "ok",
       version: data.version || "0.1.0",
       repoRoot: data.repo_root,
       outdated,

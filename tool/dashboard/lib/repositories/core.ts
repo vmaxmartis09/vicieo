@@ -10,7 +10,7 @@ import type {
 import { LocalRepository } from "./local";
 
 export const CORE_URL = (
-  process.env.NEXT_PUBLIC_CORE_URL || "http://127.0.0.1:8000"
+  process.env.NEXT_PUBLIC_CORE_URL || "http://127.0.0.1:9000"
 ).replace(/\/$/, "");
 
 export class CoreUnavailableError extends Error {

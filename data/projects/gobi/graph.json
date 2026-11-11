@@ -1,259 +1,4 @@
 {
-  "id": "graph_gobi",
-  "projectId": "gobi",
-  "name": "Graph gobi",
-  "nodes": [
-    {
-      "id": "n_char",
-      "type": "character",
-      "params": {
-        "characterId": "gobi",
-        "voiceId": "koc-lyly",
-        "_customName": "Gobi (KOC thời trang) (giọng koc-lyly)",
-        "lines": "Cùng Gobi thử ngay set kaki NAVIE giá 99k xem có tôn dáng như lời đồn không nha! Chất kaki đứng form giữ dáng cực đẹp, áo cổ vuông tay phồng xinh xắn, dây đan khoen kim loại siết eo ôm dáng gọn hơ, nhớ check bảng size chọn cho chuẩn nhé. Mọi người nhấn vào giỏ hàng góc trái săn deal 99k liền nhé!",
-        "speak": {
-          "enabled": true,
-          "text": "Cùng Gobi thử ngay set kaki NAVIE giá 99k xem có tôn dáng như lời đồn không nha! Chất kaki đứng form giữ dáng cực đẹp, áo cổ vuông tay phồng xinh xắn, dây đan khoen kim loại siết eo ôm dáng gọn hơ, nhớ check bảng size chọn cho chuẩn nhé. Mọi người nhấn vào giỏ hàng góc trái săn deal 99k liền nhé!",
-          "lines": [
-            "Cùng Gobi thử ngay set kaki NAVIE giá 99k xem có tôn dáng như lời đồn không nha!",
-            "Chất kaki đứng form giữ dáng cực đẹp, áo cổ vuông tay phồng xinh xắn, dây đan khoen kim loại siết eo ôm dáng gọn hơ, nhớ check bảng size chọn cho chuẩn nhé.",
-            "Mọi người nhấn vào giỏ hàng góc trái săn deal 99k liền nhé!"
-          ],
-          "voiceId": "koc-lyly"
-        },
-        "_collapsed": false
-      },
-      "inputs": {},
-      "position": {
-        "x": 480.0,
-        "y": 192.5
-      },
-      "ui": {},
-      "state": "idle",
-      "isStale": false,
-      "pinnedGenerationId": null,
-      "generations": []
-    },
-    {
-      "id": "n_product",
-      "type": "product",
-      "params": {
-        "productId": "1737761170095572882",
-        "variant": "products/1737761170095572882/images/cutout/set_den.png",
-        "_customName": "Sản phẩm: NAVIE - SET kaki YIYU",
-        "_collapsed": false
-      },
-      "inputs": {},
-      "position": {
-        "x": 40.0,
-        "y": 508.0
-      },
-      "ui": {
-        "previewType": "text",
-        "summaryText": "Hoàn tất xử lý",
-        "inputSummary": {},
-        "outputSummary": {
-          "product": "34 trường",
-          "images": "6 ảnh",
-          "image": "1 ảnh"
-        }
-      },
-      "state": "idle",
-      "isStale": false,
-      "pinnedGenerationId": "gen_5b7f8ef3",
-      "generations": [
-        {
-          "id": "gen_5b7f8ef3",
-          "nodeId": "n_product",
-          "params": {
-            "productId": "1737761170095572882",
-            "variant": "products/1737761170095572882/images/cutout/set_den.png",
-            "_customName": "Sản phẩm: NAVIE - SET kaki YIYU",
-            "_collapsed": true,
-            "product": null,
-            "image": null,
-            "images": null
-          },
-          "artifactId": "art_1dfa87dd1353",
-          "costUsd": 0.0,
-          "createdAt": "2026-11-11T07:34:54Z",
-          "isPinned": true
-        },
-        {
-          "id": "gen_525560ec",
-          "nodeId": "n_product",
-          "params": {
-            "productId": "1737761170095572882",
-            "variant": "products/1737761170095572882/images/cutout/set_den.png",
-            "_customName": "Sản phẩm: NAVIE - SET kaki YIYU",
-            "_collapsed": true,
-            "product": null,
-            "image": null,
-            "images": null
-          },
-          "artifactId": "art_1dfa87dd1353",
-          "costUsd": 0.0,
-          "createdAt": "2026-11-10T04:00:56Z",
-          "isPinned": false
-        }
-      ]
-    },
-    {
-      "id": "n_script",
-      "type": "script",
-      "params": {
-        "content": "[KỊCH BẢN KOC REVIEW - PHONG CÁCH: TRY-ON]\nSản phẩm: NAVIE - SET kaki YIYU cổ vuông tay phồng đan dây thời trang nữ\nGiá bán: 99.000₫ (Thương hiệu: NAVIE)\nĐiểm nổi bật: Vải kaki đứng form, bề mặt chắc chắn, giữ dáng đẹp · Áo cổ vuông bo cong, tay ngắn nhún phồng nhẹ ở vai · Dáng ôm nhẹ, eo may chiết gọn thân; dây xỏ đan chéo qua khoen kim loại, chỉnh được độ ôm\nNhân vật thực hiện: Gobi (KOC thời trang)\nNhịp điệu: 8 cuts (2.4s/shot) | Tông giọng: tươi trẻ, chân thực, gần gũi\n\nCẤU TRÚC PHÂN CẢNH VÀ CHUYỂN ĐỘNG:\n--- Cảnh 1 (HOOK | 0.0s - 3.0s) ---\n• Góc quay & Camera: close-up, chuyển động zoom-in\n• Text hiển thị: Set kaki 99k có đẹp?\n• Lời thoại KOC: \"Cùng Gobi thử ngay set kaki NAVIE giá 99k xem có tôn dáng như lời đồn không nha!\"\n• Chuyển động: Gobi (KOC thời trang) trong phòng khách hiện đại, cầm set đồ giới thiệu hào hứng trước ống kính.\n\n--- Cảnh 2 (DEMO & TRY-ON | 3.0s - 15.0s) ---\n• Góc quay & Camera: full-body & medium-shot, chuyển động xoay 360 độ\n• Text hiển thị: Form dáng & chi tiết siết eo\n• Lời thoại KOC: \"Chất kaki đứng form giữ dáng cực đẹp, áo cổ vuông tay phồng xinh xắn, dây đan khoen kim loại siết eo ôm dáng gọn hơ, nhớ check bảng size chọn cho chuẩn nhé.\"\n• Chuyển động: Gobi mặc set kaki NAVIE đứng trong phòng khách (sofa be, cây xanh), xoay người khoe form dáng và kéo nhẹ dây đan siết eo.\n\n--- Cảnh 3 (CTA | 15.0s - 20.0s) ---\n• Góc quay & Camera: medium-shot, chuyển động chỉ tay xuống góc trái\n• Text hiển thị: Săn deal 99k góc trái!\n• Lời thoại KOC: \"Mọi người nhấn vào giỏ hàng góc trái săn deal 99k liền nhé!\"\n• Chuyển động: Gobi tươi cười tương tác, chỉ tay xuống góc màn hình kêu gọi nhấn giỏ hàng.",
-        "text": "[KỊCH BẢN KOC REVIEW - PHONG CÁCH: TRY-ON]\nSản phẩm: NAVIE - SET kaki YIYU cổ vuông tay phồng đan dây thời trang nữ\nGiá bán: 99.000₫ (Thương hiệu: NAVIE)\nĐiểm nổi bật: Vải kaki đứng form, bề mặt chắc chắn, giữ dáng đẹp · Áo cổ vuông bo cong, tay ngắn nhún phồng nhẹ ở vai · Dáng ôm nhẹ, eo may chiết gọn thân; dây xỏ đan chéo qua khoen kim loại, chỉnh được độ ôm\nNhân vật thực hiện: Gobi (KOC thời trang)\nNhịp điệu: 8 cuts (2.4s/shot) | Tông giọng: tươi trẻ, chân thực, gần gũi\n\nCẤU TRÚC PHÂN CẢNH VÀ CHUYỂN ĐỘNG:\n--- Cảnh 1 (HOOK | 0.0s - 3.0s) ---\n• Góc quay & Camera: close-up, chuyển động zoom-in\n• Text hiển thị: Set kaki 99k có đẹp?\n• Lời thoại KOC: \"Cùng Gobi thử ngay set kaki NAVIE giá 99k xem có tôn dáng như lời đồn không nha!\"\n• Chuyển động: Gobi (KOC thời trang) trong phòng khách hiện đại, cầm set đồ giới thiệu hào hứng trước ống kính.\n\n--- Cảnh 2 (DEMO & TRY-ON | 3.0s - 15.0s) ---\n• Góc quay & Camera: full-body & medium-shot, chuyển động xoay 360 độ\n• Text hiển thị: Form dáng & chi tiết siết eo\n• Lời thoại KOC: \"Chất kaki đứng form giữ dáng cực đẹp, áo cổ vuông tay phồng xinh xắn, dây đan khoen kim loại siết eo ôm dáng gọn hơ, nhớ check bảng size chọn cho chuẩn nhé.\"\n• Chuyển động: Gobi mặc set kaki NAVIE đứng trong phòng khách (sofa be, cây xanh), xoay người khoe form dáng và kéo nhẹ dây đan siết eo.\n\n--- Cảnh 3 (CTA | 15.0s - 20.0s) ---\n• Góc quay & Camera: medium-shot, chuyển động chỉ tay xuống góc trái\n• Text hiển thị: Săn deal 99k góc trái!\n• Lời thoại KOC: \"Mọi người nhấn vào giỏ hàng góc trái săn deal 99k liền nhé!\"\n• Chuyển động: Gobi tươi cười tương tác, chỉ tay xuống góc màn hình kêu gọi nhấn giỏ hàng.",
-        "mode": "paste",
-        "raw": "[KỊCH BẢN KOC REVIEW - PHONG CÁCH: TRY-ON]\nSản phẩm: NAVIE - SET kaki YIYU cổ vuông tay phồng đan dây thời trang nữ\nGiá bán: 99.000₫ (Thương hiệu: NAVIE)\nĐiểm nổi bật: Vải kaki đứng form, bề mặt chắc chắn, giữ dáng đẹp · Áo cổ vuông bo cong, tay ngắn nhún phồng nhẹ ở vai · Dáng ôm nhẹ, eo may chiết gọn thân; dây xỏ đan chéo qua khoen kim loại, chỉnh được độ ôm\nNhân vật thực hiện: Gobi (KOC thời trang)\nNhịp điệu: 8 cuts (2.4s/shot) | Tông giọng: tươi trẻ, chân thực, gần gũi\n\nCẤU TRÚC PHÂN CẢNH VÀ CHUYỂN ĐỘNG:\n--- Cảnh 1 (HOOK | 0.0s - 3.0s) ---\n• Góc quay & Camera: close-up, chuyển động zoom-in\n• Text hiển thị: Set kaki 99k có đẹp?\n• Lời thoại KOC: \"Cùng Gobi thử ngay set kaki NAVIE giá 99k xem có tôn dáng như lời đồn không nha!\"\n• Chuyển động: Gobi (KOC thời trang) trong phòng khách hiện đại, cầm set đồ giới thiệu hào hứng trước ống kính.\n\n--- Cảnh 2 (DEMO & TRY-ON | 3.0s - 15.0s) ---\n• Góc quay & Camera: full-body & medium-shot, chuyển động xoay 360 độ\n• Text hiển thị: Form dáng & chi tiết siết eo\n• Lời thoại KOC: \"Chất kaki đứng form giữ dáng cực đẹp, áo cổ vuông tay phồng xinh xắn, dây đan khoen kim loại siết eo ôm dáng gọn hơ, nhớ check bảng size chọn cho chuẩn nhé.\"\n• Chuyển động: Gobi mặc set kaki NAVIE đứng trong phòng khách (sofa be, cây xanh), xoay người khoe form dáng và kéo nhẹ dây đan siết eo.\n\n--- Cảnh 3 (CTA | 15.0s - 20.0s) ---\n• Góc quay & Camera: medium-shot, chuyển động chỉ tay xuống góc trái\n• Text hiển thị: Săn deal 99k góc trái!\n• Lời thoại KOC: \"Mọi người nhấn vào giỏ hàng góc trái săn deal 99k liền nhé!\"\n• Chuyển động: Gobi tươi cười tương tác, chỉ tay xuống góc màn hình kêu gọi nhấn giỏ hàng.",
-        "_customName": "Kịch bản KOC Review (3 cảnh)",
-        "_collapsed": false,
-        "_bypass": false,
-        "granularity": "scene",
-        "rawScript": ""
-      },
-      "inputs": {},
-      "position": {
-        "x": 40.0,
-        "y": 40.0
-      },
-      "ui": {
-        "inputSummary": {}
-      },
-      "state": "idle",
-      "isStale": false,
-      "pinnedGenerationId": null,
-      "generations": []
-    },
-    {
-      "id": "n_tryon",
-      "type": "image_gen",
-      "params": {
-        "model": "sd-3.5-large",
-        "aspectRatio": "9:16",
-        "resolution": "1080p",
-        "prompt": "Full body front view of Gobi wearing NAVIE set kaki YIYU, in her modern apartment living room with cream sectional sofa and green plant, photorealistic, natural warm light, 8k",
-        "_customName": "Ảnh mẫu Gobi mặc đồ trong phòng",
-        "_collapsed": false,
-        "_bypass": false,
-        "image": "assets/290bcb9b6efb68c074469d1c42b0144954150371fe8988a49d8c70d12f5cf0d9.jpg"
-      },
-      "inputs": {},
-      "position": {
-        "x": 920.0,
-        "y": 252.0
-      },
-      "ui": {},
-      "state": "idle",
-      "isStale": false,
-      "pinnedGenerationId": null,
-      "generations": []
-    },
-    {
-      "id": "n_video",
-      "type": "video_gen",
-      "params": {
-        "model": "google-veo-2",
-        "variants": 1,
-        "aspectRatio": "9:16",
-        "resolution": "1080p",
-        "durationSec": 30,
-        "hasAudio": true,
-        "prompt": "[KỊCH BẢN KOC REVIEW - PHONG CÁCH: TRY-ON]\nSản phẩm: NAVIE - SET kaki YIYU cổ vuông tay phồng đan dây thời trang nữ\nGiá bán: 99.000₫ (Thương hiệu: NAVIE)\nĐiểm nổi bật: Vải kaki đứng form, bề mặt chắc chắn, giữ dáng đẹp · Áo cổ vuông bo cong, tay ngắn nhún phồng nhẹ ở vai · Dáng ôm nhẹ, eo may chiết gọn thân; dây xỏ đan chéo qua khoen kim loại, chỉnh được độ ôm\nNhân vật thực hiện: Gobi (KOC thời trang)\nNhịp điệu: 8 cuts (2.4s/shot) | Tông giọng: tươi trẻ, chân thực, gần gũi\n\nCẤU TRÚC PHÂN CẢNH VÀ CHUYỂN ĐỘNG:\n--- Cảnh 1 (HOOK | 0.0s - 3.0s) ---\n• Góc quay & Camera: close-up, chuyển động zoom-in\n• Text hiển thị: Set kaki 99k có đẹp?\n• Lời thoại KOC: \"Cùng Gobi thử ngay set kaki NAVIE giá 99k xem có tôn dáng như lời đồn không nha!\"\n• Chuyển động: Gobi (KOC thời trang) trong phòng khách hiện đại, cầm set đồ giới thiệu hào hứng trước ống kính.\n\n--- Cảnh 2 (DEMO & TRY-ON | 3.0s - 15.0s) ---\n• Góc quay & Camera: full-body & medium-shot, chuyển động xoay 360 độ\n• Text hiển thị: Form dáng & chi tiết siết eo\n• Lời thoại KOC: \"Chất kaki đứng form giữ dáng cực đẹp, áo cổ vuông tay phồng xinh xắn, dây đan khoen kim loại siết eo ôm dáng gọn hơ, nhớ check bảng size chọn cho chuẩn nhé.\"\n• Chuyển động: Gobi mặc set kaki NAVIE đứng trong phòng khách (sofa be, cây xanh), xoay người khoe form dáng và kéo nhẹ dây đan siết eo.\n\n--- Cảnh 3 (CTA | 15.0s - 20.0s) ---\n• Góc quay & Camera: medium-shot, chuyển động chỉ tay xuống góc trái\n• Text hiển thị: Săn deal 99k góc trái!\n• Lời thoại KOC: \"Mọi người nhấn vào giỏ hàng góc trái săn deal 99k liền nhé!\"\n• Chuyển động: Gobi tươi cười tương tác, chỉ tay xuống góc màn hình kêu gọi nhấn giỏ hàng.",
-        "_customName": "Tạo video chuyển động",
-        "_collapsed": false,
-        "_bypass": false
-      },
-      "inputs": {},
-      "position": {
-        "x": 1400.0,
-        "y": 145.5
-      },
-      "ui": {},
-      "state": "idle",
-      "isStale": true,
-      "pinnedGenerationId": null,
-      "generations": []
-    },
-    {
-      "id": "n_render",
-      "type": "template_render",
-      "params": {
-        "template_id": "koc-review-v1",
-        "platforms": [
-          "tiktok",
-          "facebook"
-        ],
-        "slot_mapping": {
-          "reviewer_badge": "Gobi (KOC thời trang)",
-          "pros_text": "Vải kaki đứng form, bề mặt chắc chắn, giữ dáng đẹp · Áo cổ vuông bo cong, tay ngắn nhún phồng nhẹ ở vai · Dáng ôm nhẹ, eo may chiết gọn thân; dây xỏ đan chéo qua khoen kim loại, chỉnh được độ ôm",
-          "cons_text": "Cần chọn size S/M/L đúng số đo (có bảng Size guide trên trang bán)",
-          "rating_score": "⭐ 5.0 · 31 đánh giá"
-        },
-        "_customName": "Dựng KOC review",
-        "_collapsed": false,
-        "cli_tool": "claude",
-        "edit_prompt": "HyperFrames [koc-review-v1]: 9:16 | 30s (Auto) | BGM:Dramatic | Sub:Kinetic | Flow: 1. Intro(3s) > 2. Ưu điểm(15s) > 3. Lưu ý(8s) > 4. Chấm sao(4s)",
-        "scenes": [
-          {
-            "title": "1. Intro",
-            "dur": "3s",
-            "desc": "Giới thiệu KOC & Sản phẩm"
-          },
-          {
-            "title": "2. Ưu điểm",
-            "dur": "15s",
-            "desc": "Nêu chi tiết ưu điểm nổi bật"
-          },
-          {
-            "title": "3. Lưu ý",
-            "dur": "8s",
-            "desc": "Lưu ý & Nhược điểm chân thực"
-          },
-          {
-            "title": "4. Chấm sao",
-            "dur": "4s",
-            "desc": "Tổng kết rating & Lời khuyên"
-          }
-        ],
-        "captions": "kinetic",
-        "aspect": "9:16",
-        "bgm": "dramatic"
-      },
-      "inputs": {},
-      "position": {
-        "x": 1968.0,
-        "y": 192.0
-      },
-      "ui": {},
-      "state": "idle",
-      "isStale": true,
-      "pinnedGenerationId": null,
-      "generations": []
-    },
-    {
-      "id": "n_export",
-      "type": "platform_export",
-      "params": {
-        "target_platforms": [
-          "tiktok"
-        ],
-        "fit_strategy": "contain",
-        "_customName": "Xuất TikTok 9:16",
-        "_collapsed": false
-      },
-      "inputs": {},
-      "position": {
-        "x": 2976.0,
-        "y": 283.5
-      },
-      "ui": {},
-      "state": "idle",
-      "isStale": true,
-      "pinnedGenerationId": null,
-      "generations": []
-    }
-  ],
   "edges": [
     {
       "id": "e_char_to_tryon",
@@ -333,7 +78,260 @@
       "targetPort": "lines"
     }
   ],
-  "updatedAt": "2026-11-11T09:10:43.742Z",
-  "schemaVersion": 1,
-  "variables": {}
+  "id": "graph_gobi",
+  "name": "Graph gobi",
+  "nodes": [
+    {
+      "generations": [],
+      "id": "n_char",
+      "inputs": {},
+      "isStale": false,
+      "params": {
+        "_collapsed": true,
+        "_customName": "Gobi (KOC thời trang) (giọng koc-lyly)",
+        "characterId": "gobi",
+        "lines": "Cùng Gobi thử ngay set kaki NAVIE giá 99k xem có tôn dáng như lời đồn không nha! Chất kaki đứng form giữ dáng cực đẹp, áo cổ vuông tay phồng xinh xắn, dây đan khoen kim loại siết eo ôm dáng gọn hơ, nhớ check bảng size chọn cho chuẩn nhé. Mọi người nhấn vào giỏ hàng góc trái săn deal 99k liền nhé!",
+        "speak": {
+          "enabled": true,
+          "lines": [
+            "Cùng Gobi thử ngay set kaki NAVIE giá 99k xem có tôn dáng như lời đồn không nha!",
+            "Chất kaki đứng form giữ dáng cực đẹp, áo cổ vuông tay phồng xinh xắn, dây đan khoen kim loại siết eo ôm dáng gọn hơ, nhớ check bảng size chọn cho chuẩn nhé.",
+            "Mọi người nhấn vào giỏ hàng góc trái săn deal 99k liền nhé!"
+          ],
+          "text": "Cùng Gobi thử ngay set kaki NAVIE giá 99k xem có tôn dáng như lời đồn không nha! Chất kaki đứng form giữ dáng cực đẹp, áo cổ vuông tay phồng xinh xắn, dây đan khoen kim loại siết eo ôm dáng gọn hơ, nhớ check bảng size chọn cho chuẩn nhé. Mọi người nhấn vào giỏ hàng góc trái săn deal 99k liền nhé!",
+          "voiceId": "koc-lyly"
+        },
+        "voiceId": "koc-lyly"
+      },
+      "pinnedGenerationId": null,
+      "position": {
+        "x": 480,
+        "y": 192.5
+      },
+      "state": "idle",
+      "type": "character",
+      "ui": {}
+    },
+    {
+      "generations": [
+        {
+          "artifactId": "art_1dfa87dd1353",
+          "costUsd": 0,
+          "createdAt": "2026-11-11T07:34:54Z",
+          "id": "gen_5b7f8ef3",
+          "isPinned": true,
+          "nodeId": "n_product",
+          "params": {
+            "_collapsed": true,
+            "_customName": "Sản phẩm: NAVIE - SET kaki YIYU",
+            "image": null,
+            "images": null,
+            "product": null,
+            "productId": "1737761170095572882",
+            "variant": "products/1737761170095572882/images/cutout/set_den.png"
+          }
+        },
+        {
+          "artifactId": "art_1dfa87dd1353",
+          "costUsd": 0,
+          "createdAt": "2026-11-10T04:00:56Z",
+          "id": "gen_525560ec",
+          "isPinned": false,
+          "nodeId": "n_product",
+          "params": {
+            "_collapsed": true,
+            "_customName": "Sản phẩm: NAVIE - SET kaki YIYU",
+            "image": null,
+            "images": null,
+            "product": null,
+            "productId": "1737761170095572882",
+            "variant": "products/1737761170095572882/images/cutout/set_den.png"
+          }
+        }
+      ],
+      "id": "n_product",
+      "inputs": {},
+      "isStale": false,
+      "params": {
+        "_collapsed": true,
+        "_customName": "Sản phẩm: NAVIE - SET kaki YIYU",
+        "productId": "1737761170095572882",
+        "variant": "products/1737761170095572882/images/cutout/set_den.png"
+      },
+      "pinnedGenerationId": "gen_5b7f8ef3",
+      "position": {
+        "x": 40,
+        "y": 508
+      },
+      "state": "idle",
+      "type": "product",
+      "ui": {
+        "inputSummary": {},
+        "outputSummary": {
+          "image": "1 ảnh",
+          "images": "6 ảnh",
+          "product": "34 trường"
+        },
+        "previewType": "text",
+        "summaryText": "Hoàn tất xử lý"
+      }
+    },
+    {
+      "generations": [],
+      "id": "n_script",
+      "inputs": {},
+      "isStale": false,
+      "params": {
+        "_bypass": false,
+        "_collapsed": true,
+        "_customName": "Kịch bản KOC Review (3 cảnh)",
+        "content": "[KỊCH BẢN KOC REVIEW - PHONG CÁCH: TRY-ON]\nSản phẩm: NAVIE - SET kaki YIYU cổ vuông tay phồng đan dây thời trang nữ\nGiá bán: 99.000₫ (Thương hiệu: NAVIE)\nĐiểm nổi bật: Vải kaki đứng form, bề mặt chắc chắn, giữ dáng đẹp · Áo cổ vuông bo cong, tay ngắn nhún phồng nhẹ ở vai · Dáng ôm nhẹ, eo may chiết gọn thân; dây xỏ đan chéo qua khoen kim loại, chỉnh được độ ôm\nNhân vật thực hiện: Gobi (KOC thời trang)\nNhịp điệu: 8 cuts (2.4s/shot) | Tông giọng: tươi trẻ, chân thực, gần gũi\n\nCẤU TRÚC PHÂN CẢNH VÀ CHUYỂN ĐỘNG:\n--- Cảnh 1 (HOOK | 0.0s - 3.0s) ---\n• Góc quay & Camera: close-up, chuyển động zoom-in\n• Text hiển thị: Set kaki 99k có đẹp?\n• Lời thoại KOC: \"Cùng Gobi thử ngay set kaki NAVIE giá 99k xem có tôn dáng như lời đồn không nha!\"\n• Chuyển động: Gobi (KOC thời trang) trong phòng khách hiện đại, cầm set đồ giới thiệu hào hứng trước ống kính.\n\n--- Cảnh 2 (DEMO & TRY-ON | 3.0s - 15.0s) ---\n• Góc quay & Camera: full-body & medium-shot, chuyển động xoay 360 độ\n• Text hiển thị: Form dáng & chi tiết siết eo\n• Lời thoại KOC: \"Chất kaki đứng form giữ dáng cực đẹp, áo cổ vuông tay phồng xinh xắn, dây đan khoen kim loại siết eo ôm dáng gọn hơ, nhớ check bảng size chọn cho chuẩn nhé.\"\n• Chuyển động: Gobi mặc set kaki NAVIE đứng trong phòng khách (sofa be, cây xanh), xoay người khoe form dáng và kéo nhẹ dây đan siết eo.\n\n--- Cảnh 3 (CTA | 15.0s - 20.0s) ---\n• Góc quay & Camera: medium-shot, chuyển động chỉ tay xuống góc trái\n• Text hiển thị: Săn deal 99k góc trái!\n• Lời thoại KOC: \"Mọi người nhấn vào giỏ hàng góc trái săn deal 99k liền nhé!\"\n• Chuyển động: Gobi tươi cười tương tác, chỉ tay xuống góc màn hình kêu gọi nhấn giỏ hàng.",
+        "granularity": "scene",
+        "mode": "paste",
+        "raw": "[KỊCH BẢN KOC REVIEW - PHONG CÁCH: TRY-ON]\nSản phẩm: NAVIE - SET kaki YIYU cổ vuông tay phồng đan dây thời trang nữ\nGiá bán: 99.000₫ (Thương hiệu: NAVIE)\nĐiểm nổi bật: Vải kaki đứng form, bề mặt chắc chắn, giữ dáng đẹp · Áo cổ vuông bo cong, tay ngắn nhún phồng nhẹ ở vai · Dáng ôm nhẹ, eo may chiết gọn thân; dây xỏ đan chéo qua khoen kim loại, chỉnh được độ ôm\nNhân vật thực hiện: Gobi (KOC thời trang)\nNhịp điệu: 8 cuts (2.4s/shot) | Tông giọng: tươi trẻ, chân thực, gần gũi\n\nCẤU TRÚC PHÂN CẢNH VÀ CHUYỂN ĐỘNG:\n--- Cảnh 1 (HOOK | 0.0s - 3.0s) ---\n• Góc quay & Camera: close-up, chuyển động zoom-in\n• Text hiển thị: Set kaki 99k có đẹp?\n• Lời thoại KOC: \"Cùng Gobi thử ngay set kaki NAVIE giá 99k xem có tôn dáng như lời đồn không nha!\"\n• Chuyển động: Gobi (KOC thời trang) trong phòng khách hiện đại, cầm set đồ giới thiệu hào hứng trước ống kính.\n\n--- Cảnh 2 (DEMO & TRY-ON | 3.0s - 15.0s) ---\n• Góc quay & Camera: full-body & medium-shot, chuyển động xoay 360 độ\n• Text hiển thị: Form dáng & chi tiết siết eo\n• Lời thoại KOC: \"Chất kaki đứng form giữ dáng cực đẹp, áo cổ vuông tay phồng xinh xắn, dây đan khoen kim loại siết eo ôm dáng gọn hơ, nhớ check bảng size chọn cho chuẩn nhé.\"\n• Chuyển động: Gobi mặc set kaki NAVIE đứng trong phòng khách (sofa be, cây xanh), xoay người khoe form dáng và kéo nhẹ dây đan siết eo.\n\n--- Cảnh 3 (CTA | 15.0s - 20.0s) ---\n• Góc quay & Camera: medium-shot, chuyển động chỉ tay xuống góc trái\n• Text hiển thị: Săn deal 99k góc trái!\n• Lời thoại KOC: \"Mọi người nhấn vào giỏ hàng góc trái săn deal 99k liền nhé!\"\n• Chuyển động: Gobi tươi cười tương tác, chỉ tay xuống góc màn hình kêu gọi nhấn giỏ hàng.",
+        "rawScript": "",
+        "text": "[KỊCH BẢN KOC REVIEW - PHONG CÁCH: TRY-ON]\nSản phẩm: NAVIE - SET kaki YIYU cổ vuông tay phồng đan dây thời trang nữ\nGiá bán: 99.000₫ (Thương hiệu: NAVIE)\nĐiểm nổi bật: Vải kaki đứng form, bề mặt chắc chắn, giữ dáng đẹp · Áo cổ vuông bo cong, tay ngắn nhún phồng nhẹ ở vai · Dáng ôm nhẹ, eo may chiết gọn thân; dây xỏ đan chéo qua khoen kim loại, chỉnh được độ ôm\nNhân vật thực hiện: Gobi (KOC thời trang)\nNhịp điệu: 8 cuts (2.4s/shot) | Tông giọng: tươi trẻ, chân thực, gần gũi\n\nCẤU TRÚC PHÂN CẢNH VÀ CHUYỂN ĐỘNG:\n--- Cảnh 1 (HOOK | 0.0s - 3.0s) ---\n• Góc quay & Camera: close-up, chuyển động zoom-in\n• Text hiển thị: Set kaki 99k có đẹp?\n• Lời thoại KOC: \"Cùng Gobi thử ngay set kaki NAVIE giá 99k xem có tôn dáng như lời đồn không nha!\"\n• Chuyển động: Gobi (KOC thời trang) trong phòng khách hiện đại, cầm set đồ giới thiệu hào hứng trước ống kính.\n\n--- Cảnh 2 (DEMO & TRY-ON | 3.0s - 15.0s) ---\n• Góc quay & Camera: full-body & medium-shot, chuyển động xoay 360 độ\n• Text hiển thị: Form dáng & chi tiết siết eo\n• Lời thoại KOC: \"Chất kaki đứng form giữ dáng cực đẹp, áo cổ vuông tay phồng xinh xắn, dây đan khoen kim loại siết eo ôm dáng gọn hơ, nhớ check bảng size chọn cho chuẩn nhé.\"\n• Chuyển động: Gobi mặc set kaki NAVIE đứng trong phòng khách (sofa be, cây xanh), xoay người khoe form dáng và kéo nhẹ dây đan siết eo.\n\n--- Cảnh 3 (CTA | 15.0s - 20.0s) ---\n• Góc quay & Camera: medium-shot, chuyển động chỉ tay xuống góc trái\n• Text hiển thị: Săn deal 99k góc trái!\n• Lời thoại KOC: \"Mọi người nhấn vào giỏ hàng góc trái săn deal 99k liền nhé!\"\n• Chuyển động: Gobi tươi cười tương tác, chỉ tay xuống góc màn hình kêu gọi nhấn giỏ hàng."
+      },
+      "pinnedGenerationId": null,
+      "position": {
+        "x": 40,
+        "y": 40
+      },
+      "state": "idle",
+      "type": "script",
+      "ui": {
+        "inputSummary": {}
+      }
+    },
+    {
+      "generations": [],
+      "id": "n_tryon",
+      "inputs": {},
+      "isStale": false,
+      "params": {
+        "_bypass": false,
+        "_collapsed": true,
+        "_customName": "Ảnh mẫu Gobi mặc đồ trong phòng",
+        "aspectRatio": "9:16",
+        "image": "assets/290bcb9b6efb68c074469d1c42b0144954150371fe8988a49d8c70d12f5cf0d9.jpg",
+        "model": "sd-3.5-large",
+        "prompt": "Full body front view of Gobi wearing NAVIE set kaki YIYU, in her modern apartment living room with cream sectional sofa and green plant, photorealistic, natural warm light, 8k",
+        "resolution": "1080p"
+      },
+      "pinnedGenerationId": null,
+      "position": {
+        "x": 920,
+        "y": 252
+      },
+      "state": "idle",
+      "type": "image_gen",
+      "ui": {}
+    },
+    {
+      "generations": [],
+      "id": "n_video",
+      "inputs": {},
+      "isStale": true,
+      "params": {
+        "_bypass": false,
+        "_collapsed": true,
+        "_customName": "Tạo video chuyển động",
+        "aspectRatio": "9:16",
+        "durationSec": 30,
+        "hasAudio": true,
+        "model": "google-veo-2",
+        "prompt": "[KỊCH BẢN KOC REVIEW - PHONG CÁCH: TRY-ON]\nSản phẩm: NAVIE - SET kaki YIYU cổ vuông tay phồng đan dây thời trang nữ\nGiá bán: 99.000₫ (Thương hiệu: NAVIE)\nĐiểm nổi bật: Vải kaki đứng form, bề mặt chắc chắn, giữ dáng đẹp · Áo cổ vuông bo cong, tay ngắn nhún phồng nhẹ ở vai · Dáng ôm nhẹ, eo may chiết gọn thân; dây xỏ đan chéo qua khoen kim loại, chỉnh được độ ôm\nNhân vật thực hiện: Gobi (KOC thời trang)\nNhịp điệu: 8 cuts (2.4s/shot) | Tông giọng: tươi trẻ, chân thực, gần gũi\n\nCẤU TRÚC PHÂN CẢNH VÀ CHUYỂN ĐỘNG:\n--- Cảnh 1 (HOOK | 0.0s - 3.0s) ---\n• Góc quay & Camera: close-up, chuyển động zoom-in\n• Text hiển thị: Set kaki 99k có đẹp?\n• Lời thoại KOC: \"Cùng Gobi thử ngay set kaki NAVIE giá 99k xem có tôn dáng như lời đồn không nha!\"\n• Chuyển động: Gobi (KOC thời trang) trong phòng khách hiện đại, cầm set đồ giới thiệu hào hứng trước ống kính.\n\n--- Cảnh 2 (DEMO & TRY-ON | 3.0s - 15.0s) ---\n• Góc quay & Camera: full-body & medium-shot, chuyển động xoay 360 độ\n• Text hiển thị: Form dáng & chi tiết siết eo\n• Lời thoại KOC: \"Chất kaki đứng form giữ dáng cực đẹp, áo cổ vuông tay phồng xinh xắn, dây đan khoen kim loại siết eo ôm dáng gọn hơ, nhớ check bảng size chọn cho chuẩn nhé.\"\n• Chuyển động: Gobi mặc set kaki NAVIE đứng trong phòng khách (sofa be, cây xanh), xoay người khoe form dáng và kéo nhẹ dây đan siết eo.\n\n--- Cảnh 3 (CTA | 15.0s - 20.0s) ---\n• Góc quay & Camera: medium-shot, chuyển động chỉ tay xuống góc trái\n• Text hiển thị: Săn deal 99k góc trái!\n• Lời thoại KOC: \"Mọi người nhấn vào giỏ hàng góc trái săn deal 99k liền nhé!\"\n• Chuyển động: Gobi tươi cười tương tác, chỉ tay xuống góc màn hình kêu gọi nhấn giỏ hàng.",
+        "resolution": "1080p",
+        "variants": 1
+      },
+      "pinnedGenerationId": null,
+      "position": {
+        "x": 1400,
+        "y": 145.5
+      },
+      "state": "idle",
+      "type": "video_gen",
+      "ui": {}
+    },
+    {
+      "generations": [],
+      "id": "n_render",
+      "inputs": {},
+      "isStale": true,
+      "params": {
+        "_collapsed": true,
+        "_customName": "Dựng KOC review",
+        "aspect": "9:16",
+        "bgm": "dramatic",
+        "captions": "kinetic",
+        "cli_tool": "claude",
+        "edit_prompt": "HyperFrames [koc-review-v1]: 9:16 | 30s (Auto) | BGM:Dramatic | Sub:Kinetic | Flow: 1. Intro(3s) > 2. Ưu điểm(15s) > 3. Lưu ý(8s) > 4. Chấm sao(4s)",
+        "platforms": [
+          "tiktok",
+          "facebook"
+        ],
+        "scenes": [
+          {
+            "desc": "Giới thiệu KOC & Sản phẩm",
+            "dur": "3s",
+            "title": "1. Intro"
+          },
+          {
+            "desc": "Nêu chi tiết ưu điểm nổi bật",
+            "dur": "15s",
+            "title": "2. Ưu điểm"
+          },
+          {
+            "desc": "Lưu ý & Nhược điểm chân thực",
+            "dur": "8s",
+            "title": "3. Lưu ý"
+          },
+          {
+            "desc": "Tổng kết rating & Lời khuyên",
+            "dur": "4s",
+            "title": "4. Chấm sao"
+          }
+        ],
+        "slot_mapping": {
+          "cons_text": "Cần chọn size S/M/L đúng số đo (có bảng Size guide trên trang bán)",
+          "pros_text": "Vải kaki đứng form, bề mặt chắc chắn, giữ dáng đẹp · Áo cổ vuông bo cong, tay ngắn nhún phồng nhẹ ở vai · Dáng ôm nhẹ, eo may chiết gọn thân; dây xỏ đan chéo qua khoen kim loại, chỉnh được độ ôm",
+          "rating_score": "⭐ 5.0 · 31 đánh giá",
+          "reviewer_badge": "Gobi (KOC thời trang)"
+        },
+        "template_id": "koc-review-v1"
+      },
+      "pinnedGenerationId": null,
+      "position": {
+        "x": 1968,
+        "y": 192
+      },
+      "state": "idle",
+      "type": "template_render",
+      "ui": {}
+    },
+    {
+      "generations": [],
+      "id": "n_export",
+      "inputs": {},
+      "isStale": true,
+      "params": {
+        "_collapsed": true,
+        "_customName": "Xuất TikTok 9:16",
+        "fit_strategy": "contain",
+        "target_platforms": [
+          "tiktok"
+        ]
+      },
+      "pinnedGenerationId": null,
+      "position": {
+        "x": 2976,
+        "y": 283.5
+      },
+      "state": "idle",
+      "type": "platform_export",
+      "ui": {}
+    }
+  ],
+  "projectId": "gobi",
+  "updatedAt": "2026-11-11T15:08:58.944Z"
 }
