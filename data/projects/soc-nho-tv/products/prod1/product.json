@@ -1,0 +1,43 @@
+{
+  "id": "prod1",
+  "name": "Sp Test",
+  "brand": "",
+  "category": "general",
+  "price": 0.0,
+  "sale_price": null,
+  "currency": "VND",
+  "affiliate_links": {
+    "tiktok_shop": "",
+    "shopee": "",
+    "lazada": "",
+    "other": ""
+  },
+  "usp": [],
+  "pain_points": [],
+  "specs": {},
+  "images": [
+    "test.png"
+  ],
+  "videos": [],
+  "target_audience": "",
+  "compliance_notes": "",
+  "description": "",
+  "source_url": "",
+  "shop_name": "",
+  "original_price": null,
+  "discount": "",
+  "sold_count": 0,
+  "rating": null,
+  "review_count": 0,
+  "colors": [],
+  "sizes": [],
+  "variants": [],
+  "cutout_images": [
+    "test.png"
+  ],
+  "raw_images": [],
+  "review_status": "chua_lam",
+  "review_videos": [],
+  "reviewed_at": "",
+  "notes": ""
+}

@@ -16,8 +16,23 @@ use std::sync::Arc;
 use std::time::Duration;
 use tokio::sync::broadcast;
 use tower_http::cors::CorsLayer;
+use utoipa::OpenApi;
+use utoipa_swagger_ui::SwaggerUi;
 
 use crate::workspace;
+
+#[derive(OpenApi)]
+#[openapi(
+    info(
+        title = "ViciEO API Engine",
+        version = "0.2.0",
+        description = "Lightweight High-Performance Native AI Video Studio REST API"
+    ),
+    paths(
+        health_check,
+    )
+)]
+struct ApiDoc;
 
 #[derive(Clone)]
 pub struct AppState {
@@ -33,6 +48,20 @@ pub async fn run_server(port: u16) -> anyhow::Result<()> {
         .route("/health", get(health_check))
         .route("/api/v1/info", get(get_workspace_info))
         .route("/api/v1/projects", get(list_projects))
+        .route("/projects", get(get_active_project_legacy))
+        .route("/data/projects", get(list_projects_data))
+        .route("/data/projects/{project_id}", get(get_project_detail))
+        .route("/data/projects/{project_id}/characters", get(get_project_characters).post(save_project_character))
+        .route("/data/projects/{project_id}/characters/{character_id}", put(save_project_character_put).delete(delete_project_character))
+        .route("/data/projects/{project_id}/channels", get(get_project_channels).put(save_project_channels))
+        .route("/data/projects/{project_id}/products", get(get_project_products))
+        .route("/data/projects/{project_id}/library", get(get_project_library))
+        .route("/data/projects/{project_id}/policy", get(get_project_policy).put(save_project_policy))
+        .route("/projects/{project_id}/products", get(get_project_products))
+        .route("/projects/{project_id}/graph", get(get_project_graph_by_path).post(save_project_graph_by_path))
+        .route("/projects/{project_id}/publishing", get(get_project_publishing))
+        .route("/projects/{project_id}/publishing/schedule", post(save_project_scheduled_post))
+        .nest_service("/data", tower_http::services::ServeDir::new(workspace::data_root()))
         
         // Graph Canvas & State API (Port 8000/9000 compatibility)
         .route("/graph", get(get_graph).post(save_graph))
@@ -57,7 +86,7 @@ pub async fn run_server(port: u16) -> anyhow::Result<()> {
         // Video & HyperFrames Engine
         .route("/video/templates", get(get_video_templates))
         .route("/video/render", post(render_video))
-        .route("/video/status/:job_id", get(get_render_status))
+        .route("/video/status/{job_id}", get(get_render_status))
 
         // Intelligence & KOC Ideas
         .route("/api/intel/ideas", post(generate_ideas))
@@ -68,6 +97,9 @@ pub async fn run_server(port: u16) -> anyhow::Result<()> {
         .route("/voice/speakers", get(get_speakers))
         .route("/voice/clone", post(clone_voice))
         .route("/voice/say", post(synthesize_voice))
+
+        // Swagger UI & OpenAPI Specification
+        .merge(SwaggerUi::new("/swagger-ui").url("/api-docs/openapi.json", ApiDoc::openapi()))
 
         .with_state(state)
         .layer(CorsLayer::permissive());
@@ -82,6 +114,13 @@ pub async fn run_server(port: u16) -> anyhow::Result<()> {
 
 // ----------------- HANDLERS IMPLEMENTATION -----------------
 
+#[utoipa::path(
+    get,
+    path = "/health",
+    responses(
+        (status = 200, description = "Engine health status", body = inline(Value))
+    )
+)]
 async fn health_check() -> Json<Value> {
     Json(json!({
         "status": "ok",
@@ -105,6 +144,299 @@ async fn get_workspace_info() -> Json<Value> {
 async fn list_projects() -> Json<Value> {
     let projects = workspace::list_projects();
     Json(json!({ "projects": projects }))
+}
+
+async fn get_active_project_legacy() -> Json<Value> {
+    let act_proj = workspace::active_project_id();
+    Json(json!({ "active_project": act_proj, "activeProject": act_proj }))
+}
+
+async fn list_projects_data() -> Json<Value> {
+    let mut list = Vec::new();
+    let projs = workspace::list_projects();
+    for p in projs {
+        let p_path = workspace::project_path(&p.id, &["project.json"], false).unwrap_or_default();
+        if p_path.exists() {
+            if let Ok(txt) = fs::read_to_string(&p_path) {
+                if let Ok(mut val) = serde_json::from_str::<Value>(&txt) {
+                    // Populate counts
+                    let chars_count = workspace::project_path(&p.id, &["characters", "studio_characters.json"], false)
+                        .ok()
+                        .and_then(|cp| fs::read_to_string(cp).ok())
+                        .and_then(|ctxt| serde_json::from_str::<Value>(&ctxt).ok())
+                        .and_then(|cval| cval.get("characters").and_then(|c| c.as_array().map(|a| a.len())))
+                        .unwrap_or(0);
+                    let eps_count = workspace::project_path(&p.id, &["content", "episodes"], false)
+                        .ok()
+                        .and_then(|ep| fs::read_dir(ep).ok())
+                        .map(|entries| entries.flatten().filter(|e| e.path().is_dir()).count())
+                        .unwrap_or(0);
+
+                    if let Some(obj) = val.as_object_mut() {
+                        obj.insert("charactersCount".to_string(), json!(chars_count));
+                        obj.insert("episodesCount".to_string(), json!(eps_count));
+                        if !obj.contains_key("defaultAspectRatio") {
+                            let ar = obj.get("default_aspect_ratio").cloned().unwrap_or(json!("9:16"));
+                            obj.insert("defaultAspectRatio".to_string(), ar);
+                        }
+                    }
+                    list.push(val);
+                    continue;
+                }
+            }
+        }
+        list.push(json!({
+            "id": p.id,
+            "name": p.name.unwrap_or(p.id.clone()),
+            "description": p.description.unwrap_or_default(),
+            "charactersCount": 0,
+            "episodesCount": 0,
+            "defaultAspectRatio": "9:16"
+        }));
+    }
+    Json(json!(list))
+}
+
+async fn get_project_detail(AxumPath(project_id): AxumPath<String>) -> Json<Value> {
+    let p_path = workspace::project_path(&project_id, &["project.json"], false).unwrap_or_default();
+    if p_path.exists() {
+        if let Ok(txt) = fs::read_to_string(&p_path) {
+            if let Ok(val) = serde_json::from_str::<Value>(&txt) {
+                return Json(val);
+            }
+        }
+    }
+    Json(json!({ "id": project_id }))
+}
+
+async fn get_project_characters(AxumPath(project_id): AxumPath<String>) -> Json<Value> {
+    let sc_path = workspace::project_path(&project_id, &["characters", "studio_characters.json"], false).unwrap_or_default();
+    if sc_path.exists() {
+        if let Ok(txt) = fs::read_to_string(&sc_path) {
+            if let Ok(val) = serde_json::from_str::<Value>(&txt) {
+                if let Some(chars) = val.get("characters") {
+                    return Json(chars.clone());
+                }
+            }
+        }
+    }
+    Json(json!([]))
+}
+
+async fn save_project_character(AxumPath(project_id): AxumPath<String>, Json(body): Json<Value>) -> Json<Value> {
+    let sc_path = workspace::project_path(&project_id, &["characters", "studio_characters.json"], true).unwrap_or_default();
+    let mut current_chars: Vec<Value> = Vec::new();
+    if sc_path.exists() {
+        if let Ok(txt) = fs::read_to_string(&sc_path) {
+            if let Ok(val) = serde_json::from_str::<Value>(&txt) {
+                if let Some(arr) = val.get("characters").and_then(|c| c.as_array()) {
+                    current_chars = arr.clone();
+                }
+            }
+        }
+    }
+    current_chars.push(body.clone());
+    let _ = fs::write(&sc_path, serde_json::to_string_pretty(&json!({ "characters": current_chars })).unwrap_or_default());
+    Json(body)
+}
+
+async fn save_project_character_put(AxumPath((project_id, char_id)): AxumPath<(String, String)>, Json(body): Json<Value>) -> Json<Value> {
+    let sc_path = workspace::project_path(&project_id, &["characters", "studio_characters.json"], true).unwrap_or_default();
+    let mut current_chars: Vec<Value> = Vec::new();
+    if sc_path.exists() {
+        if let Ok(txt) = fs::read_to_string(&sc_path) {
+            if let Ok(val) = serde_json::from_str::<Value>(&txt) {
+                if let Some(arr) = val.get("characters").and_then(|c| c.as_array()) {
+                    current_chars = arr.clone();
+                }
+            }
+        }
+    }
+    let mut found = false;
+    for c in &mut current_chars {
+        if c.get("id").and_then(|v| v.as_str()) == Some(&char_id) {
+            *c = body.clone();
+            found = true;
+            break;
+        }
+    }
+    if !found {
+        current_chars.push(body.clone());
+    }
+    let _ = fs::write(&sc_path, serde_json::to_string_pretty(&json!({ "characters": current_chars })).unwrap_or_default());
+    Json(body)
+}
+
+async fn delete_project_character(AxumPath((project_id, char_id)): AxumPath<(String, String)>) -> Json<Value> {
+    let sc_path = workspace::project_path(&project_id, &["characters", "studio_characters.json"], false).unwrap_or_default();
+    if sc_path.exists() {
+        if let Ok(txt) = fs::read_to_string(&sc_path) {
+            if let Ok(val) = serde_json::from_str::<Value>(&txt) {
+                if let Some(arr) = val.get("characters").and_then(|c| c.as_array()) {
+                    let next: Vec<Value> = arr.iter().filter(|c| c.get("id").and_then(|v| v.as_str()) != Some(&char_id)).cloned().collect();
+                    let _ = fs::write(&sc_path, serde_json::to_string_pretty(&json!({ "characters": next })).unwrap_or_default());
+                }
+            }
+        }
+    }
+    Json(json!({ "ok": true }))
+}
+
+async fn get_project_channels(AxumPath(project_id): AxumPath<String>) -> Json<Value> {
+    // Try publishing/accounts.json first, then publishing/schedule.json
+    let acc_path = workspace::project_path(&project_id, &["publishing", "accounts.json"], false).unwrap_or_default();
+    if acc_path.exists() {
+        if let Ok(txt) = fs::read_to_string(&acc_path) {
+            if let Ok(val) = serde_json::from_str::<Value>(&txt) {
+                return Json(val);
+            }
+        }
+    }
+    let sched_path = workspace::project_path(&project_id, &["publishing", "schedule.json"], false).unwrap_or_default();
+    if sched_path.exists() {
+        if let Ok(txt) = fs::read_to_string(&sched_path) {
+            if let Ok(val) = serde_json::from_str::<Value>(&txt) {
+                if let Some(chans) = val.get("channels") {
+                    return Json(chans.clone());
+                }
+            }
+        }
+    }
+    Json(json!([]))
+}
+
+async fn save_project_channels(AxumPath(project_id): AxumPath<String>, Json(body): Json<Value>) -> Json<Value> {
+    let acc_path = workspace::project_path(&project_id, &["publishing", "accounts.json"], true).unwrap_or_default();
+    let _ = fs::write(acc_path, serde_json::to_string_pretty(&body).unwrap_or_default());
+    Json(body)
+}
+
+async fn get_project_products(AxumPath(project_id): AxumPath<String>) -> Json<Value> {
+    let prod_dir = workspace::project_path(&project_id, &["products"], false).unwrap_or_default();
+    let mut products = Vec::new();
+    if prod_dir.exists() {
+        if let Ok(entries) = fs::read_dir(prod_dir) {
+            for entry in entries.flatten() {
+                if entry.file_name() == "_trash" { continue; }
+                let pfile = entry.path().join("product.json");
+                if pfile.exists() {
+                    if let Ok(txt) = fs::read_to_string(pfile) {
+                        if let Ok(val) = serde_json::from_str::<Value>(&txt) {
+                            products.push(val);
+                        }
+                    }
+                }
+            }
+        }
+    }
+    Json(json!(products))
+}
+
+async fn get_project_publishing(AxumPath(project_id): AxumPath<String>) -> Json<Value> {
+    let sched_path = workspace::project_path(&project_id, &["publishing", "schedule.json"], false).unwrap_or_default();
+    if sched_path.exists() {
+        if let Ok(txt) = fs::read_to_string(&sched_path) {
+            if let Ok(val) = serde_json::from_str::<Value>(&txt) {
+                return Json(val);
+            }
+        }
+    }
+    Json(json!({ "channels": [], "posts": [], "schedule": [] }))
+}
+
+async fn save_project_scheduled_post(AxumPath(project_id): AxumPath<String>, Json(body): Json<Value>) -> Json<Value> {
+    let sched_path = workspace::project_path(&project_id, &["publishing", "schedule.json"], true).unwrap_or_default();
+    let mut current_posts: Vec<Value> = Vec::new();
+    let mut raw_val = json!({ "channels": [], "posts": [] });
+    if sched_path.exists() {
+        if let Ok(txt) = fs::read_to_string(&sched_path) {
+            if let Ok(val) = serde_json::from_str::<Value>(&txt) {
+                if let Some(arr) = val.get("posts").and_then(|p| p.as_array()) {
+                    current_posts = arr.clone();
+                }
+                raw_val = val;
+            }
+        }
+    }
+    current_posts.push(body.clone());
+    if let Some(obj) = raw_val.as_object_mut() {
+        obj.insert("posts".to_string(), json!(current_posts));
+    }
+    let _ = fs::write(&sched_path, serde_json::to_string_pretty(&raw_val).unwrap_or_default());
+    Json(json!({ "ok": true }))
+}
+
+async fn get_project_library(AxumPath(project_id): AxumPath<String>) -> Json<Value> {
+    let mut episodes: Vec<Value> = Vec::new();
+    let scripts: Vec<Value> = Vec::new();
+    let images: Vec<Value> = Vec::new();
+    let videos: Vec<Value> = Vec::new();
+
+    let ep_dir = workspace::project_path(&project_id, &["content", "episodes"], false).unwrap_or_default();
+    if ep_dir.exists() {
+        if let Ok(entries) = fs::read_dir(ep_dir) {
+            for entry in entries.flatten() {
+                if entry.path().is_dir() {
+                    let ep_id = entry.file_name().to_string_lossy().to_string();
+                    episodes.push(json!({
+                        "id": ep_id,
+                        "title": ep_id,
+                        "videoCount": 0,
+                        "imageCount": 0,
+                        "scriptCount": 0
+                    }));
+                }
+            }
+        }
+    }
+
+    Json(json!({
+        "episodes": episodes,
+        "scripts": scripts,
+        "images": images,
+        "videos": videos
+    }))
+}
+
+async fn get_project_policy(AxumPath(project_id): AxumPath<String>) -> Json<Value> {
+    let policy_path = workspace::project_path(&project_id, &["policy.json"], false).unwrap_or_default();
+    if policy_path.exists() {
+        if let Ok(content) = fs::read_to_string(&policy_path) {
+            if let Ok(val) = serde_json::from_str::<Value>(&content) {
+                return Json(val);
+            }
+        }
+    }
+    Json(json!({
+        "projectId": project_id,
+        "rules": []
+    }))
+}
+
+async fn save_project_policy(AxumPath(project_id): AxumPath<String>, Json(body): Json<Value>) -> Json<Value> {
+    let policy_path = workspace::project_path(&project_id, &["policy.json"], true).unwrap_or_default();
+    let _ = fs::write(policy_path, serde_json::to_string_pretty(&body).unwrap_or_default());
+    Json(body)
+}
+
+async fn get_project_graph_by_path(AxumPath(project_id): AxumPath<String>) -> Json<Value> {
+    let path = workspace::project_path(&project_id, &["graph.json"], false).unwrap_or_default();
+    if path.exists() {
+        if let Ok(content) = fs::read_to_string(&path) {
+            if let Ok(val) = serde_json::from_str::<Value>(&content) {
+                return Json(val);
+            }
+        }
+    }
+    Json(json!({ "nodes": [], "edges": [], "viewport": { "x": 0, "y": 0, "zoom": 1 } }))
+}
+
+async fn save_project_graph_by_path(AxumPath(project_id): AxumPath<String>, Json(body): Json<Value>) -> Json<Value> {
+    let path = workspace::project_path(&project_id, &["graph.json"], true).unwrap_or_default();
+    if let Ok(str_val) = serde_json::to_string_pretty(&body) {
+        let _ = fs::write(&path, str_val);
+    }
+    Json(json!({ "ok": true, "saved": true, "project": project_id }))
 }
 
 // Graph Canvas Handlers
