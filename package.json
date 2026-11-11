@@ -1,0 +1,11 @@
+{
+  "name": "vicieo-workspace",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node dev.mjs",
+    "dev:web": "npm run dev:web --prefix tool/dashboard",
+    "dev:rust": "cargo run --manifest-path engine-rust/Cargo.toml -- serve --port 9000"
+  }
+}
+

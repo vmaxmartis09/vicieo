@@ -77,6 +77,15 @@ Hệ thống phân chia ranh giới triệt để thành 3 phần độc lập:
    - Luôn dọn sạch `git worktree remove` và `git worktree prune` khi Agent kết thúc session (không để sót worktrees trong `.claude/worktrees`).
    - Xóa ngay cache `.next-build` sau khi kiểm tra build dashboard.
 
+5. **Khởi chạy Hệ thống đa nền tảng (Dual-Run Cross-Platform):**
+   - Hỗ trợ chạy đồng thời cả Backend Rust (`engine-rust`, port 9000) và Frontend Next.js (`tool/dashboard`, port 3600) bằng 1 lệnh duy nhất tại thư mục gốc:
+     ```bash
+     npm run dev
+     # hoặc: node dev.mjs
+     # Windows: dev.bat
+     # macOS / Linux: ./dev.sh
+     ```
+
 ---
 
 ## 4. QUY CHUẨN NHÂN VẬT & ÂM THANH

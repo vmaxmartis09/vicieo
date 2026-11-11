@@ -20,15 +20,26 @@
 
 ## 2. KHỞI CHẠY HỆ THỐNG
 
-### Frontend Next.js Studio (Port 3600):
-```powershell
+### Cách 1: Chạy đồng thời cả Rust + Next.js (Dùng chung Mac & Windows)
+Chỉ cần chạy 1 lệnh duy nhất tại thư mục gốc:
+```bash
+npm run dev
+# Hoặc: node dev.mjs
+# Trên Windows click/chạy: dev.bat
+# Trên macOS / Linux: ./dev.sh
+```
+
+### Cách 2: Khởi chạy thủ công từng phần
+
+#### Frontend Next.js Studio (Port 3600):
+```bash
 cd tool/dashboard
 npm run dev:web
 # Truy cập: http://localhost:3600
 ```
 
-### Backend Rust Native Engine (Port 9000):
-```powershell
+#### Backend Rust Native Engine (Port 9000):
+```bash
 cd engine-rust
 cargo run -- serve --port 9000
 # Endpoint kiểm tra: http://localhost:9000/health

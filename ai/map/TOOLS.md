@@ -1,6 +1,16 @@
 # BẢN ĐỒ CÔNG CỤ (TOOLS DIRECTORY)
 
-Tài liệu định vị các công cụ, engine và script chính của hệ thống SocNhoTV.
+Tài liệu định vị các công cụ, engine và script chính của hệ thống SocNhoTV / ViciEO.
+
+---
+
+## 0. Dual Runner Đa Nền Tảng (Rust Engine + Next.js Studio)
+- **Lệnh chạy 1 phát song song cả Backend + Frontend:**
+  - `npm run dev` (hoặc `node dev.mjs`)
+  - Windows: `dev.bat`
+  - macOS / Linux: `./dev.sh`
+- **Frontend Dashboard:** `http://localhost:3600` (`tool/dashboard/`)
+- **Backend Rust Engine:** `http://localhost:9000` (Health check: `http://localhost:9000/health`, thư mục `engine-rust/`)
 
 ---
 
