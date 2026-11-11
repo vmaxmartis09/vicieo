@@ -1,0 +1,171 @@
+{
+  "productId": "1737761170095572882",
+  "title": "NAVIE - SET kaki YIYU cổ vuông tay phồng đan dây thời trang nữ",
+  "shop": "navie.studio",
+  "sourceUrl": "https://shop.tiktok.com/vn/pdp/1737761170095572882",
+  "price": 99000,
+  "originalPrice": 370000,
+  "discount": "-73%",
+  "currency": "VND",
+  "sold": 1092,
+  "rating": 5,
+  "reviews": 31,
+  "colors": [
+    {
+      "name": "Áo kaki Xanh rêu",
+      "image": "variant__o_kaki_xanh_r_u.webp"
+    },
+    {
+      "name": "Áo kaki Trắng",
+      "image": "variant__o_kaki_tr_ng.webp"
+    },
+    {
+      "name": "Áo kaki Đen",
+      "image": "variant__o_kaki_en.webp"
+    },
+    {
+      "name": "Quần short Xanh rêu",
+      "image": "variant_qu_n_short_xanh_r_u.webp"
+    },
+    {
+      "name": "Quần short Trắng",
+      "image": "variant_qu_n_short_tr_ng.webp"
+    },
+    {
+      "name": "Quần short Đen",
+      "image": "variant_qu_n_short_en.webp"
+    }
+  ],
+  "sizes": [
+    "Size S",
+    "Size M",
+    "Size L"
+  ],
+  "skus": [
+    {
+      "color": "Áo kaki Xanh rêu",
+      "size": "Size S",
+      "stock": 49,
+      "price": "99000"
+    },
+    {
+      "color": "Áo kaki Xanh rêu",
+      "size": "Size M",
+      "stock": 64,
+      "price": "99000"
+    },
+    {
+      "color": "Áo kaki Xanh rêu",
+      "size": "Size L",
+      "stock": 64,
+      "price": "99000"
+    },
+    {
+      "color": "Áo kaki Trắng",
+      "size": "Size S",
+      "stock": 82,
+      "price": "99000"
+    },
+    {
+      "color": "Áo kaki Trắng",
+      "size": "Size M",
+      "stock": 68,
+      "price": "99000"
+    },
+    {
+      "color": "Áo kaki Trắng",
+      "size": "Size L",
+      "stock": 60,
+      "price": "99000"
+    },
+    {
+      "color": "Áo kaki Đen",
+      "size": "Size S",
+      "stock": 80,
+      "price": "99000"
+    },
+    {
+      "color": "Áo kaki Đen",
+      "size": "Size M",
+      "stock": 61,
+      "price": "99000"
+    },
+    {
+      "color": "Áo kaki Đen",
+      "size": "Size L",
+      "stock": 59,
+      "price": "99000"
+    },
+    {
+      "color": "Quần short Xanh rêu",
+      "size": "Size S",
+      "stock": 17,
+      "price": "99000"
+    },
+    {
+      "color": "Quần short Xanh rêu",
+      "size": "Size M",
+      "stock": 2,
+      "price": "99000"
+    },
+    {
+      "color": "Quần short Xanh rêu",
+      "size": "Size L",
+      "stock": 0,
+      "price": "99000"
+    },
+    {
+      "color": "Quần short Trắng",
+      "size": "Size S",
+      "stock": 57,
+      "price": "99000"
+    },
+    {
+      "color": "Quần short Trắng",
+      "size": "Size M",
+      "stock": 65,
+      "price": "99000"
+    },
+    {
+      "color": "Quần short Trắng",
+      "size": "Size L",
+      "stock": 33,
+      "price": "99000"
+    },
+    {
+      "color": "Quần short Đen",
+      "size": "Size S",
+      "stock": 50,
+      "price": "99000"
+    },
+    {
+      "color": "Quần short Đen",
+      "size": "Size M",
+      "stock": 28,
+      "price": "99000"
+    },
+    {
+      "color": "Quần short Đen",
+      "size": "Size L",
+      "stock": 3,
+      "price": "99000"
+    }
+  ],
+  "rawImages": [
+    "gallery_01.webp",
+    "gallery_02.webp",
+    "gallery_03.webp",
+    "gallery_04.webp",
+    "gallery_05.webp",
+    "gallery_06.webp",
+    "gallery_07.webp",
+    "gallery_08.webp",
+    "gallery_09.webp",
+    "variant__o_kaki_xanh_r_u.webp",
+    "variant__o_kaki_tr_ng.webp",
+    "variant__o_kaki_en.webp",
+    "variant_qu_n_short_xanh_r_u.webp",
+    "variant_qu_n_short_tr_ng.webp",
+    "variant_qu_n_short_en.webp"
+  ]
+}

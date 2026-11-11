@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width={{ width }}, height={{ height }}, initial-scale=1.0" />
+    <title>{{ data.product.title or "KOC Review" }}</title>
+    <script src="assets/gsap.min.js"></script>
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body, html { width: {{ width }}px; height: {{ height }}px; overflow: hidden; background: #030712; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+      #root { position: relative; width: {{ width }}px; height: {{ height }}px; overflow: hidden; background: radial-gradient(circle at 50% 25%, #3b0764 0%, #030712 100%); }
+      {{ styles_css }}
+    </style>
+  </head>
+  <body>
+    <div id="root"
+         data-composition-id="main"
+         data-start="0"
+         data-duration="{{ total_duration }}"
+         data-width="{{ width }}"
+         data-height="{{ height }}">
+
+      <!-- Header with KOC Profile -->
+      <div id="koc-hdr" class="koc-header clip" data-start="0" data-duration="{{ total_duration }}" data-track-index="2">
+        <div class="koc-badge-left">
+          <div class="avatar-circle">
+            <img src="assets/koc_avatar.png" class="avatar-img" alt="KOC Avatar" />
+          </div>
+          <div>
+            <span class="koc-name">{{ data.reviewer_badge or "KOC Review" }}</span>
+            <span class="verified-icon"> ✓</span>
+          </div>
+        </div>
+        {% if data.rating_score %}<div class="koc-rating-badge">{{ data.rating_score }}</div>{% endif %}
+      </div>
+
+      <!-- Center Product Stage -->
+      <div id="prod-stage" class="product-stage clip" data-start="0.3" data-duration="{{ total_duration - 0.3 }}" data-track-index="2">
+        <div class="product-glow"></div>
+        <img id="prod-img" src="assets/product.png" class="product-img" alt="Product" />
+        <div class="product-meta">
+          <div class="product-name">{{ data.product.title or "" }}</div>
+          {% if data.product.price %}<div class="product-price">{{ "{:,}".format(data.product.price | int).replace(",", ".") }}đ</div>{% endif %}
+        </div>
+      </div>
+
+      <!-- Phụ đề karaoke: mỗi cụm hiện đúng lúc giọng đọc (mốc từ do runner căn bằng Whisper, vào data.word_chunks) -->
+      {% for ch in data.word_chunks or [] %}{% set ci = loop.index0 %}
+      <div id="sub{{ ci }}" class="subtitles-container clip" data-start="{{ ch.start }}" data-duration="{{ [ch.end - ch.start + 0.15, 0.2] | max }}" data-track-index="3">
+        {% for wd in ch.words %}<span id="w{{ ci }}_{{ loop.index0 }}" class="word-span">{{ wd.w }}</span>
+        {% endfor %}
+      </div>
+      {% endfor %}
+
+      <!-- Pros and Cons Review Card -->
+      <div id="review-card" class="review-card clip" data-start="2.0" data-duration="{{ total_duration - 2.0 }}" data-track-index="2">
+        {% if data.pros_text %}<div class="pros-box">
+          <span>✓</span>
+          <span>{{ data.pros_text }}</span>
+        </div>{% endif %}
+        {% if data.cons_text %}<div class="cons-box">
+          <span>✗</span>
+          <span>{{ data.cons_text }}</span>
+        </div>{% endif %}
+      </div>
+
+      <audio id="audio-voiceover" class="clip" src="{{ voiceover_src or 'assets/voiceover.mp3' }}" data-start="0" data-duration="{{ total_duration }}" data-track-index="4"></audio>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+
+      // Header & product animations
+      tl.fromTo("#koc-hdr", { y: -30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: "power2.out" }, 0.1);
+      tl.fromTo("#prod-stage", { scale: 0.8, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.45, ease: "back.out(1.6)" }, 0.3);
+      tl.fromTo("#review-card", { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power2.out" }, 2.0);
+
+      // Karaoke: mốc từng từ lấy từ Whisper trên giọng thật (data.word_chunks), không còn mốc đóng gói sẵn.
+      {% for ch in data.word_chunks or [] %}{% set ci = loop.index0 %}
+      {% for wd in ch.words %}
+      tl.set("#w{{ ci }}_{{ loop.index0 }}", { className: "word-span active" }, {{ wd.start }});
+      tl.set("#w{{ ci }}_{{ loop.index0 }}", { className: "word-span" }, {{ wd.end }});
+      {% endfor %}{% endfor %}
+
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

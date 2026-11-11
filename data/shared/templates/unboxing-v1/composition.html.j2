@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width={{ width }}, height={{ height }}, initial-scale=1.0" />
+    <title>{{ data.item_name or "Đập Hộp Sản Phẩm" }}</title>
+    <script src="assets/gsap.min.js"></script>
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body, html { width: {{ width }}px; height: {{ height }}px; overflow: hidden; background: #0a0a0a; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+      #root { position: relative; width: {{ width }}px; height: {{ height }}px; overflow: hidden; background: radial-gradient(circle at 50% 30%, #2e1065 0%, #030712 100%); }
+      {{ styles_css }}
+    </style>
+  </head>
+  <body>
+    <div id="root"
+         data-composition-id="main"
+         data-start="0"
+         data-duration="{{ total_duration }}"
+         data-width="{{ width }}"
+         data-height="{{ height }}">
+
+      <!-- Header -->
+      <div id="hdr" class="unbox-header clip" data-start="0" data-duration="{{ total_duration }}" data-track-index="2">
+        {{ data.title or "📦 CÙNG ĐẬP HỘP SIÊU PHẨM MỚI VỀ" }}
+      </div>
+
+      <!-- Countdown (Starts first 1.8s) -->
+      <div id="cd" class="countdown-badge clip" data-start="0.2" data-duration="1.6" data-track-index="2">
+        ⏳ 3.. 2.. 1.. MỞ!
+      </div>
+
+      <!-- Product Showcase (Punch-in reveal at 1.8s) -->
+      <div id="showcase" class="product-showcase clip" data-start="1.8" data-duration="{{ total_duration - 1.8 }}" data-track-index="2">
+        <div class="product-glow-halo"></div>
+        <img id="prod-img" src="assets/product.png" class="product-cutout" alt="Product" />
+        <div id="prod-title" class="product-label">{{ data.item_name or "Tai Nghe Pro Max" }}</div>
+      </div>
+
+      <!-- Detail Card (Punch-in at 2.4s) -->
+      <div id="detail" class="detail-pill clip" data-start="2.4" data-duration="{{ total_duration - 2.4 }}" data-track-index="2">
+        <div class="detail-title">🔍 Cảm nhận đầu tiên</div>
+        <div class="detail-desc">{{ data.first_impression or "Chất lượng hoàn thiện cực kỳ tinh xảo, đầm tay!" }}</div>
+      </div>
+
+      <audio id="audio-voiceover" class="clip" src="{{ voiceover_src or 'assets/voiceover.mp3' }}" data-start="0" data-duration="{{ total_duration }}" data-track-index="3"></audio>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#hdr", { y: -30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.35, ease: "power2.out" }, 0.1);
+      tl.fromTo("#cd", { scale: 0.4, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, ease: "back.out(2)" }, 0.2);
+      tl.to("#cd", { scale: 0.8, opacity: 0, duration: 0.2 }, 1.7);
+      
+      // Punch-in effect
+      tl.fromTo("#showcase", { scale: 0.3, opacity: 0, rotation: -10 }, { scale: 1, opacity: 1, rotation: 0, duration: 0.5, ease: "back.out(1.8)" }, 1.8);
+      tl.fromTo("#detail", { y: 50, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power2.out" }, 2.4);
+      
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

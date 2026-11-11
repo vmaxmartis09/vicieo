@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width={{ width }}, height={{ height }}, initial-scale=1.0" />
+    <title>{{ data.title }}</title>
+    <script src="assets/gsap.min.js"></script>
+    <style>
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body, html { width: {{ width }}px; height: {{ height }}px; overflow: hidden; background: #000; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+      #root { position: relative; width: {{ width }}px; height: {{ height }}px; overflow: hidden; }
+      {{ styles_css }}
+    </style>
+  </head>
+  <body>
+    <div id="root"
+         data-composition-id="main"
+         data-start="0"
+         data-duration="{{ total_duration }}"
+         data-width="{{ width }}"
+         data-height="{{ height }}">
+
+      <!-- Background Source Video -->
+      <video muted class="clip" src="assets/source.mp4" data-start="0" data-duration="{{ total_duration }}" data-track-index="1" style="position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: 1;"></video>
+
+      <!-- Brand Top Header Pill -->
+      <div id="hdr" class="brand-header-pill clip" data-start="0" data-duration="{{ total_duration }}" data-track-index="2">
+        SÓC NHỎ TV • BẢN ĐỊA HOÁ
+      </div>
+
+      <!-- Author Attribution Credit -->
+      <div id="credit" class="author-credit clip" data-start="0" data-duration="{{ total_duration }}" data-track-index="2">
+        Nguồn: {{ data.source_author or "@nature_daily" }}
+      </div>
+
+      <!-- Character commentary -->
+      <div id="comment" class="character-comment-pill clip" data-start="0.8" data-duration="{{ total_duration - 0.8 }}" data-track-index="2">
+        🐿️ {{ data.character_reaction or "Khoảnh khắc tuyệt vời trong tự nhiên!" }}
+      </div>
+
+      <!-- Voiceover Audio -->
+      <audio id="audio-voiceover" class="clip" src="{{ voiceover_src or 'assets/voiceover.mp3' }}" data-start="0" data-duration="{{ total_duration }}" data-track-index="3"></audio>
+    </div>
+
+    <script>
+      window.__timelines = window.__timelines || {};
+      const tl = gsap.timeline({ paused: true });
+      tl.fromTo("#hdr", { y: -40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.45, ease: "back.out(1.6)" }, 0.1);
+      tl.fromTo("#credit", { opacity: 0 }, { opacity: 1, duration: 0.4 }, 0.3);
+      tl.fromTo("#comment", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: "power2.out" }, 0.8);
+      window.__timelines["main"] = tl;
+      tl.seek(0);
+    </script>
+  </body>
+</html>

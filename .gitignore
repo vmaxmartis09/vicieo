@@ -1,0 +1,47 @@
+# Bí mật & Môi trường
+.env
+.env.*
+!.env.example
+.venv/
+**/.venv/
+tool/.venv/
+node_modules/
+tool/dashboard/node_modules/
+.claude/worktrees/
+
+# Bộ đệm & Build rác
+.pytest_cache/
+tool/.pytest_cache/
+tool/dashboard/.next/
+tool/dashboard/.next-build*/
+tool/dashboard/.next-dev/
+tool/dashboard/next-env.d.ts
+tool/dashboard/tsconfig.tsbuildinfo
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.DS_Store
+*/.DS_Store
+*/*/.DS_Store
+graphify-out/
+
+# Dữ liệu nhạy cảm nhân thân & dữ liệu sinh tạm (Zero Leakage)
+data/shared/voice_vault/
+data/projects/*/characters/
+data/projects/*/runs/
+data/projects/*/output/
+data/projects/*/assets/
+data/projects/*/shots/
+data/projects/*/sources/
+data/projects/*/raw/
+data/projects/*/knowledge/*.json
+data/shared/assets/
+
+# Tệp media binary dùng cho template & BGM (được sinh tự động qua ensure_sample_media.py)
+data/shared/templates/*/assets/*.mp4
+data/shared/templates/*/assets/*.mov
+data/shared/templates/*/preview*.mp4
+data/shared/templates/**/test_render/
+data/shared/templates/yt-animation-episode-v1/assets/
+data/shared/music_sfx/*.mp3

@@ -1,0 +1,559 @@
+{
+  "id": "graph_gobi",
+  "projectId": "gobi",
+  "name": "Graph gobi",
+  "nodes": [
+    {
+      "id": "n_char",
+      "type": "character",
+      "params": {
+        "characterId": "gobi",
+        "_customName": "Gobi (giọng LyLy)",
+        "speak": {
+          "enabled": true,
+          "text": "Chào cả nhà, Gobi review set kaki Yiyu của NAVIE nè. Áo cổ vuông, tay phồng nhẹ, có dây đan chéo qua khoen kim loại, chỉnh được độ ôm. Quần short ống hơi suông, đi kèm dây đai cùng màu. Vải kaki đứng form, có ba màu xanh rêu, trắng, đen, size S M L. Nhớ giặt tay nước lạnh lần đầu nha. Giá và link mình để ở giỏ hàng."
+        }
+      },
+      "inputs": {},
+      "position": {
+        "x": 40.0,
+        "y": 40.0
+      },
+      "ui": {},
+      "state": "completed",
+      "isStale": false,
+      "pinnedGenerationId": "gen_58c6f097",
+      "generations": [
+        {
+          "id": "gen_58c6f097",
+          "nodeId": "n_char",
+          "params": {
+            "characterId": "gobi",
+            "_customName": "Gobi (giọng LyLy)",
+            "speak": {
+              "enabled": true,
+              "text": "Chào cả nhà, Gobi review set kaki Yiyu của NAVIE nè. Áo cổ vuông, tay phồng nhẹ, có dây đan chéo qua khoen kim loại, chỉnh được độ ôm. Quần short ống hơi suông, đi kèm dây đai cùng màu. Vải kaki đứng form, có ba màu xanh rêu, trắng, đen, size S M L. Nhớ giặt tay nước lạnh lần đầu nha. Giá và link mình để ở giỏ hàng."
+            }
+          },
+          "artifactId": "art_e238bbac244b",
+          "costUsd": 0.0,
+          "createdAt": "2026-11-08T11:29:58Z",
+          "isPinned": true
+        },
+        {
+          "id": "gen_f2ef152f",
+          "nodeId": "n_char",
+          "params": {
+            "characterId": "gobi",
+            "_customName": "Gobi (giọng LyLy)",
+            "speak": {
+              "enabled": true,
+              "text": "Chào cả nhà, Gobi review set kaki Yiyu của NAVIE nè. Áo cổ vuông, tay phồng nhẹ, có dây đan chéo qua khoen kim loại, chỉnh được độ ôm. Quần short ống hơi suông, đi kèm dây đai cùng màu. Vải kaki đứng form, có ba màu xanh rêu, trắng, đen, size S M L. Nhớ giặt tay nước lạnh lần đầu nha. Giá và link mình để ở giỏ hàng."
+            }
+          },
+          "artifactId": "art_e238bbac244b",
+          "costUsd": 0.0,
+          "createdAt": "2026-11-08T11:29:30Z",
+          "isPinned": false
+        },
+        {
+          "id": "gen_b6725ee4",
+          "nodeId": "n_char",
+          "params": {
+            "characterId": "gobi",
+            "_customName": "Gobi (giọng LyLy)",
+            "speak": {
+              "enabled": true,
+              "text": "Chào cả nhà, Gobi review set kaki Yiyu của NAVIE nè. Áo cổ vuông, tay phồng nhẹ, có dây đan chéo qua khoen kim loại, chỉnh được độ ôm. Quần short ống hơi suông, đi kèm dây đai cùng màu. Vải kaki đứng form, có ba màu xanh rêu, trắng, đen, size S M L. Nhớ giặt tay nước lạnh lần đầu nha. Giá và link mình để ở giỏ hàng."
+            }
+          },
+          "artifactId": "art_e238bbac244b",
+          "costUsd": 0.0,
+          "createdAt": "2026-11-08T11:29:01Z",
+          "isPinned": false
+        },
+        {
+          "id": "gen_5887c16b",
+          "nodeId": "n_char",
+          "params": {
+            "characterId": "gobi",
+            "_customName": "Gobi (giọng LyLy)",
+            "speak": {
+              "enabled": true,
+              "text": "Chào cả nhà, Gobi review set kaki Yiyu của NAVIE nè. Áo cổ vuông, tay phồng nhẹ, có dây đan chéo qua khoen kim loại, chỉnh được độ ôm. Quần short ống hơi suông, đi kèm dây đai cùng màu. Vải kaki đứng form, có ba màu xanh rêu, trắng, đen, size S M L. Nhớ giặt tay nước lạnh lần đầu nha. Giá và link mình để ở giỏ hàng."
+            }
+          },
+          "artifactId": "art_b08a70926882",
+          "costUsd": 0.0,
+          "createdAt": "2026-11-08T02:22:43Z",
+          "isPinned": false
+        },
+        {
+          "id": "gen_967a5ed2",
+          "nodeId": "n_char",
+          "params": {
+            "characterId": "gobi",
+            "_customName": "Gobi (giọng LyLy)",
+            "speak": {
+              "enabled": true,
+              "text": "Mình thử chiếc quần short này nhé. Form đứng, chất vải mềm, rất dễ phối. Chi tiết và giá mình để ở giỏ hàng nha."
+            }
+          },
+          "artifactId": "art_452e63ea99b2",
+          "costUsd": 0.0,
+          "createdAt": "2026-11-07T14:25:06Z",
+          "isPinned": false
+        }
+      ]
+    },
+    {
+      "id": "n_room",
+      "type": "image",
+      "params": {
+        "uri": "characters/gobi/room/phong_khach.jpg",
+        "_customName": "Phòng của Gobi"
+      },
+      "inputs": {},
+      "position": {
+        "x": 40.0,
+        "y": 871.0
+      },
+      "ui": {},
+      "state": "completed",
+      "isStale": false,
+      "pinnedGenerationId": "gen_3ba27706",
+      "generations": [
+        {
+          "id": "gen_3ba27706",
+          "nodeId": "n_room",
+          "params": {
+            "uri": "characters/gobi/room/phong_khach.jpg",
+            "_customName": "Phòng của Gobi"
+          },
+          "artifactId": "art_290bcb9b6efb",
+          "costUsd": 0.0,
+          "createdAt": "2026-11-08T11:29:58Z",
+          "isPinned": true
+        },
+        {
+          "id": "gen_fccc0932",
+          "nodeId": "n_room",
+          "params": {
+            "uri": "characters/gobi/room/phong_khach.jpg",
+            "_customName": "Phòng của Gobi"
+          },
+          "artifactId": "art_290bcb9b6efb",
+          "costUsd": 0.0,
+          "createdAt": "2026-11-08T11:29:30Z",
+          "isPinned": false
+        },
+        {
+          "id": "gen_1550077a",
+          "nodeId": "n_room",
+          "params": {
+            "uri": "characters/gobi/room/phong_khach.jpg",
+            "_customName": "Phòng của Gobi"
+          },
+          "artifactId": "art_290bcb9b6efb",
+          "costUsd": 0.0,
+          "createdAt": "2026-11-08T11:29:01Z",
+          "isPinned": false
+        },
+        {
+          "id": "gen_02edcfbf",
+          "nodeId": "n_room",
+          "params": {
+            "uri": "characters/gobi/room/phong_khach.jpg",
+            "_customName": "Phòng của Gobi"
+          },
+          "artifactId": "art_290bcb9b6efb",
+          "costUsd": 0.0,
+          "createdAt": "2026-11-07T14:25:06Z",
+          "isPinned": false
+        }
+      ]
+    },
+    {
+      "id": "n_tryon",
+      "type": "image_gen",
+      "params": {
+        "model": "mock-image",
+        "aspectRatio": "9:16",
+        "prompt": "Full body front and back view of the same woman wearing the item in the product reference, in her living room: white brick wall, large cream sectional sofa with rust-orange cushions, black chandelier, large white art panel, big green plant, warm soft light. Keep face, hair, body identical to the character reference. this exact Vietnamese woman, long straight black hair, natural makeup, photoreal",
+        "_customName": "Gobi mặc đồ trong phòng"
+      },
+      "inputs": {},
+      "position": {
+        "x": 450.0,
+        "y": 1003.0
+      },
+      "ui": {},
+      "state": "completed",
+      "isStale": false,
+      "pinnedGenerationId": "gen_ab76b083",
+      "generations": [
+        {
+          "id": "gen_ab76b083",
+          "nodeId": "n_tryon",
+          "params": {
+            "model": "mock-image",
+            "aspectRatio": "9:16",
+            "prompt": "Full body front and back view of the same woman wearing the item in the product reference, in her living room: white brick wall, large cream sectional sofa with rust-orange cushions, black chandelier, large white art panel, big green plant, warm soft light. Keep face, hair, body identical to the character reference. this exact Vietnamese woman, long straight black hair, natural makeup, photoreal",
+            "_customName": "Gobi mặc đồ trong phòng"
+          },
+          "artifactId": "art_a8b2bd4d34a5",
+          "costUsd": 0.0,
+          "createdAt": "2026-11-08T11:29:58Z",
+          "isPinned": true
+        },
+        {
+          "id": "gen_d6260654",
+          "nodeId": "n_tryon",
+          "params": {
+            "model": "mock-image",
+            "aspectRatio": "9:16",
+            "prompt": "Full body front and back view of the same woman wearing the item in the product reference, in her living room: white brick wall, large cream sectional sofa with rust-orange cushions, black chandelier, large white art panel, big green plant, warm soft light. Keep face, hair, body identical to the character reference. this exact Vietnamese woman, long straight black hair, natural makeup, photoreal",
+            "_customName": "Gobi mặc đồ trong phòng"
+          },
+          "artifactId": "art_a8b2bd4d34a5",
+          "costUsd": 0.0,
+          "createdAt": "2026-11-08T11:29:30Z",
+          "isPinned": false
+        },
+        {
+          "id": "gen_df432177",
+          "nodeId": "n_tryon",
+          "params": {
+            "model": "mock-image",
+            "aspectRatio": "9:16",
+            "prompt": "Full body front and back view of the same woman wearing the item in the product reference, in her living room: white brick wall, large cream sectional sofa with rust-orange cushions, black chandelier, large white art panel, big green plant, warm soft light. Keep face, hair, body identical to the character reference. this exact Vietnamese woman, long straight black hair, natural makeup, photoreal",
+            "_customName": "Gobi mặc đồ trong phòng"
+          },
+          "artifactId": "art_a8b2bd4d34a5",
+          "costUsd": 0.0,
+          "createdAt": "2026-11-08T11:29:01Z",
+          "isPinned": false
+        },
+        {
+          "id": "gen_bb39c2cd",
+          "nodeId": "n_tryon",
+          "params": {
+            "model": "mock-image",
+            "aspectRatio": "9:16",
+            "prompt": "Full body front and back view of the same woman wearing the item in the product reference, in her living room: white brick wall, large cream sectional sofa with rust-orange cushions, black chandelier, large white art panel, big green plant, warm soft light. Keep face, hair, body identical to the character reference. this exact Vietnamese woman, long straight black hair, natural makeup, photoreal",
+            "_customName": "Gobi mặc đồ trong phòng"
+          },
+          "artifactId": "art_452e63ea99b2",
+          "costUsd": 0.0,
+          "createdAt": "2026-11-08T02:22:44Z",
+          "isPinned": false
+        }
+      ]
+    },
+    {
+      "id": "n_render",
+      "type": "template_render",
+      "params": {
+        "template_id": "koc-review-v1",
+        "platforms": [
+          "tiktok"
+        ],
+        "slot_mapping": {
+          "reviewer_badge": "Gobi",
+          "pros_text": "Vải kaki đứng form · Tay phồng nữ tính · Có 3 màu",
+          "cons_text": "Giặt tay lần đầu, màu rêu/đen giặt riêng",
+          "rating_score": "⭐ 5.0 · 31 đánh giá"
+        },
+        "_customName": "Dựng KOC review"
+      },
+      "inputs": {},
+      "position": {
+        "x": 456.0,
+        "y": 538.0
+      },
+      "ui": {},
+      "state": "completed",
+      "isStale": false,
+      "pinnedGenerationId": "gen_4b48bc32",
+      "generations": [
+        {
+          "id": "gen_4b48bc32",
+          "nodeId": "n_render",
+          "params": {
+            "template_id": "koc-review-v1",
+            "platforms": [
+              "tiktok"
+            ],
+            "slot_mapping": {
+              "reviewer_badge": "Gobi",
+              "pros_text": "Vải kaki đứng form · Tay phồng nữ tính · Có 3 màu",
+              "cons_text": "Giặt tay lần đầu, màu rêu/đen giặt riêng",
+              "rating_score": "⭐ 5.0 · 31 đánh giá"
+            },
+            "_customName": "Dựng KOC review"
+          },
+          "artifactId": "art_95385818ae90",
+          "costUsd": 0.0,
+          "createdAt": "2026-11-08T11:30:17Z",
+          "isPinned": true
+        },
+        {
+          "id": "gen_0ac964b4",
+          "nodeId": "n_render",
+          "params": {
+            "template_id": "koc-review-v1",
+            "platforms": [
+              "tiktok"
+            ],
+            "slot_mapping": {
+              "reviewer_badge": "Gobi",
+              "pros_text": "Vải kaki đứng form · Tay phồng nữ tính · Có 3 màu",
+              "cons_text": "Giặt tay lần đầu, màu rêu/đen giặt riêng",
+              "rating_score": "⭐ 5.0 · 31 đánh giá"
+            },
+            "_customName": "Dựng KOC review"
+          },
+          "artifactId": "art_b80d4c1f7e78",
+          "costUsd": 0.0,
+          "createdAt": "2026-11-08T11:29:49Z",
+          "isPinned": false
+        },
+        {
+          "id": "gen_feef6bc3",
+          "nodeId": "n_render",
+          "params": {
+            "template_id": "koc-review-v1",
+            "platforms": [
+              "tiktok"
+            ],
+            "slot_mapping": {
+              "reviewer_badge": "Gobi",
+              "pros_text": "Vải kaki đứng form · Tay phồng nữ tính · Có 3 màu",
+              "cons_text": "Giặt tay lần đầu, màu rêu/đen giặt riêng",
+              "rating_score": "⭐ 5.0 · 31 đánh giá"
+            },
+            "_customName": "Dựng KOC review"
+          },
+          "artifactId": "art_77b891795a43",
+          "costUsd": 0.0,
+          "createdAt": "2026-11-08T11:29:21Z",
+          "isPinned": false
+        },
+        {
+          "id": "gen_1557e6a1",
+          "nodeId": "n_render",
+          "params": {
+            "template_id": "koc-review-v1",
+            "platforms": [
+              "tiktok"
+            ],
+            "slot_mapping": {
+              "reviewer_badge": "Gobi",
+              "pros_text": "Vải kaki đứng form · Tay phồng nữ tính · Có 3 màu",
+              "cons_text": "Giặt tay lần đầu, màu rêu/đen giặt riêng",
+              "rating_score": "⭐ 5.0 · 31 đánh giá"
+            },
+            "_customName": "Dựng KOC review"
+          },
+          "artifactId": "art_e689e23af847",
+          "costUsd": 0.0,
+          "createdAt": "2026-11-08T02:30:13Z",
+          "isPinned": false
+        }
+      ]
+    },
+    {
+      "id": "n_export",
+      "type": "platform_export",
+      "params": {
+        "_customName": "Xuất TikTok"
+      },
+      "inputs": {},
+      "position": {
+        "x": 860.0,
+        "y": 735.0
+      },
+      "ui": {},
+      "state": "completed",
+      "isStale": false,
+      "pinnedGenerationId": "gen_29f87c99",
+      "generations": [
+        {
+          "id": "gen_29f87c99",
+          "nodeId": "n_export",
+          "params": {
+            "_customName": "Xuất TikTok"
+          },
+          "artifactId": "art_95385818ae90",
+          "costUsd": 0.0,
+          "createdAt": "2026-11-08T11:30:17Z",
+          "isPinned": true
+        },
+        {
+          "id": "gen_ad961b9d",
+          "nodeId": "n_export",
+          "params": {
+            "_customName": "Xuất TikTok"
+          },
+          "artifactId": "art_b80d4c1f7e78",
+          "costUsd": 0.0,
+          "createdAt": "2026-11-08T11:29:49Z",
+          "isPinned": false
+        },
+        {
+          "id": "gen_89a343f4",
+          "nodeId": "n_export",
+          "params": {
+            "_customName": "Xuất TikTok"
+          },
+          "artifactId": "art_77b891795a43",
+          "costUsd": 0.0,
+          "createdAt": "2026-11-08T11:29:21Z",
+          "isPinned": false
+        },
+        {
+          "id": "gen_baa8bab1",
+          "nodeId": "n_export",
+          "params": {
+            "_customName": "Xuất TikTok"
+          },
+          "artifactId": "art_e689e23af847",
+          "costUsd": 0.0,
+          "createdAt": "2026-11-08T02:30:13Z",
+          "isPinned": false
+        }
+      ]
+    },
+    {
+      "id": "n_product",
+      "type": "product",
+      "params": {
+        "productId": "1737761170095572882",
+        "variant": "products/1737761170095572882/images/cutout/set_xanh_reu.png",
+        "_customName": "Sản phẩm: NAVIE SET kaki YIYU"
+      },
+      "inputs": {},
+      "position": {
+        "x": 40.0,
+        "y": 1227.0
+      },
+      "ui": {},
+      "state": "completed",
+      "isStale": false,
+      "pinnedGenerationId": "gen_a1bea068",
+      "generations": [
+        {
+          "id": "gen_a1bea068",
+          "nodeId": "n_product",
+          "params": {
+            "productId": "1737761170095572882",
+            "variant": "products/1737761170095572882/images/cutout/set_xanh_reu.png",
+            "_customName": "Sản phẩm: NAVIE SET kaki YIYU"
+          },
+          "artifactId": "art_6c6497ad19e7",
+          "costUsd": 0.0,
+          "createdAt": "2026-11-08T11:29:58Z",
+          "isPinned": true
+        },
+        {
+          "id": "gen_6bdaf1ad",
+          "nodeId": "n_product",
+          "params": {
+            "productId": "1737761170095572882",
+            "variant": "products/1737761170095572882/images/cutout/set_xanh_reu.png",
+            "_customName": "Sản phẩm: NAVIE SET kaki YIYU"
+          },
+          "artifactId": "art_6c6497ad19e7",
+          "costUsd": 0.0,
+          "createdAt": "2026-11-08T11:29:30Z",
+          "isPinned": false
+        },
+        {
+          "id": "gen_5ae5c8f6",
+          "nodeId": "n_product",
+          "params": {
+            "productId": "1737761170095572882",
+            "variant": "products/1737761170095572882/images/cutout/set_xanh_reu.png",
+            "_customName": "Sản phẩm: NAVIE SET kaki YIYU"
+          },
+          "artifactId": "art_6c6497ad19e7",
+          "costUsd": 0.0,
+          "createdAt": "2026-11-08T11:29:01Z",
+          "isPinned": false
+        },
+        {
+          "id": "gen_1a3a3c59",
+          "nodeId": "n_product",
+          "params": {
+            "productId": "1737761170095572882",
+            "variant": "products/1737761170095572882/images/cutout/set_xanh_reu.png",
+            "_customName": "Sản phẩm: NAVIE SET kaki YIYU"
+          },
+          "artifactId": "art_6c6497ad19e7",
+          "costUsd": 0.0,
+          "createdAt": "2026-11-07T15:44:18Z",
+          "isPinned": false
+        }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e_n_char_reference_images__n_tryon_references",
+      "sourceNodeId": "n_char",
+      "sourcePort": "reference_images",
+      "targetNodeId": "n_tryon",
+      "targetPort": "references"
+    },
+    {
+      "id": "e_n_room_image__n_tryon_references",
+      "sourceNodeId": "n_room",
+      "sourcePort": "image",
+      "targetNodeId": "n_tryon",
+      "targetPort": "references"
+    },
+    {
+      "id": "e_n_render_video__n_export_video",
+      "sourceNodeId": "n_render",
+      "sourcePort": "video",
+      "targetNodeId": "n_export",
+      "targetPort": "video"
+    },
+    {
+      "id": "e_n_char_voice__n_render_voice_clips",
+      "sourceNodeId": "n_char",
+      "sourcePort": "voice",
+      "targetNodeId": "n_render",
+      "targetPort": "voice_clips"
+    },
+    {
+      "id": "e_n_char_reference_images__n_render_reference_images",
+      "sourceNodeId": "n_char",
+      "sourcePort": "reference_images",
+      "targetNodeId": "n_render",
+      "targetPort": "reference_images"
+    },
+    {
+      "id": "e_n_product_image__n_tryon_references",
+      "sourceNodeId": "n_product",
+      "sourcePort": "image",
+      "targetNodeId": "n_tryon",
+      "targetPort": "references"
+    },
+    {
+      "id": "e_n_tryon_image__n_render_image",
+      "sourceNodeId": "n_tryon",
+      "sourcePort": "image",
+      "targetNodeId": "n_render",
+      "targetPort": "image"
+    },
+    {
+      "id": "e_n_product_product__n_render_product",
+      "sourceNodeId": "n_product",
+      "sourcePort": "product",
+      "targetNodeId": "n_render",
+      "targetPort": "product"
+    }
+  ],
+  "updatedAt": "2026-11-08T15:00:55.130Z"
+}

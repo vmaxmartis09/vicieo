@@ -1,0 +1,179 @@
+"use client";
+
+import { useShallow } from "zustand/react/shallow";
+import { enterOnce } from "@/lib/motion";
+import React from "react";
+import { useTranslations } from "next-intl";
+import { AnimatePresence, motion } from "framer-motion";
+import { useStudioStore, type StudioStore } from "@/store";
+import { cn } from "@/lib/utils";
+import { Link } from "@/i18n/routing";
+import {
+  House,
+  FolderGit2,
+  Film,
+  Plus,
+  Check,
+  ChevronDown,
+} from "@/components/ui/icons";
+
+/** Breadcrumb nổi trong Studio: Sảnh › dự án › tập. Chọn dự án thì canvas chuyển theo. */
+export function StudioBreadcrumb() {
+  const t = useTranslations("leftRail");
+  const c = useTranslations("canvas");
+  const {
+    activeProjectId,
+    projects,
+    episodes,
+    activeEpisodeId,
+    selectEpisode,
+    createEpisode,
+    switchProject,
+  } = useStudioStore(
+    useShallow((s: StudioStore) => ({
+      activeProjectId: s.activeProjectId,
+      projects: s.projects,
+      episodes: s.episodes,
+      activeEpisodeId: s.activeEpisodeId,
+      selectEpisode: s.selectEpisode,
+      createEpisode: s.createEpisode,
+      switchProject: s.switchProject,
+    }))
+  );
+
+  const [menu, setMenu] = React.useState<"project" | "episode" | null>(null);
+  const [newTitle, setNewTitle] = React.useState("");
+  const barRef = React.useRef<HTMLDivElement>(null);
+
+  const project = projects.find((p) => p.id === activeProjectId);
+  const episode = episodes.find((ep) => ep.id === activeEpisodeId);
+
+  React.useEffect(() => {
+    if (!menu) return;
+    const onDown = (e: MouseEvent) => {
+      if (barRef.current && !barRef.current.contains(e.target as Node)) setMenu(null);
+    };
+    document.addEventListener("mousedown", onDown);
+    return () => document.removeEventListener("mousedown", onDown);
+  }, [menu]);
+
+  const pill = (
+    id: "project" | "episode",
+    icon: React.ReactNode,
+    label: string,
+    title: string
+  ) => (
+    <button
+      type="button"
+      title={title}
+      aria-label={title}
+      aria-expanded={menu === id}
+      onClick={() => setMenu((m) => (m === id ? null : id))}
+      className={cn(
+        "flex h-8 max-w-[220px] items-center gap-2 rounded-full border px-3 text-footnote transition-colors active:scale-95",
+        menu === id ? "border-foreground bg-accent" : "border-transparent hover:bg-accent"
+      )}
+    >
+      <span className="text-muted-foreground">{icon}</span>
+      <span className="truncate font-medium text-foreground">{label}</span>
+      <ChevronDown className={cn("h-3 w-3 shrink-0 text-muted-foreground transition-transform", menu === id && "rotate-180")} />
+    </button>
+  );
+
+  const popover = "absolute left-0 top-10 z-50 w-64 rounded-card border border-border bg-popover p-1 text-popover-foreground shadow-md";
+  const motionProps = {
+    initial: { opacity: 0, y: -4 },
+    animate: { opacity: 1, y: 0 },
+    exit: { opacity: 0, y: -4 },
+    transition: { duration: 0.12 },
+  };
+
+  return (
+    <motion.div
+      ref={barRef}
+      initial={enterOnce("breadcrumb", { opacity: 0, y: -8 })}
+      animate={{ opacity: 1, y: 0 }}
+      className="pointer-events-auto absolute left-3 top-3 z-30 flex max-w-[calc(100%-1.5rem)] items-center gap-1 rounded-full border border-border bg-card/90 p-1 pr-3 backdrop-blur transform-gpu select-none shadow-sm"
+    >
+      {/* Về Sảnh (danh sách dự án + tiến trình) */}
+      <Link href="/" title="Sảnh" aria-label="Sảnh" className="flex h-7 w-7 items-center justify-center rounded-full bg-foreground text-background transition-transform active:scale-90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring">
+        <House className="h-3.5 w-3.5" />
+      </Link>
+
+      <span className="px-1 text-muted-foreground" aria-hidden="true">/</span>
+
+      <div className="relative">
+        {pill("project", <FolderGit2 className="h-3.5 w-3.5" />, project?.name || "—", t("projectLabel"))}
+        <AnimatePresence>
+          {menu === "project" && (
+            <motion.ul {...motionProps} className={popover}>
+              {projects.map((p) => (
+                <li key={p.id}>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      switchProject(p.id);
+                      setMenu(null);
+                    }}
+                    className="flex w-full items-center gap-2 rounded-ctl px-2 py-2 text-left text-body hover:bg-accent focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                  >
+                    <span className="min-w-0 flex-1 truncate">{p.name}</span>
+                    {p.id === activeProjectId && <Check className="h-3.5 w-3.5 text-brand" />}
+                  </button>
+                </li>
+              ))}
+            </motion.ul>
+          )}
+        </AnimatePresence>
+      </div>
+
+      <span className="px-1 text-muted-foreground" aria-hidden="true">/</span>
+
+      <div className="relative min-w-0">
+        {pill("episode", <Film className="h-3.5 w-3.5" />, episode?.title || "—", t("episodesLabel"))}
+        <AnimatePresence>
+          {menu === "episode" && (
+            <motion.div {...motionProps} className={cn(popover, "w-72")}>
+              <ul className="no-scrollbar max-h-64 overflow-y-auto">
+                {episodes.map((ep) => (
+                  <li key={ep.id}>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        selectEpisode(ep.id);
+                        setMenu(null);
+                      }}
+                      className="flex w-full items-center gap-2 rounded-ctl px-2 py-2 text-left text-body hover:bg-accent focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                    >
+                      <span className="min-w-0 flex-1 truncate">{ep.title}</span>
+                      {ep.id === activeEpisodeId && <Check className="h-3.5 w-3.5 text-brand" />}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+              <form
+                className="mt-1 flex gap-1 border-t border-border p-1 pt-2"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  createEpisode(newTitle.trim() || t("newEpisodeDefault"));
+                  setNewTitle("");
+                  setMenu(null);
+                }}
+              >
+                <input
+                  value={newTitle}
+                  onChange={(e) => setNewTitle(e.target.value)}
+                  placeholder={t("newEpisodeDefault")}
+                  className="h-7 min-w-0 flex-1 rounded-ctl border border-border bg-background px-2 text-footnote focus:border-brand outline-none"
+                />
+                <button type="submit" title={t("newEpisode")} aria-label={t("newEpisode")} className="flex h-7 w-7 items-center justify-center rounded-ctl bg-primary text-primary-foreground active:scale-90 focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring">
+                  <Plus className="h-3.5 w-3.5" />
+                </button>
+              </form>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    </motion.div>
+  );
+}

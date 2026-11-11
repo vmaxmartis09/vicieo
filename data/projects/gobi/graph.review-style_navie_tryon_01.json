@@ -1,0 +1,227 @@
+{
+  "id": "graph_review_style_navie_tryon_01_1737761170095572882",
+  "projectId": "gobi",
+  "name": "Review Flow: NAVIE - SET kaki YIYU cổ  (try-on)",
+  "nodes": [
+    {
+      "id": "n_char",
+      "type": "character",
+      "params": {
+        "characterId": "gobi",
+        "voiceId": "koc-lyly",
+        "_customName": "Gobi (KOC thời trang) (giọng koc-lyly)",
+        "lines": "Cùng Gobi thử ngay set kaki NAVIE giá 99k xem có tôn dáng như lời đồn không nha! Chất kaki đứng form giữ dáng cực đẹp, áo cổ vuông tay phồng xinh xắn, dây đan khoen kim loại siết eo ôm dáng gọn hơ, nhớ check bảng size chọn cho chuẩn nhé. Mọi người nhấn vào giỏ hàng góc trái săn deal 99k liền nhé!",
+        "speak": {
+          "enabled": true,
+          "text": "Cùng Gobi thử ngay set kaki NAVIE giá 99k xem có tôn dáng như lời đồn không nha! Chất kaki đứng form giữ dáng cực đẹp, áo cổ vuông tay phồng xinh xắn, dây đan khoen kim loại siết eo ôm dáng gọn hơ, nhớ check bảng size chọn cho chuẩn nhé. Mọi người nhấn vào giỏ hàng góc trái săn deal 99k liền nhé!",
+          "lines": [
+            "Cùng Gobi thử ngay set kaki NAVIE giá 99k xem có tôn dáng như lời đồn không nha!",
+            "Chất kaki đứng form giữ dáng cực đẹp, áo cổ vuông tay phồng xinh xắn, dây đan khoen kim loại siết eo ôm dáng gọn hơ, nhớ check bảng size chọn cho chuẩn nhé.",
+            "Mọi người nhấn vào giỏ hàng góc trái săn deal 99k liền nhé!"
+          ],
+          "voiceId": "koc-lyly"
+        }
+      },
+      "inputs": {},
+      "position": {
+        "x": 40.0,
+        "y": 40.0
+      },
+      "ui": {
+        "hint": "Nhân vật Gobi (KOC thời trang) & giọng koc-lyly"
+      },
+      "state": "idle",
+      "isStale": false,
+      "pinnedGenerationId": null,
+      "generations": []
+    },
+    {
+      "id": "n_product",
+      "type": "product",
+      "params": {
+        "productId": "1737761170095572882",
+        "variant": "products/1737761170095572882/images/cutout/set_den.png",
+        "_customName": "Sản phẩm: NAVIE - SET kaki YIYU cổ vuông tay "
+      },
+      "inputs": {},
+      "position": {
+        "x": 40.0,
+        "y": 420.0
+      },
+      "ui": {
+        "hint": "Ảnh cutout & thông tin NAVIE - SET kaki YIYU cổ "
+      },
+      "state": "idle",
+      "isStale": false,
+      "pinnedGenerationId": null,
+      "generations": []
+    },
+    {
+      "id": "n_tryon",
+      "type": "image_gen",
+      "params": {
+        "model": "mock-image",
+        "aspectRatio": "9:16",
+        "resolution": "1080p",
+        "prompt": "Full body front view of Gobi (KOC thời trang) wearing NAVIE - SET kaki YIYU cổ vuông tay phồng đan dây thời trang nữ with price only 99.000₫, photorealistic, modern apartment",
+        "_customName": "Gobi (KOC thời trang) mặc NAVIE - SET kaki YIYU cổ "
+      },
+      "inputs": {},
+      "position": {
+        "x": 450.0,
+        "y": 200.0
+      },
+      "ui": {
+        "hint": "Ghép trang phục lên nhân vật"
+      },
+      "state": "idle",
+      "isStale": false,
+      "pinnedGenerationId": null,
+      "generations": []
+    },
+    {
+      "id": "n_video",
+      "type": "video_gen",
+      "params": {
+        "model": "mock-video",
+        "variants": 1,
+        "aspectRatio": "9:16",
+        "resolution": "1080p",
+        "durationSec": 20.0,
+        "hasAudio": false,
+        "prompt": "[KỊCH BẢN KOC REVIEW - PHONG CÁCH: TRY-ON]\nSản phẩm: NAVIE - SET kaki YIYU cổ vuông tay phồng đan dây thời trang nữ\nGiá bán: 99.000₫ (Thương hiệu: NAVIE)\nĐiểm nổi bật: Vải kaki đứng form, bề mặt chắc chắn, giữ dáng đẹp · Áo cổ vuông bo cong, tay ngắn nhún phồng nhẹ ở vai · Dáng ôm nhẹ, eo may chiết gọn thân; dây xỏ đan chéo qua khoen kim loại, chỉnh được độ ôm\nNhân vật thực hiện: Gobi (KOC thời trang)\nNhịp điệu: 8 cuts (2.4s/shot) | Tông giọng: tươi trẻ, chân thực, tạo cảm giác gần gũi\n\nCẤU TRÚC PHÂN CẢNH VÀ CHUYỂN ĐỘNG:\n--- Cảnh 1 (HOOK | 0.0s - 3.0s) ---\n• Góc quay & Camera: close-up, chuyển động zoom-in\n• Text hiển thị: Set kaki 99k có đẹp?\n• Lời thoại KOC: \"Cùng Gobi thử ngay set kaki NAVIE giá 99k xem có tôn dáng như lời đồn không nha!\"\n• Chuyển động: Gobi (KOC thời trang) mặc trang phục NAVIE - SET kaki YIYU cổ vuông tay phồng đan dây thời trang nữ, diễn xuất tự nhiên tương tác với ống kính.\n\n--- Cảnh 2 (DEMO | 3.0s - 15.0s) ---\n• Góc quay & Camera: medium-shot, chuyển động handheld\n• Text hiển thị: Form dáng & chi tiết\n• Lời thoại KOC: \"Chất kaki đứng form giữ dáng cực đẹp, áo cổ vuông tay phồng xinh xắn, dây đan khoen kim loại siết eo ôm dáng gọn hơ, nhớ check bảng size chọn cho chuẩn nhé.\"\n• Chuyển động: Gobi (KOC thời trang) mặc trang phục NAVIE - SET kaki YIYU cổ vuông tay phồng đan dây thời trang nữ, diễn xuất tự nhiên tương tác với ống kính.\n\n--- Cảnh 3 (CTA | 15.0s - 20.0s) ---\n• Góc quay & Camera: medium-shot, chuyển động static\n• Text hiển thị: Săn deal 99k góc trái!\n• Lời thoại KOC: \"Mọi người nhấn vào giỏ hàng góc trái săn deal 99k liền nhé!\"\n• Chuyển động: Gobi (KOC thời trang) mặc trang phục NAVIE - SET kaki YIYU cổ vuông tay phồng đan dây thời trang nữ, diễn xuất tự nhiên tương tác với ống kính.\n\nKêu gọi hành động (CTA): Mọi người nhấn vào giỏ hàng góc trái săn deal 99k liền nhé!",
+        "_customName": "Tạo video chuyển động"
+      },
+      "inputs": {},
+      "position": {
+        "x": 860.0,
+        "y": 200.0
+      },
+      "ui": {
+        "hint": "Video 20s kèm kịch bản style try-on"
+      },
+      "state": "idle",
+      "isStale": false,
+      "pinnedGenerationId": null,
+      "generations": []
+    },
+    {
+      "id": "n_render",
+      "type": "template_render",
+      "params": {
+        "template_id": "koc-review-v1",
+        "platforms": [
+          "tiktok"
+        ],
+        "slot_mapping": {
+          "reviewer_badge": "Gobi (KOC thời trang)",
+          "pros_text": "Vải kaki đứng form, bề mặt chắc chắn, giữ dáng đẹp · Áo cổ vuông bo cong, tay ngắn nhún phồng nhẹ ở vai · Dáng ôm nhẹ, eo may chiết gọn thân; dây xỏ đan chéo qua khoen kim loại, chỉnh được độ ôm",
+          "cons_text": "Cần chọn size S/M/L đúng số đo (có bảng Size guide trên trang bán)",
+          "rating_score": "⭐ 5.0 · 31 đánh giá"
+        },
+        "_customName": "Dựng KOC review"
+      },
+      "inputs": {},
+      "position": {
+        "x": 1270.0,
+        "y": 200.0
+      },
+      "ui": {
+        "hint": "Dựng bố cục HyperFrames chuẩn KOC TikTok"
+      },
+      "state": "idle",
+      "isStale": false,
+      "pinnedGenerationId": null,
+      "generations": []
+    },
+    {
+      "id": "n_export",
+      "type": "platform_export",
+      "params": {
+        "target_platforms": [
+          "tiktok"
+        ],
+        "fit_strategy": "cover",
+        "_customName": "Xuất TikTok 9:16"
+      },
+      "inputs": {},
+      "position": {
+        "x": 1680.0,
+        "y": 200.0
+      },
+      "ui": {
+        "hint": "Xuất video MP4 9:16 sẵn đăng"
+      },
+      "state": "idle",
+      "isStale": false,
+      "pinnedGenerationId": null,
+      "generations": []
+    }
+  ],
+  "edges": [
+    {
+      "id": "e_n_char_reference_images__n_tryon_references",
+      "sourceNodeId": "n_char",
+      "sourcePort": "reference_images",
+      "targetNodeId": "n_tryon",
+      "targetPort": "references"
+    },
+    {
+      "id": "e_n_product_image__n_tryon_references",
+      "sourceNodeId": "n_product",
+      "sourcePort": "image",
+      "targetNodeId": "n_tryon",
+      "targetPort": "references"
+    },
+    {
+      "id": "e_n_tryon_image__n_video_first_frame",
+      "sourceNodeId": "n_tryon",
+      "sourcePort": "image",
+      "targetNodeId": "n_video",
+      "targetPort": "first_frame"
+    },
+    {
+      "id": "e_n_video_video__n_render_video",
+      "sourceNodeId": "n_video",
+      "sourcePort": "video",
+      "targetNodeId": "n_render",
+      "targetPort": "video"
+    },
+    {
+      "id": "e_n_char_voice__n_render_voice_clips",
+      "sourceNodeId": "n_char",
+      "sourcePort": "voice",
+      "targetNodeId": "n_render",
+      "targetPort": "voice_clips"
+    },
+    {
+      "id": "e_n_char_reference_images__n_render_reference_images",
+      "sourceNodeId": "n_char",
+      "sourcePort": "reference_images",
+      "targetNodeId": "n_render",
+      "targetPort": "reference_images"
+    },
+    {
+      "id": "e_n_product_product__n_render_product",
+      "sourceNodeId": "n_product",
+      "sourcePort": "product",
+      "targetNodeId": "n_render",
+      "targetPort": "product"
+    },
+    {
+      "id": "e_n_product_image__n_render_image",
+      "sourceNodeId": "n_product",
+      "sourcePort": "image",
+      "targetNodeId": "n_render",
+      "targetPort": "image"
+    },
+    {
+      "id": "e_n_render_video__n_export_video",
+      "sourceNodeId": "n_render",
+      "sourcePort": "video",
+      "targetNodeId": "n_export",
+      "targetPort": "video"
+    }
+  ],
+  "updatedAt": "2026-11-08T15:14:02Z"
+}

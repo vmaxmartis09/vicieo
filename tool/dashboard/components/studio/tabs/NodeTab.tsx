@@ -1,0 +1,462 @@
+"use client";
+
+import { useShallow } from "zustand/react/shallow";
+import React from "react";
+import { useTranslations } from "next-intl";
+import { useStudioStore, type StudioStore } from "@/store";
+import { FALLBACK_NODE_TYPES, estimateNodeCostUsd } from "@/lib/core-api";
+import { Pin, Check } from "@/components/ui/icons";
+import { cn } from "@/lib/utils";
+import { PortsEditor } from "./PortsEditor";
+import { PolicyEditor } from "@/components/studio/PolicyEditor";
+import { PortValueInput } from "@/components/canvas/PortValueInput";
+import { applyPortOverride } from "@/lib/node-ports";
+import type { NodeDefinition } from "@/lib/core-contracts";
+import { ModelPicker } from "@/components/studio/ModelPicker";
+import {
+  NodeTextInput,
+  NodeImageInput,
+  NodeScriptInput,
+  NodeVoiceInput,
+  NodeImageGenInput,
+  NodeVideoGenInput,
+  NodeExportInput,
+  NodeCharacterSelect,
+  NodeCaptionsInput,
+} from "@/components/canvas/NodeInputs";
+import { HyperFramesStudioPanel } from "./HyperFramesStudioPanel";
+
+/** Nhập đầu vào trực tiếp (gõ / tải lên / chọn từ dự án) cho các cổng chưa nối dây. */
+function InputValuesSection({
+  nodeId,
+  def,
+  params,
+}: {
+  nodeId: string;
+  def: NodeDefinition;
+  params: Record<string, any>;
+}) {
+  const ports = applyPortOverride(def, params).inputPorts;
+  if (ports.length === 0) return null;
+  return (
+    <section className="space-y-3 border-b border-border pb-4">
+      <h4 className="font-semibold text-foreground">Đầu vào</h4>
+      <p className="text-body leading-relaxed text-muted-foreground">
+        Mỗi cổng nhận từ: output node khác, tải lên, tệp trong dự án, thuộc tính nhân vật hoặc nhập trực tiếp. Có thể gỡ dây bất cứ lúc nào.
+      </p>
+      {ports.map((port) => (
+        <div key={port.name} className="space-y-1">
+          <div className="flex items-center justify-between">
+            <span className="font-mono text-foreground">{port.name}</span>
+            <span className="text-body text-muted-foreground">
+              {port.portType}
+              {port.required === false ? " · tuỳ chọn" : ""}
+            </span>
+          </div>
+          <PortValueInput nodeId={nodeId} port={port} />
+        </div>
+      ))}
+    </section>
+  );
+}
+
+export function NodeTab() {
+  const t = useTranslations("nodeTab");
+  const c = useTranslations("canvas");
+  const {
+    nodes,
+    edges,
+    selectedNodeId,
+    nodeCatalog,
+    characters,
+    isMockMode,
+    runPolicy,
+    updateNodeParams,
+    pinNodeGeneration,
+    activeProjectId,
+  } = useStudioStore(
+    useShallow((s: StudioStore) => ({
+      nodes: s.nodes,
+      edges: s.edges,
+      selectedNodeId: s.selectedNodeId,
+      nodeCatalog: s.nodeCatalog,
+      characters: s.characters,
+      isMockMode: s.isMockMode,
+      runPolicy: s.runPolicy,
+      updateNodeParams: s.updateNodeParams,
+      pinNodeGeneration: s.pinNodeGeneration,
+      activeProjectId: s.activeProjectId,
+    }))
+  );
+
+  const node =
+    nodes.find((n) => n.id === selectedNodeId) ||
+    nodes.find((n) => n.selected) ||
+    null;
+
+  if (!node) {
+    return (
+      <div className="p-4 text-xs text-muted-foreground leading-relaxed">
+        {t("noSelection")}
+      </div>
+    );
+  }
+
+  const def =
+    nodeCatalog.find((d) => d.typeName === node.data.nodeType) ||
+    FALLBACK_NODE_TYPES.find((d) => d.typeName === node.data.nodeType) ||
+    FALLBACK_NODE_TYPES[0];
+
+  const params = node.data.params || {};
+  const estCost = estimateNodeCostUsd(def.typeName, params, isMockMode, runPolicy);
+
+  const isConnected = (portName: string) =>
+    edges.some((e) => e.target === node.id && e.targetHandle === portName);
+
+  const hasExportSource =
+    isConnected("video") ||
+    Boolean(node.data.generations?.length) ||
+    Boolean(params.video) ||
+    Boolean(node.data.previewUrl);
+
+  return (
+    <div className="p-4 space-y-4 text-footnote">
+      {/* Header summary */}
+      <div className="border-b border-border pb-3 space-y-1">
+        <div className="flex items-center justify-between">
+          <div className="space-y-1 min-w-0">
+            <h3 className="text-callout font-semibold text-foreground truncate">
+              {params._customName || node.data.label || def.displayName}
+            </h3>
+            <span className="text-caption text-muted-foreground block truncate">
+              {def.displayName}
+            </span>
+          </div>
+          <span className="rounded-xs border border-border bg-muted px-2 py-1 text-caption text-muted-foreground font-mono shrink-0 ml-2">
+            {node.data.nodeType}
+          </span>
+        </div>
+        <p className="text-body text-muted-foreground">{def.description}</p>
+        <div className="flex items-center justify-between pt-1 text-body tnum">
+          <span className="text-muted-foreground">
+            {t("statusLabel")}:{" "}
+            <strong className="font-medium text-foreground">
+              {c(
+                `status.${
+                  node.data.isStale ? "stale" : node.data.status || "idle"
+                }` as any
+              )}
+            </strong>
+          </span>
+          <span className="text-muted-foreground">
+            {t("costLabel")}:{" "}
+            <strong className="font-medium text-foreground">
+              ${estCost.toFixed(2)} USD
+            </strong>
+          </span>
+        </div>
+      </div>
+
+      <InputValuesSection nodeId={node.id} def={def} params={params} />
+
+      {(def.typeName === "quality_check" || def.typeName === "policy") && (
+        <section className="space-y-3 border-b border-border pb-4">
+          <h4 className="font-semibold text-foreground">Chính sách nội dung của dự án</h4>
+          <PolicyEditor />
+        </section>
+      )}
+
+      <PortsEditor nodeId={node.id} baseDef={def} params={params} />
+
+      {/* DÙNG CHUNG CÁC COMPONENT NHẬP LIỆU CỐT LÕI (Unified with canvas card) */}
+      <section className="space-y-3 border-b border-border pb-4">
+        <h4 className="font-semibold text-foreground">{t("paramsTitle")}</h4>
+
+        {def.typeName === "text" && (
+          <NodeTextInput
+            nodeId={node.id}
+            content={params.content || ""}
+            connected={isConnected("text")}
+            isDetailed
+          />
+        )}
+
+        {(def.typeName === "image" ||
+          def.typeName === "character_image" ||
+          def.typeName === "scene") && (
+          <NodeImageInput
+            nodeId={node.id}
+            uri={params.uri}
+            name={params.name}
+            nodeType={def.typeName}
+            previewUrl={node.data.previewUrl}
+          />
+        )}
+
+        {def.typeName === "script" && (
+          <NodeScriptInput
+            nodeId={node.id}
+            mode={params.mode}
+            rawScript={params.rawScript}
+            episodeId={params.episodeId}
+            granularity={params.granularity}
+            ideaText={params.text || params.content}
+            targetSceneCount={params.targetSceneCount}
+            targetDurationSec={params.targetDurationSec}
+            connectedText={isConnected("text")}
+          />
+        )}
+
+        {def.typeName === "voice_tts" && (
+          <NodeVoiceInput
+            nodeId={node.id}
+            text={params.text}
+            voiceId={params.voiceId}
+            tempo={params.tempo}
+            connectedText={isConnected("text")}
+          />
+        )}
+
+        {(def.typeName === "image_gen" || def.typeName === "image_edit") && (
+          <NodeImageGenInput
+            nodeId={node.id}
+            prompt={params.prompt}
+            referenceImages={params.referenceImages}
+            aspectRatio={params.aspectRatio}
+            model={params.model}
+            fallbackModels={params.fallbackModels}
+            connectedPrompt={isConnected("prompt")}
+          />
+        )}
+
+        {def.typeName === "video_gen" && (
+          <NodeVideoGenInput
+            nodeId={node.id}
+            prompt={params.prompt}
+            model={params.model}
+            fallbackModels={params.fallbackModels}
+            perShot={params.perShot ?? true}
+            maxClips={params.maxClips ?? 5}
+            shotIds={params.shotIds ?? []}
+            clipSource={params.clipSource ?? "auto"}
+            durationSec={params.durationSec ?? 5}
+          />
+        )}
+
+        {def.typeName === "character" && (
+          <NodeCharacterSelect
+            nodeId={node.id}
+            characterId={params.characterId || "soc_nho"}
+          />
+        )}
+
+        {def.typeName === "captions" && (
+          <NodeCaptionsInput
+            nodeId={node.id}
+            style={params.style}
+            language={params.language}
+          />
+        )}
+
+        {def.typeName === "export" && (
+          <NodeExportInput
+            nodeId={node.id}
+            outputFileName={params.outputFileName}
+            platforms={params.platforms}
+            previewUrl={node.data.previewUrl}
+          />
+        )}
+
+        {(def.typeName === "template_render" || def.typeName === "hyperframes_render") && (
+          <HyperFramesStudioPanel
+            nodeId={node.id}
+            params={params}
+            updateNodeParams={updateNodeParams}
+          />
+        )}
+
+        {def.typeName === "platform_export" && hasExportSource && (
+          <div className="space-y-2">
+            <span className="text-muted-foreground font-medium">Nền tảng xuất bản:</span>
+            <div className="flex gap-2 flex-wrap">
+              {(params.platforms || ["tiktok"]).map((p: string) => (
+                <span key={p} className="px-2 py-1 rounded-xs bg-brand/10 text-brand font-semibold text-xs uppercase">
+                  {p}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* CÁC THÔNG SỐ NÂNG CAO CHO CÁC NODE KHÁC */}
+        {/* Model selector cho các node có param model mà không phải image_gen/image_edit/video_gen */}
+        {"model" in (def.defaultParams || {}) &&
+          def.typeName !== "image_gen" &&
+          def.typeName !== "image_edit" &&
+          def.typeName !== "video_gen" && (
+            <div className="space-y-1">
+              <span className="text-muted-foreground">{t("modelLabel")}</span>
+              <ModelPicker
+                kind={def.typeName.includes("video") ? "video" : def.typeName.includes("image") ? "image" : "text"}
+                value={params.model || def.defaultParams.model}
+                onChange={(newModel) => updateNodeParams(node.id, { model: newModel })}
+                fallbackModels={params.fallbackModels}
+                onFallbackChange={(fbs) => updateNodeParams(node.id, { fallbackModels: fbs })}
+                compact
+              />
+            </div>
+          )}
+
+        {/* Quality check threshold & criteria */}
+        {def.typeName === "quality_check" && (
+          <div className="space-y-2">
+            <label className="block space-y-1">
+              <span className="text-muted-foreground">
+                {t("thresholdLabel")}
+              </span>
+              <input
+                type="number"
+                step="0.05"
+                min="0.1"
+                max="1.0"
+                value={params.thresholdScore ?? 0.85}
+                onChange={(e) =>
+                  updateNodeParams(node.id, {
+                    thresholdScore: Number(e.target.value) || 0.85,
+                  })
+                }
+                className="h-8 w-full rounded-md border border-border bg-card px-2 text-xs tnum text-foreground"
+              />
+            </label>
+            <label className="block space-y-1">
+              <span className="text-muted-foreground">
+                {t("criteriaLabel")}
+              </span>
+              <textarea
+                rows={2}
+                value={params.criteria ?? def.defaultParams.criteria ?? ""}
+                onChange={(e) =>
+                  updateNodeParams(node.id, { criteria: e.target.value })
+                }
+                className="w-full rounded-md border border-border bg-card p-2 text-xs text-foreground"
+              />
+            </label>
+          </div>
+        )}
+      </section>
+
+      {/* Ports status */}
+      <section className="space-y-2 border-b border-border pb-4">
+        <h4 className="font-semibold text-foreground">{t("portsTitle")}</h4>
+        <div className="grid grid-cols-2 gap-2 text-body">
+          <div>
+            <span className="mb-1 block font-medium text-muted-foreground">
+              {t("inputsLabel")}
+            </span>
+            <ul className="space-y-1">
+              {def.inputPorts.map((p) => {
+                const wired = isConnected(p.name);
+                return (
+                  <li key={p.name} className="flex items-center justify-between">
+                    <span className="font-mono">{p.name}</span>
+                    <span
+                      className={cn(
+                        wired ? "text-foreground" : "text-muted-foreground"
+                      )}
+                    >
+                      {wired ? c("portConnected") : c("portDisconnected")}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+          <div>
+            <span className="mb-1 block font-medium text-muted-foreground">
+              {t("outputsLabel")}
+            </span>
+            <ul className="space-y-1">
+              {def.outputPorts.map((p) => {
+                const wired = edges.some(
+                  (e) => e.source === node.id && e.sourceHandle === p.name
+                );
+                return (
+                  <li key={p.name} className="flex items-center justify-between">
+                    <span className="font-mono">{p.name}</span>
+                    <span
+                      className={cn(
+                        wired ? "text-foreground" : "text-muted-foreground"
+                      )}
+                    >
+                      {wired ? c("portConnected") : c("portDisconnected")}
+                    </span>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      {/* Generations history & Pin */}
+      <section className="space-y-2">
+        <h4 className="font-semibold text-foreground tnum">
+          {t("generationsTitle", {
+            count: node.data.generations?.length || 0,
+          })}
+        </h4>
+        {!node.data.generations || node.data.generations.length === 0 ? (
+          <p className="text-body text-muted-foreground">
+            {t("noGenerations")}
+          </p>
+        ) : (
+          <ul className="space-y-2">
+            {node.data.generations.map((gen, idx) => {
+              const isPinned =
+                node.data.pinnedGenerationId === gen.id ||
+                (!node.data.pinnedGenerationId && idx === 0);
+              return (
+                <li
+                  key={gen.id}
+                  className={cn(
+                    "rounded-ctl border p-3 space-y-2",
+                    isPinned
+                      ? "border-foreground bg-accent/40"
+                      : "border-border bg-card"
+                  )}
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="font-mono text-body text-foreground tnum">
+                      #{node.data.generations.length - idx} · $
+                      {gen.costUsd.toFixed(2)}
+                    </span>
+                    {isPinned ? (
+                      <span className="inline-flex items-center gap-1 rounded-xs bg-accent px-2 py-1 text-xs font-medium text-foreground">
+                        <Check className="h-2.5 w-2.5" />
+                        {t("pinnedBadge")}
+                      </span>
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => pinNodeGeneration(node.id, gen.id)}
+                        className="inline-flex items-center gap-1 rounded-ctl border border-border bg-card px-2 py-1 text-xs text-foreground hover:bg-accent focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                      >
+                        <Pin className="h-2.5 w-2.5" />
+                        {t("pinBtn")}
+                      </button>
+                    )}
+                  </div>
+                  {gen.summaryText && (
+                    <p className="text-body text-muted-foreground">
+                      {gen.summaryText}
+                    </p>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        )}
+      </section>
+    </div>
+  );
+}

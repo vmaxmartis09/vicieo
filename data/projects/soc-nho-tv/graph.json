@@ -1,0 +1,296 @@
+{
+  "id": "graph_soc-nho-tv",
+  "projectId": "soc-nho-tv",
+  "name": "Graph soc-nho-tv",
+  "nodes": [
+    {
+      "id": "n_script",
+      "type": "script",
+      "params": {
+        "mode": "episode",
+        "episodeId": "ep01-nui-lua-trong-bung-bi",
+        "granularity": "shot",
+        "targetSceneCount": 30,
+        "targetDurationSec": 600,
+        "_customName": "Kịch bản phân cảnh"
+      },
+      "inputs": {},
+      "position": {
+        "x": 40.0,
+        "y": 258.0
+      },
+      "ui": {},
+      "state": "completed",
+      "isStale": false,
+      "pinnedGenerationId": "gen_c169f6a2",
+      "generations": [
+        {
+          "id": "gen_c169f6a2",
+          "nodeId": "n_script",
+          "params": {
+            "mode": "episode",
+            "episodeId": "ep01-nui-lua-trong-bung-bi",
+            "granularity": "shot",
+            "targetSceneCount": 30,
+            "targetDurationSec": 600,
+            "_customName": "Kịch bản phân cảnh"
+          },
+          "artifactId": "art_b01e9b004e30",
+          "costUsd": 0.0,
+          "createdAt": "2026-11-08T10:56:01Z",
+          "isPinned": true
+        }
+      ]
+    },
+    {
+      "id": "n_quality",
+      "type": "quality_check",
+      "params": {
+        "blockOnFail": true,
+        "policyAutoScan": true,
+        "_customName": "Kiểm định chính sách (chặn trước khi dựng)",
+        "_collapsed": false
+      },
+      "inputs": {},
+      "position": {
+        "x": 450.0,
+        "y": 695.0
+      },
+      "ui": {},
+      "state": "completed",
+      "isStale": false,
+      "pinnedGenerationId": "gen_5bdbb558",
+      "generations": [
+        {
+          "id": "gen_5bdbb558",
+          "nodeId": "n_quality",
+          "params": {
+            "blockOnFail": true,
+            "policyAutoScan": true,
+            "_customName": "Kiểm định chính sách (chặn trước khi dựng)"
+          },
+          "artifactId": "art_86cfb1514f34",
+          "costUsd": 0.0,
+          "createdAt": "2026-11-08T10:56:01Z",
+          "isPinned": true
+        }
+      ]
+    },
+    {
+      "id": "n_keyframes",
+      "type": "image_gen",
+      "params": {
+        "model": "mock-image",
+        "aspectRatio": "16:9",
+        "resolution": "1080p",
+        "n": 1,
+        "prompt": "",
+        "_customName": "Keyframe theo shot (lặp)",
+        "_collapsed": false
+      },
+      "inputs": {},
+      "position": {
+        "x": 860.0,
+        "y": 208.0
+      },
+      "ui": {},
+      "state": "completed",
+      "isStale": false,
+      "pinnedGenerationId": "gen_8a804308",
+      "generations": [
+        {
+          "id": "gen_8a804308",
+          "nodeId": "n_keyframes",
+          "params": {
+            "model": "mock-image",
+            "aspectRatio": "16:9",
+            "resolution": "1080p",
+            "n": 1,
+            "prompt": "",
+            "_customName": "Keyframe theo shot (lặp)"
+          },
+          "artifactId": "art_86cfb1514f34",
+          "costUsd": 0.0,
+          "createdAt": "2026-11-08T10:56:01Z",
+          "isPinned": true
+        }
+      ]
+    },
+    {
+      "id": "n_render",
+      "type": "hyperframes_render",
+      "params": {
+        "aspectRatio": "16:9",
+        "platform": "youtube",
+        "template": "default_cartoon",
+        "timing": "voice",
+        "gapSec": 0.35,
+        "requireHyperFrames": true,
+        "_customName": "Dựng phim HyperFrames (10 phút)"
+      },
+      "inputs": {},
+      "position": {
+        "x": 1270.0,
+        "y": 258.0
+      },
+      "ui": {},
+      "state": "completed",
+      "isStale": false,
+      "pinnedGenerationId": "gen_b21d9859",
+      "generations": [
+        {
+          "id": "gen_b21d9859",
+          "nodeId": "n_render",
+          "params": {
+            "aspectRatio": "16:9",
+            "platform": "youtube",
+            "template": "default_cartoon",
+            "timing": "voice",
+            "gapSec": 0.35,
+            "requireHyperFrames": true,
+            "_customName": "Dựng phim HyperFrames (10 phút)"
+          },
+          "artifactId": "art_13aac82f824b",
+          "costUsd": 0.0,
+          "createdAt": "2026-11-08T11:02:19Z",
+          "isPinned": true
+        }
+      ]
+    },
+    {
+      "id": "n_export",
+      "type": "export",
+      "params": {
+        "platforms": [
+          "youtube",
+          "tiktok"
+        ],
+        "outputFileName": "",
+        "_customName": "Xuất (tên theo tập)"
+      },
+      "inputs": {},
+      "position": {
+        "x": 1680.0,
+        "y": 258.0
+      },
+      "ui": {},
+      "state": "completed",
+      "isStale": false,
+      "pinnedGenerationId": "gen_97a2f6ec",
+      "generations": [
+        {
+          "id": "gen_97a2f6ec",
+          "nodeId": "n_export",
+          "params": {
+            "platforms": [
+              "youtube"
+            ],
+            "outputFileName": "",
+            "_customName": "Xuất (tên theo tập)"
+          },
+          "artifactId": "art_13aac82f824b",
+          "costUsd": 0.0,
+          "createdAt": "2026-11-08T11:02:34Z",
+          "isPinned": true
+        }
+      ]
+    },
+    {
+      "id": "node_cast_mwa1fm2q",
+      "type": "cast",
+      "params": {
+        "speak": {
+          "enabled": true
+        },
+        "include": [],
+        "exclude": [],
+        "onMissingVoice": "stop"
+      },
+      "inputs": {},
+      "position": {
+        "x": 450.0,
+        "y": 40.0
+      },
+      "ui": {},
+      "state": "idle",
+      "isStale": true,
+      "pinnedGenerationId": null,
+      "generations": []
+    }
+  ],
+  "edges": [
+    {
+      "id": "e_n_script_scenes__n_quality_scenes",
+      "sourceNodeId": "n_script",
+      "sourcePort": "scenes",
+      "targetNodeId": "n_quality",
+      "targetPort": "scenes"
+    },
+    {
+      "id": "e_n_script_lines__n_quality_text",
+      "sourceNodeId": "n_script",
+      "sourcePort": "lines",
+      "targetNodeId": "n_quality",
+      "targetPort": "text"
+    },
+    {
+      "id": "e_n_script_scenes__n_keyframes_scenes",
+      "sourceNodeId": "n_script",
+      "sourcePort": "scenes",
+      "targetNodeId": "n_keyframes",
+      "targetPort": "scenes"
+    },
+    {
+      "id": "e_n_keyframes_scenes__n_render_scenes",
+      "sourceNodeId": "n_keyframes",
+      "sourcePort": "scenes",
+      "targetNodeId": "n_render",
+      "targetPort": "scenes"
+    },
+    {
+      "id": "e_n_quality_pass_fail__n_render_gate",
+      "sourceNodeId": "n_quality",
+      "sourcePort": "pass_fail",
+      "targetNodeId": "n_render",
+      "targetPort": "gate"
+    },
+    {
+      "id": "e_n_render_video__n_export_video",
+      "sourceNodeId": "n_render",
+      "sourcePort": "video",
+      "targetNodeId": "n_export",
+      "targetPort": "video"
+    },
+    {
+      "id": "edge_m9tviyj",
+      "sourceNodeId": "n_script",
+      "sourcePort": "lines",
+      "targetNodeId": "node_cast_mwa1fm2q",
+      "targetPort": "lines"
+    },
+    {
+      "id": "edge_kotfioq",
+      "sourceNodeId": "n_script",
+      "sourcePort": "scenes",
+      "targetNodeId": "node_cast_mwa1fm2q",
+      "targetPort": "scenes"
+    },
+    {
+      "id": "edge_oc2s6ma",
+      "sourceNodeId": "node_cast_mwa1fm2q",
+      "sourcePort": "reference_images",
+      "targetNodeId": "n_keyframes",
+      "targetPort": "references"
+    },
+    {
+      "id": "edge_9ylltu1",
+      "sourceNodeId": "node_cast_mwa1fm2q",
+      "sourcePort": "voice",
+      "targetNodeId": "n_render",
+      "targetPort": "voice_clips"
+    }
+  ],
+  "updatedAt": "2026-11-11T07:35:37.147Z",
+  "schemaVersion": 1,
+  "variables": {}
+}

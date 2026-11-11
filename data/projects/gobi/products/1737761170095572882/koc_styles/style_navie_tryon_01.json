@@ -1,0 +1,57 @@
+{
+  "styleId": "style_navie_tryon_01",
+  "productId": "1737761170095572882",
+  "source": {
+    "videoUrl": "https://www.tiktok.com/@navie.studio/video/7391234567890",
+    "creator": "LyLy Review",
+    "views": 250000,
+    "likes": 21000,
+    "durationSec": 20.0,
+    "collectedAt": "2026-11-08T12:00:00Z"
+  },
+  "archetype": "try-on",
+  "hook": {
+    "type": "visual_proof",
+    "text": "Mặc thử set kaki 99k NAVIE xem có tôn dáng như lời đồn không nha!",
+    "firstSeconds": 3.0
+  },
+  "structure": [
+    {
+      "role": "hook",
+      "startSec": 0.0,
+      "endSec": 3.0,
+      "shot": "close-up",
+      "camera": "zoom-in",
+      "onScreenText": "Set kaki 99k có đẹp?",
+      "voiceover": "Mặc thử set kaki 99k NAVIE xem có tôn dáng như lời đồn không nha!"
+    },
+    {
+      "role": "demo",
+      "startSec": 3.0,
+      "endSec": 15.0,
+      "shot": "medium-shot",
+      "camera": "handheld",
+      "onScreenText": "Form dáng & chi tiết",
+      "voiceover": "Áo cổ vuông tay phồng cực tôn dáng, eo chiết gọn gàng, quần short đứng form."
+    },
+    {
+      "role": "cta",
+      "startSec": 15.0,
+      "endSec": 20.0,
+      "shot": "medium-shot",
+      "camera": "static",
+      "onScreenText": "Săn deal 99k góc trái!",
+      "voiceover": "Mọi người nhấn vào giỏ hàng góc trái săn deal 99k liền nhé!"
+    }
+  ],
+  "pacing": {
+    "avgShotSec": 2.4,
+    "cuts": 8
+  },
+  "tone": "tươi trẻ, chân thực, tạo cảm giác gần gũi",
+  "cta": "Mọi người nhấn vào giỏ hàng góc trái săn deal 99k liền nhé!",
+  "aspectRatio": "9:16",
+  "music": "Trending pop upbeat",
+  "promptTemplate": "Full body front view of {character} wearing {product} with price only {price}, photorealistic, modern apartment",
+  "confidence": 0.95
+}

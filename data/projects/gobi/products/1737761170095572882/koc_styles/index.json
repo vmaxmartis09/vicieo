@@ -1,0 +1,19 @@
+{
+  "productId": "1737761170095572882",
+  "updatedAt": "2026-11-08T15:13:41.724024+00:00",
+  "totalStyles": 1,
+  "styles": [
+    {
+      "styleId": "style_navie_tryon_01",
+      "archetype": "try-on",
+      "hookText": "Mặc thử set kaki 99k NAVIE xem có tôn dáng như lời đồn không nha!",
+      "creator": "LyLy Review",
+      "videoUrl": "https://www.tiktok.com/@navie.studio/video/7391234567890",
+      "durationSec": 20.0,
+      "views": 250000,
+      "likes": 21000,
+      "confidence": 0.95,
+      "collectedAt": "2026-11-08T12:00:00Z"
+    }
+  ]
+}

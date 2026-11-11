@@ -1,0 +1,18 @@
+# Đề xuất cho Session A (Video & Templates) từ Session D
+
+Dưới đây là các đề xuất template, hiệu ứng, và cải tiến dựng video rút ra từ các video nghiên cứu thực tế.
+
+| Ngày | Nguồn (Video ID) | Đề xuất Template / Node | Mô tả cấu trúc Beat / Visual | Độ ưu tiên |
+|---|---|---|---|---|
+| 2026-11-04 | Seq 001 (`1342818958924942`) | `product-avatar-insitu-v1` | Template dọc 9:16: Slot 1 ảnh background sản phẩm tĩnh (sofa, bàn, góc nhà), Slot 2 clip alpha nhân vật KOC (hoặc Bi 100cm), Beat 1 Hook thú nhận, Beat 2 Phóng to chi tiết đệm/sản phẩm (Punch-in 1.25x), Beat 3 Thẻ thông số nổi, Beat 4 CTA bán hàng. | Cao |
+| 2026-11-04 | Seq 003 (`2272929803457749`) | Cơ chế "1-Click Remix" trên UI Dashboard | Nút bấm "Remix" trên từng card Template: Chọn ảnh sản phẩm từ `products/` -> Tự điền slot -> Submit `RenderRequest` mà không bắt người dùng phải cấu hình timeline thủ công. | Rất cao |
+| 2026-11-04 | Seq 005 (`1780575939827550`) | `lookbook-split-canvas-v1` | Template thời trang 9:16 chia đôi (45% Video Model tạo dáng : 55% Bảng Sticker Cutout bóc tách từng món). Hỗ trợ 3 Set trang phục (mỗi set 19s). Tự động vẽ đường nối doodle SVG đồng bộ với giọng đọc giới thiệu món đồ. | Cực cao (Mẫu vàng) |
+| 2026-11-04 | Seq 006 (`3061194297574911`) | Bộ Preset 5 Cú máy Camera ảo GSAP | Thêm các hàm helper vào `HyperFramesEngine`: `pan()`, `pushIn()`, `orbit()`, `pedestalUp()` để các template video có thể gọi trực tiếp thay vì tự viết CSS keyframes thủ công. | Cao |
+| 2026-11-04 | Seq 007 (`1083694434486679`) | `dual-clip-stitcher` Module trong Engine | Hỗ trợ template nhận 2 video đầu vào (Part 1 Catwalk 15s + Part 2 Close-up Turn 15s) và tự động nối mượt với flash cut 0.15s, lồng voiceover và auto-ducking BGM, xuất ra video 30s liền mạch. | Rất cao |
+| 2026-11-04 | Seq 008 (`1403971144535658`) | Adapter tích hợp `motion-mimic` vào Render Pipeline | Cho phép `RenderRequest` nhận thêm tham số `source_video_ref`, tự động gọi pipeline Motion Mimic để tráo mặt KOC Neau/LyLy vào cử chỉ video gốc rồi đóng gói qua HyperFrames. | Cao |
+| 2026-11-04 | Seq 012 (`959353096734421`) | `walking-outfit-transition-v1` | Template Lookbook thời trang 9:16: Video bước đi liên tục (walk cycle master), tự động morph 3 bộ outfit tại mốc 6.5s và 13s khi chân tiếp đất, kèm popup nhãn giá và SKU chạy GSAP. | Cực cao |
+| 2026-11-04 | Seq 015 (`1612875093634659`) | `catalog-360-turntable-v1` | Template Fashion Catalog 9:16: Cột trái checklist sản phẩm cố định (khóa rung lắc 100%), Cột phải bục xoay người mẫu 360 độ trong studio. Tự động lật thẻ sản phẩm 3D bằng GSAP khi nhân vật đổi look. | Rất cao |
+| 2026-11-04 | Seq 020 (`1580543193234985`) | `fashion-color-contrast-v1` | Template phối màu thời trang 9:16 (High-Status Color Contrast): 5 nhịp so sánh outfit cơ bản vs outfit sang trọng (Bold vs Luxurious, Clean vs Expensive), chia 2 ô hoặc carousel 2 look kèm swatches màu chuẩn hex. | Cực cao (4.5M views viral formula) |
+| 2026-11-04 | D2-`7681660841434926354` (@ddoquynhtram) | `vton-koc-lookbook-v1` | Template VTON 9:16: Slot 1 Nền KOC xoay dáng (CatVTON/Flux), Slot 2 Cận cảnh chất vải macro bóc tách, Kinetic Captions đổi màu từ khóa, Safe Zone 180px top / 320px bottom. | Rất cao |
+| 2026-11-04 | D2-`7695663938083507464` (@70.ai.studio) | `spec-commercial-3d-v1` | Template Phim quảng cáo thương mại 3D: Hỗ trợ nạp Start Frame + End Frame (Kling 1.5), tự động phủ lớp hạt quang học 35mm Film Grain (opacity 7%) và đồng bộ Foley SFX theo beat. | Cực cao |
+| 2026-11-04 | D2-`7702553918156328213` (@anongvn) | `faceless-script-timeline-v1` | Template Faceless tự động hóa: Nạp kịch bản Structured Script JSON + Whisper word-level timestamps -> Tự động sinh clip, kinetic captions và ducking BGM -4dB. | Rất cao |

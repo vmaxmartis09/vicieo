@@ -1,0 +1,225 @@
+{
+  "version": 1,
+  "historyId": "5e56a2d9-5fce-4874-92f6-4cd96bedbb6a",
+  "currentRevision": "1f03ac0d-1809-47a1-a8dd-c58c4f4e28e5",
+  "pendingChanges": false,
+  "files": {
+    "assets/gsap.min.js": {
+      "hash": "92bb9a96476f983d212a2bc4f54c889039c1696dd4461d40a736860938570fbb",
+      "content": "C:\\Users\\dtthoai\\.cache\\hyperframes\\history\\5e56a2d9-5fce-4874-92f6-4cd96bedbb6a\\blobs\\92\\92bb9a96476f983d212a2bc4f54c889039c1696dd4461d40a736860938570fbb"
+    },
+    "assets/koc_avatar.png": {
+      "hash": "c6a98c10323738a8db976151781c3c32e3a260c79da90505f26a0a4ae758d2f2",
+      "content": "C:\\Users\\dtthoai\\.cache\\hyperframes\\history\\5e56a2d9-5fce-4874-92f6-4cd96bedbb6a\\blobs\\c6\\c6a98c10323738a8db976151781c3c32e3a260c79da90505f26a0a4ae758d2f2"
+    },
+    "assets/product.png": {
+      "hash": "0daf1dc2f3480e4dd203faf4a0a1de1e75ca74b7745e18d6f84751f0284fbf05",
+      "content": "C:\\Users\\dtthoai\\.cache\\hyperframes\\history\\5e56a2d9-5fce-4874-92f6-4cd96bedbb6a\\blobs\\0d\\0daf1dc2f3480e4dd203faf4a0a1de1e75ca74b7745e18d6f84751f0284fbf05"
+    },
+    "assets/subtitles.json": {
+      "hash": "4e29ee69163f6a1e5a81d61c349deac6ffdf34e8794cf9598c3781267667f45b",
+      "content": "C:\\Users\\dtthoai\\.cache\\hyperframes\\history\\5e56a2d9-5fce-4874-92f6-4cd96bedbb6a\\blobs\\4e\\4e29ee69163f6a1e5a81d61c349deac6ffdf34e8794cf9598c3781267667f45b"
+    },
+    "assets/voiceover.mp3": {
+      "hash": "1ac82b3a3f395728533549dfc241c8400ab8da314a4319921f9a8f9284bd03be",
+      "content": "C:\\Users\\dtthoai\\.cache\\hyperframes\\history\\5e56a2d9-5fce-4874-92f6-4cd96bedbb6a\\blobs\\1a\\1ac82b3a3f395728533549dfc241c8400ab8da314a4319921f9a8f9284bd03be"
+    },
+    "composition.html.j2": {
+      "hash": "0b46fe59c83d39c5199f91e671cbba8c1941e3051afb655a235135f259c26c62",
+      "content": "C:\\Users\\dtthoai\\.cache\\hyperframes\\history\\5e56a2d9-5fce-4874-92f6-4cd96bedbb6a\\blobs\\0b\\0b46fe59c83d39c5199f91e671cbba8c1941e3051afb655a235135f259c26c62"
+    },
+    "index.html": {
+      "hash": "d50847524f2c522a66dabfba04b96fbd98963be4b0c9ccf293fa291c23304170",
+      "content": "C:\\Users\\dtthoai\\.cache\\hyperframes\\history\\5e56a2d9-5fce-4874-92f6-4cd96bedbb6a\\blobs\\d5\\d50847524f2c522a66dabfba04b96fbd98963be4b0c9ccf293fa291c23304170"
+    },
+    "preview.jpg": {
+      "hash": "548c75633457f6afbbf5983b3bbdb560c4a50277cd475df9faad23fa60971d64",
+      "content": "C:\\Users\\dtthoai\\.cache\\hyperframes\\history\\5e56a2d9-5fce-4874-92f6-4cd96bedbb6a\\blobs\\54\\548c75633457f6afbbf5983b3bbdb560c4a50277cd475df9faad23fa60971d64"
+    },
+    "sample.data.json": {
+      "hash": "e953041145c042af7ce7951fdcba8228a67a3bdbfe20116e42f06734ee9f9add",
+      "content": "C:\\Users\\dtthoai\\.cache\\hyperframes\\history\\5e56a2d9-5fce-4874-92f6-4cd96bedbb6a\\blobs\\e9\\e953041145c042af7ce7951fdcba8228a67a3bdbfe20116e42f06734ee9f9add"
+    },
+    "styles.css": {
+      "hash": "4bfa0d699e6ad1863a9cdb2c162c04967227be017ed65db221fbc9b29fb19847",
+      "content": "C:\\Users\\dtthoai\\.cache\\hyperframes\\history\\5e56a2d9-5fce-4874-92f6-4cd96bedbb6a\\blobs\\4b\\4bfa0d699e6ad1863a9cdb2c162c04967227be017ed65db221fbc9b29fb19847"
+    },
+    "template.json": {
+      "hash": "ad648ae995dbb1b9bf6969ca4623345f7b97c386299e549082c579788cd26e4f",
+      "content": "C:\\Users\\dtthoai\\.cache\\hyperframes\\history\\5e56a2d9-5fce-4874-92f6-4cd96bedbb6a\\blobs\\ad\\ad648ae995dbb1b9bf6969ca4623345f7b97c386299e549082c579788cd26e4f"
+    },
+    "contact_sheet.jpg": {
+      "hash": "31682a25e089273553f38ee212af75369f43ee02b2f0c6fbf3f282d1defae89d",
+      "content": "C:\\Users\\dtthoai\\.cache\\hyperframes\\history\\5e56a2d9-5fce-4874-92f6-4cd96bedbb6a\\blobs\\31\\31682a25e089273553f38ee212af75369f43ee02b2f0c6fbf3f282d1defae89d"
+    },
+    "studio_run/koc-review-v1_tiktok.jpg": {
+      "hash": "bbe7c50855cbb8e4bd4c9808b57c9dc1bed897ba901c507501df6b2bbbc927cd",
+      "content": "C:\\Users\\dtthoai\\.cache\\hyperframes\\history\\5e56a2d9-5fce-4874-92f6-4cd96bedbb6a\\blobs\\bb\\bbe7c50855cbb8e4bd4c9808b57c9dc1bed897ba901c507501df6b2bbbc927cd"
+    },
+    "studio_run/koc-review-v1_tiktok_contact.jpg": {
+      "hash": "9503a225065fba376dc92a12d5ce0987d9fd5de95934ceb007424d24daa064fb",
+      "content": "C:\\Users\\dtthoai\\.cache\\hyperframes\\history\\5e56a2d9-5fce-4874-92f6-4cd96bedbb6a\\blobs\\95\\9503a225065fba376dc92a12d5ce0987d9fd5de95934ceb007424d24daa064fb"
+    },
+    "studio_run/render.log": {
+      "hash": "42ecf3da4d9b36c7a0c1d01d17f35af939de9bc4db5261e8877002760c47352d",
+      "content": "C:\\Users\\dtthoai\\.cache\\hyperframes\\history\\5e56a2d9-5fce-4874-92f6-4cd96bedbb6a\\blobs\\42\\42ecf3da4d9b36c7a0c1d01d17f35af939de9bc4db5261e8877002760c47352d"
+    },
+    "studio_run/report.json": {
+      "hash": "81aa6ee37edce3a70d60e8593df5f3714d1fbfb44b5c46423e9908ae478a19e1",
+      "content": "C:\\Users\\dtthoai\\.cache\\hyperframes\\history\\5e56a2d9-5fce-4874-92f6-4cd96bedbb6a\\blobs\\81\\81aa6ee37edce3a70d60e8593df5f3714d1fbfb44b5c46423e9908ae478a19e1"
+    },
+    "product.png": {
+      "hash": "0daf1dc2f3480e4dd203faf4a0a1de1e75ca74b7745e18d6f84751f0284fbf05",
+      "content": "C:\\Users\\dtthoai\\.cache\\hyperframes\\history\\5e56a2d9-5fce-4874-92f6-4cd96bedbb6a\\blobs\\0d\\0daf1dc2f3480e4dd203faf4a0a1de1e75ca74b7745e18d6f84751f0284fbf05"
+    },
+    "product (2).png": {
+      "hash": "0daf1dc2f3480e4dd203faf4a0a1de1e75ca74b7745e18d6f84751f0284fbf05",
+      "content": "C:\\Users\\dtthoai\\.cache\\hyperframes\\history\\5e56a2d9-5fce-4874-92f6-4cd96bedbb6a\\blobs\\0d\\0daf1dc2f3480e4dd203faf4a0a1de1e75ca74b7745e18d6f84751f0284fbf05"
+    }
+  },
+  "revisions": {
+    "34d428b7-70a7-45af-b387-e69f47706397": {
+      "actor": {
+        "kind": "outside",
+        "name": "Outside"
+      },
+      "label": "Changed outside the app",
+      "startedAt": 1794384150547,
+      "endedAt": 1794384150609,
+      "files": {
+        "composition.html.j2": {
+          "before": "C:\\Users\\dtthoai\\.cache\\hyperframes\\history\\5e56a2d9-5fce-4874-92f6-4cd96bedbb6a\\blobs\\93\\93c4afe065e75079d52154e75386f810ec3057408919cb4eabdfeae26fbf0217",
+          "after": "C:\\Users\\dtthoai\\.cache\\hyperframes\\history\\5e56a2d9-5fce-4874-92f6-4cd96bedbb6a\\blobs\\0b\\0b46fe59c83d39c5199f91e671cbba8c1941e3051afb655a235135f259c26c62"
+        },
+        "contact_sheet.jpg": {
+          "before": null,
+          "after": "C:\\Users\\dtthoai\\.cache\\hyperframes\\history\\5e56a2d9-5fce-4874-92f6-4cd96bedbb6a\\blobs\\31\\31682a25e089273553f38ee212af75369f43ee02b2f0c6fbf3f282d1defae89d"
+        },
+        "index.html": {
+          "before": "C:\\Users\\dtthoai\\.cache\\hyperframes\\history\\5e56a2d9-5fce-4874-92f6-4cd96bedbb6a\\blobs\\7f\\7fa25ddf99d3fea23b89e8c1bc4d1911dbdd555f6d7821601254fb27ffca776f",
+          "after": "C:\\Users\\dtthoai\\.cache\\hyperframes\\history\\5e56a2d9-5fce-4874-92f6-4cd96bedbb6a\\blobs\\18\\18b8943bc97e1f247c9cfa4890b67352fda74f8bdec444f247df8178a231aa35"
+        },
+        "preview.jpg": {
+          "before": "C:\\Users\\dtthoai\\.cache\\hyperframes\\history\\5e56a2d9-5fce-4874-92f6-4cd96bedbb6a\\blobs\\e3\\e3c25cd46c6207ecb2cc6e334603b91e3c7e04e891131a26feae7f8052b1a837",
+          "after": "C:\\Users\\dtthoai\\.cache\\hyperframes\\history\\5e56a2d9-5fce-4874-92f6-4cd96bedbb6a\\blobs\\54\\548c75633457f6afbbf5983b3bbdb560c4a50277cd475df9faad23fa60971d64"
+        },
+        "studio_run/koc-review-v1_tiktok_contact.jpg": {
+          "before": null,
+          "after": "C:\\Users\\dtthoai\\.cache\\hyperframes\\history\\5e56a2d9-5fce-4874-92f6-4cd96bedbb6a\\blobs\\95\\9503a225065fba376dc92a12d5ce0987d9fd5de95934ceb007424d24daa064fb"
+        },
+        "studio_run/koc-review-v1_tiktok.jpg": {
+          "before": null,
+          "after": "C:\\Users\\dtthoai\\.cache\\hyperframes\\history\\5e56a2d9-5fce-4874-92f6-4cd96bedbb6a\\blobs\\bb\\bbe7c50855cbb8e4bd4c9808b57c9dc1bed897ba901c507501df6b2bbbc927cd"
+        },
+        "studio_run/render.log": {
+          "before": null,
+          "after": "C:\\Users\\dtthoai\\.cache\\hyperframes\\history\\5e56a2d9-5fce-4874-92f6-4cd96bedbb6a\\blobs\\42\\42ecf3da4d9b36c7a0c1d01d17f35af939de9bc4db5261e8877002760c47352d"
+        },
+        "studio_run/report.json": {
+          "before": null,
+          "after": "C:\\Users\\dtthoai\\.cache\\hyperframes\\history\\5e56a2d9-5fce-4874-92f6-4cd96bedbb6a\\blobs\\81\\81aa6ee37edce3a70d60e8593df5f3714d1fbfb44b5c46423e9908ae478a19e1"
+        },
+        "template.json": {
+          "before": "C:\\Users\\dtthoai\\.cache\\hyperframes\\history\\5e56a2d9-5fce-4874-92f6-4cd96bedbb6a\\blobs\\2d\\2d7af34bf3dc1ead1c585730d48f2d72946d210f1392e2688cefcbb983c8bfea",
+          "after": "C:\\Users\\dtthoai\\.cache\\hyperframes\\history\\5e56a2d9-5fce-4874-92f6-4cd96bedbb6a\\blobs\\ad\\ad648ae995dbb1b9bf6969ca4623345f7b97c386299e549082c579788cd26e4f"
+        }
+      }
+    },
+    "ba03812a-fc39-4278-8031-1055b34c705d": {
+      "actor": {
+        "kind": "outside",
+        "name": "Outside"
+      },
+      "label": "Changed outside the app",
+      "startedAt": 1794387348120,
+      "endedAt": 1794387348259,
+      "files": {
+        "product.png": {
+          "before": null,
+          "after": "C:\\Users\\dtthoai\\.cache\\hyperframes\\history\\5e56a2d9-5fce-4874-92f6-4cd96bedbb6a\\blobs\\0d\\0daf1dc2f3480e4dd203faf4a0a1de1e75ca74b7745e18d6f84751f0284fbf05"
+        }
+      }
+    },
+    "3d77a2e8-8725-45bf-aa43-a1c2213665da": {
+      "actor": {
+        "kind": "person",
+        "name": "You"
+      },
+      "label": "Add timeline asset",
+      "startedAt": 1794387348261,
+      "endedAt": 1794387348262,
+      "files": {
+        "index.html": {
+          "before": "C:\\Users\\dtthoai\\.cache\\hyperframes\\history\\5e56a2d9-5fce-4874-92f6-4cd96bedbb6a\\blobs\\18\\18b8943bc97e1f247c9cfa4890b67352fda74f8bdec444f247df8178a231aa35",
+          "after": "C:\\Users\\dtthoai\\.cache\\hyperframes\\history\\5e56a2d9-5fce-4874-92f6-4cd96bedbb6a\\blobs\\6c\\6cbade45a1794d1399b34ebaa7e474452888e8dd655b9a2c27403228e2fad631"
+        }
+      }
+    },
+    "d6f9b56e-d4e0-418a-8b7e-d2286e893d25": {
+      "actor": {
+        "kind": "outside",
+        "name": "Outside"
+      },
+      "label": "Changed outside the app",
+      "startedAt": 1794387349298,
+      "endedAt": 1794387349746,
+      "files": {
+        "product (2).png": {
+          "before": null,
+          "after": "C:\\Users\\dtthoai\\.cache\\hyperframes\\history\\5e56a2d9-5fce-4874-92f6-4cd96bedbb6a\\blobs\\0d\\0daf1dc2f3480e4dd203faf4a0a1de1e75ca74b7745e18d6f84751f0284fbf05"
+        }
+      }
+    },
+    "cf5b542c-f40e-4ab6-877e-b5f99d5b041b": {
+      "actor": {
+        "kind": "person",
+        "name": "You"
+      },
+      "label": "Add timeline asset",
+      "startedAt": 1794387349747,
+      "endedAt": 1794387349747,
+      "files": {
+        "index.html": {
+          "before": "C:\\Users\\dtthoai\\.cache\\hyperframes\\history\\5e56a2d9-5fce-4874-92f6-4cd96bedbb6a\\blobs\\6c\\6cbade45a1794d1399b34ebaa7e474452888e8dd655b9a2c27403228e2fad631",
+          "after": "C:\\Users\\dtthoai\\.cache\\hyperframes\\history\\5e56a2d9-5fce-4874-92f6-4cd96bedbb6a\\blobs\\da\\da98db7420329c8fd12baae23edb840cd38bd29e17bef80f2a165c6c6d2a5f6c"
+        }
+      }
+    },
+    "1f03ac0d-1809-47a1-a8dd-c58c4f4e28e5": {
+      "actor": {
+        "kind": "person",
+        "name": "You"
+      },
+      "label": "Add timeline asset",
+      "startedAt": 1794387350476,
+      "endedAt": 1794387350476,
+      "files": {
+        "index.html": {
+          "before": "C:\\Users\\dtthoai\\.cache\\hyperframes\\history\\5e56a2d9-5fce-4874-92f6-4cd96bedbb6a\\blobs\\da\\da98db7420329c8fd12baae23edb840cd38bd29e17bef80f2a165c6c6d2a5f6c",
+          "after": "C:\\Users\\dtthoai\\.cache\\hyperframes\\history\\5e56a2d9-5fce-4874-92f6-4cd96bedbb6a\\blobs\\d5\\d50847524f2c522a66dabfba04b96fbd98963be4b0c9ccf293fa291c23304170"
+        }
+      }
+    }
+  },
+  "checks": {
+    "latest": null,
+    "revisions": {},
+    "unversioned": []
+  },
+  "snapshots": {
+    "latest": null,
+    "revisions": {},
+    "unversioned": []
+  },
+  "renders": {
+    "latest": {
+      "id": "62c629a6-abb4-4bc2-a7c1-00faa2fab9ce",
+      "completedAt": 1793874597335,
+      "output": "D:\\socnhotv\\data\\shared\\templates\\koc-review-v1\\preview.mp4",
+      "status": "completed",
+      "revision": null
+    },
+    "retainedRevisions": []
+  },
+  "pendingArtifactCleanup": []
+}

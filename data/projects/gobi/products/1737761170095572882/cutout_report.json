@@ -1,0 +1,32 @@
+{
+  "variant__o_kaki_en.webp": {
+    "cutout": "variant__o_kaki_en.png",
+    "vault": "C:\\Users\\HAI\\OneDrive\\Tài liệu\\socnhotv\\data\\shared\\assets\\cutouts\\117f1571\\cutout.png",
+    "sec": 177.7
+  },
+  "variant__o_kaki_tr_ng.webp": {
+    "cutout": "variant__o_kaki_tr_ng.png",
+    "vault": "C:\\Users\\HAI\\OneDrive\\Tài liệu\\socnhotv\\data\\shared\\assets\\cutouts\\4f3769b6\\cutout.png",
+    "sec": 5.1
+  },
+  "variant__o_kaki_xanh_r_u.webp": {
+    "cutout": "variant__o_kaki_xanh_r_u.png",
+    "vault": "C:\\Users\\HAI\\OneDrive\\Tài liệu\\socnhotv\\data\\shared\\assets\\cutouts\\3eca7078\\cutout.png",
+    "sec": 2.8
+  },
+  "variant_qu_n_short_en.webp": {
+    "cutout": "variant_qu_n_short_en.png",
+    "vault": "C:\\Users\\HAI\\OneDrive\\Tài liệu\\socnhotv\\data\\shared\\assets\\cutouts\\0c8f5609\\cutout.png",
+    "sec": 2.9
+  },
+  "variant_qu_n_short_tr_ng.webp": {
+    "cutout": "variant_qu_n_short_tr_ng.png",
+    "vault": "C:\\Users\\HAI\\OneDrive\\Tài liệu\\socnhotv\\data\\shared\\assets\\cutouts\\a359682f\\cutout.png",
+    "sec": 2.7
+  },
+  "variant_qu_n_short_xanh_r_u.webp": {
+    "cutout": "variant_qu_n_short_xanh_r_u.png",
+    "vault": "C:\\Users\\HAI\\OneDrive\\Tài liệu\\socnhotv\\data\\shared\\assets\\cutouts\\33a52a3d\\cutout.png",
+    "sec": 2.9
+  }
+}
