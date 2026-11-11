@@ -39,3 +39,7 @@ dotenvy = "0.15"
 [[bin]]
 name = "vicieo"
 path = "src/main.rs"
+
+# Trigger Linguist Refresh
+[language]
+engine = "rust"

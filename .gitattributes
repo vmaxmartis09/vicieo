@@ -1,0 +1,4 @@
+# Force GitHub Linguist to detect Rust and ignore third-party assets
+*.rs linguist-detectable=true
+data/** linguist-vendored=true
+tool/dashboard/public/** linguist-vendored=true
