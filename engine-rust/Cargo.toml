@@ -1,6 +1,6 @@
 [package]
 name = "vicieo"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 authors = ["Vicieo Team"]
 description = "Vicieo: High-performance, lightweight, multi-platform AI Video Orchestration & Rendering Engine"
@@ -9,8 +9,9 @@ description = "Vicieo: High-performance, lightweight, multi-platform AI Video Or
 # Async Runtime & Concurrency
 tokio = { version = "1.38", features = ["full"] }
 futures = "0.3"
+async-stream = "0.3"
 
-# Web Server & REST API (Port 9000)
+# Web Server & REST API (Port 9000 & Full Route Suite)
 axum = { version = "0.7", features = ["macros"] }
 tower-http = { version = "0.5", features = ["cors", "trace"] }
 
@@ -39,7 +40,3 @@ dotenvy = "0.15"
 [[bin]]
 name = "vicieo"
 path = "src/main.rs"
-
-# Trigger Linguist Refresh
-[language]
-engine = "rust"
