@@ -61,6 +61,9 @@ pub async fn run_server(port: u16) -> anyhow::Result<()> {
         .route("/projects/{project_id}/graph", get(get_project_graph_by_path).post(save_project_graph_by_path))
         .route("/projects/{project_id}/publishing", get(get_project_publishing))
         .route("/projects/{project_id}/publishing/schedule", post(save_project_scheduled_post))
+        .route("/projects/{project_id}/files/{*file_path}", get(serve_project_file))
+        .route("/voices/{voice_id}/sample", get(serve_voice_sample))
+        .route("/voices/{voice_id}/{filename}", get(serve_voice_file))
         .nest_service("/data", tower_http::services::ServeDir::new(workspace::data_root()))
         
         // Graph Canvas & State API (Port 8000/9000 compatibility)
@@ -437,6 +440,97 @@ async fn save_project_graph_by_path(AxumPath(project_id): AxumPath<String>, Json
         let _ = fs::write(&path, str_val);
     }
     Json(json!({ "ok": true, "saved": true, "project": project_id }))
+}
+
+use axum::response::IntoResponse;
+use axum::http::StatusCode;
+
+fn guess_mime(path: &std::path::Path) -> &'static str {
+    match path.extension().and_then(|s| s.to_str()).unwrap_or("") {
+        "png" => "image/png",
+        "jpg" | "jpeg" => "image/jpeg",
+        "webp" => "image/webp",
+        "gif" => "image/gif",
+        "svg" => "image/svg+xml",
+        "mp3" => "audio/mpeg",
+        "wav" => "audio/wav",
+        "mp4" => "video/mp4",
+        "webm" => "video/webm",
+        "json" => "application/json",
+        "md" | "txt" => "text/plain; charset=utf-8",
+        _ => "application/octet-stream",
+    }
+}
+
+async fn serve_project_file(
+    AxumPath((project_id, file_path)): AxumPath<(String, String)>,
+) -> impl IntoResponse {
+    let base = workspace::project_path(&project_id, &[], false).unwrap_or_default();
+    let full_path = base.join(&file_path);
+    if !full_path.exists() || !full_path.is_file() {
+        return Err((StatusCode::NOT_FOUND, "File not found"));
+    }
+    
+    match fs::read(&full_path) {
+        Ok(bytes) => {
+            let mime = guess_mime(&full_path);
+            Ok((
+                [(axum::http::header::CONTENT_TYPE, mime)],
+                bytes,
+            ))
+        }
+        Err(_) => Err((StatusCode::INTERNAL_SERVER_ERROR, "Failed to read file")),
+    }
+}
+
+async fn serve_voice_sample(
+    AxumPath(voice_id): AxumPath<String>,
+) -> impl IntoResponse {
+    let vault_root = workspace::data_root().join("shared").join("voice_vault").join(&voice_id);
+    let sample_mp3 = vault_root.join("cloned_default_sample.mp3");
+    let fallback_mp3 = vault_root.join("source_original_preview.mp3");
+    let sample_wav = vault_root.join("reference_clean_slice.wav");
+    
+    let target = if sample_mp3.exists() {
+        sample_mp3
+    } else if fallback_mp3.exists() {
+        fallback_mp3
+    } else if sample_wav.exists() {
+        sample_wav
+    } else {
+        return Err((StatusCode::NOT_FOUND, "Sample audio not found"));
+    };
+
+    match fs::read(&target) {
+        Ok(bytes) => {
+            let mime = guess_mime(&target);
+            Ok((
+                [(axum::http::header::CONTENT_TYPE, mime)],
+                bytes,
+            ))
+        }
+        Err(_) => Err((StatusCode::INTERNAL_SERVER_ERROR, "Failed to read audio")),
+    }
+}
+
+async fn serve_voice_file(
+    AxumPath((voice_id, filename)): AxumPath<(String, String)>,
+) -> impl IntoResponse {
+    let target = workspace::data_root().join("shared").join("voice_vault").join(&voice_id).join(&filename);
+    if !target.exists() || !target.is_file() {
+        return Err((StatusCode::NOT_FOUND, "Voice file not found"));
+    }
+
+    match fs::read(&target) {
+        Ok(bytes) => {
+            let mime = guess_mime(&target);
+            Ok((
+                [(axum::http::header::CONTENT_TYPE, mime)],
+                bytes,
+            ))
+        }
+        Err(_) => Err((StatusCode::INTERNAL_SERVER_ERROR, "Failed to read file")),
+    }
 }
 
 // Graph Canvas Handlers
