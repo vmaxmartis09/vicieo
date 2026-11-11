@@ -1,5 +1,6 @@
-# Force GitHub Linguist to detect Rust and ignore third-party assets
+# Force GitHub Linguist to detect Rust and ignore third-party/AI scripts
 *.rs linguist-detectable=true
 data/** linguist-vendored=true
 tool/dashboard/public/** linguist-vendored=true
-
+ai/** linguist-vendored=true
+ai/skills/** linguist-documentation=true
