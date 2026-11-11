@@ -20,28 +20,39 @@
 
 ## 2. KHỞI CHẠY HỆ THỐNG
 
-### Cách 1: Chạy đồng thời cả Rust + Next.js (Dùng chung Mac & Windows)
-Chỉ cần chạy 1 lệnh duy nhất tại thư mục gốc:
+### Chạy 1 lệnh duy nhất: `vcrun`
+Chỉ cần gõ **duy nhất** từ khóa sau tại thư mục gốc `vicieo` để chạy đồng thời cả Rust Engine + Next.js Studio Canvas:
+
 ```bash
-npm run dev
-# Hoặc: node dev.mjs
-# Trên Windows click/chạy: dev.bat
-# Trên macOS / Linux: ./dev.sh
+vcrun
 ```
 
-### Cách 2: Khởi chạy thủ công từng phần
+*(Hỗ trợ trực tiếp trên Windows PowerShell, CMD, Git Bash và macOS/Linux terminal)*
 
-#### Frontend Next.js Studio (Port 3600):
-```bash
-cd tool/dashboard
-npm run dev:web
-# Truy cập: http://localhost:3600
-```
+- Nếu trên macOS/Linux chưa set alias shell, bạn có thể chạy: `./vcrun.sh` hoặc thêm vào `~/.zshrc`:
+  ```bash
+  alias vcrun="node dev.mjs"
+  ```
+- Hoặc qua npm: `npm run vcrun`
 
-#### Backend Rust Native Engine (Port 9000):
-```bash
-cd engine-rust
-cargo run -- serve --port 9000
-# Endpoint kiểm tra: http://localhost:9000/health
-```
+#### Port & Endpoints:
+- **Next.js Studio:** [http://localhost:3600](http://localhost:3600)
+- **Rust Engine Server:** [http://localhost:9000](http://localhost:9000) (Health check: [http://localhost:9000/health](http://localhost:9000/health))
+
+---
+
+## 3. YÊU CẦU MÔI TRƯỜNG & CÀI ĐẶT (PREREQUISITES)
+
+1. **Node.js (>= 20)**:
+   - Cài đặt dependencies cho frontend (chỉ cần chạy 1 lần):
+     ```bash
+     cd tool/dashboard && npm install
+     ```
+2. **Rust & Cargo**:
+   - **Windows:** Tải bộ cài `rustup-init.exe` tại [https://rustup.rs/](https://rustup.rs/) và cài đặt. Sau khi cài xong, mở lại Terminal để nhận diện biến môi trường `cargo`.
+   - **macOS / Linux:**
+     ```bash
+     curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+     source "$HOME/.cargo/env"
+     ```
 

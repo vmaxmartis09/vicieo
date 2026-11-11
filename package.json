@@ -3,9 +3,9 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "vcrun": "node dev.mjs",
     "dev": "node dev.mjs",
     "dev:web": "npm run dev:web --prefix tool/dashboard",
     "dev:rust": "cargo run --manifest-path engine-rust/Cargo.toml -- serve --port 9000"
   }
 }
-

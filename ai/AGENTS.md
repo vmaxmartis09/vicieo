@@ -78,12 +78,9 @@ Hệ thống phân chia ranh giới triệt để thành 3 phần độc lập:
    - Xóa ngay cache `.next-build` sau khi kiểm tra build dashboard.
 
 5. **Khởi chạy Hệ thống đa nền tảng (Dual-Run Cross-Platform):**
-   - Hỗ trợ chạy đồng thời cả Backend Rust (`engine-rust`, port 9000) và Frontend Next.js (`tool/dashboard`, port 3600) bằng 1 lệnh duy nhất tại thư mục gốc:
+   - Hỗ trợ chạy đồng thời cả Backend Rust (`engine-rust`, port 9000) và Frontend Next.js (`tool/dashboard`, port 3600) bằng 1 lệnh DUY NHẤT:
      ```bash
-     npm run dev
-     # hoặc: node dev.mjs
-     # Windows: dev.bat
-     # macOS / Linux: ./dev.sh
+     vcrun
      ```
 
 ---
