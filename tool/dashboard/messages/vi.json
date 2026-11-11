@@ -131,7 +131,7 @@
     "runModeCustom": "Tuỳ chỉnh từng loại",
     "mobileListTitle": "Quy trình phân cảnh (chỉ đọc trên điện thoại)",
     "openSheetBtn": "Mở bảng điều khiển",
-    "coreOfflineBanner": "Core chưa chạy (GET /health lỗi). Bật bằng lệnh: PYTHONPATH=tool/src uvicorn socnhotv.core.api.app:app --port 8000. Bạn vẫn dựng và chạy thử đồ thị bằng bản mock trên giao diện.",
+    "coreOfflineBanner": "Core chưa chạy (GET /health lỗi). Bật bằng lệnh: cd engine-rust && cargo run -- serve --port 9000. Bạn vẫn dựng và chạy thử đồ thị bằng bản mock trên giao diện.",
     "coreOutdatedBanner": "Core đang chạy phiên bản cũ (thiếu /video/templates). Khởi động lại uvicorn trên cổng 8000.",
     "addStepBefore": "+ Bước trước",
     "addStepAfter": "+ Bước sau",
@@ -549,7 +549,7 @@
     "roleMain": "Chính",
     "roleSupporting": "Phụ",
     "cm": "{value} cm",
-    "coreDown": "Không kết nối được động cơ Core. Bật bằng: uvicorn socnhotv.core.api.app:app --app-dir tool/src --port 8000.",
+    "coreDown": "Không kết nối được động cơ Core. Bật bằng: cd engine-rust && cargo run -- serve --port 9000.",
     "noCharacters": "Dự án này chưa có nhân vật nào.",
     "noChannels": "Chưa kết nối kênh nào. Kết nối YouTube hoặc TikTok để đăng bài."
   },

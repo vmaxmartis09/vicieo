@@ -122,7 +122,7 @@ export async function POST(request: Request) {
     }
 
     const stamp = `${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
-    const dir = path.join(os.tmpdir(), "socnhotv-toolbox");
+    const dir = path.join(os.tmpdir(), "vicieo-toolbox");
     fs.mkdirSync(dir, { recursive: true });
     tmpIn = path.join(dir, `${toolId}_${stamp}_in.json`);
     tmpOut = path.join(dir, `${toolId}_${stamp}_out.json`);

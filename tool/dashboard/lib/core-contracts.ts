@@ -1,6 +1,5 @@
 /**
- * Tệp này được sinh tự động từ socnhotv.core.contracts.types.
- * TUYỆT ĐỐI KHÔNG SỬA TAY ĐỂ TRÁNH LỆCH KIỂU GIỮA PYTHON CORE VÀ NEXT.JS UI.
+ * Schema contracts for ViciEO Native Core Engine.
  */
 
 export type PortType =

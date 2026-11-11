@@ -131,7 +131,7 @@
     "runModeCustom": "Custom per resource",
     "mobileListTitle": "Episode pipeline (read-only on mobile)",
     "openSheetBtn": "Open control sheet",
-    "coreOfflineBanner": "Core is offline (GET /health failed). Start with: PYTHONPATH=tool/src uvicorn socnhotv.core.api.app:app --port 8000. You can still build and test graphs in UI mock mode.",
+    "coreOfflineBanner": "Core is offline (GET /health failed). Start with: cd engine-rust && cargo run -- serve --port 9000. You can still build and test graphs in UI mock mode.",
     "coreOutdatedBanner": "Core is running an outdated version (missing /video/templates). Restart uvicorn on port 8000.",
     "addStepBefore": "+ Step before",
     "addStepAfter": "+ Step after",
@@ -549,7 +549,7 @@
     "roleMain": "Lead",
     "roleSupporting": "Supporting",
     "cm": "{value} cm",
-    "coreDown": "Cannot reach the Core engine. Start it with: uvicorn socnhotv.core.api.app:app --app-dir tool/src --port 8000.",
+    "coreDown": "Cannot reach the Core engine. Start it with: cd engine-rust && cargo run -- serve --port 9000.",
     "noCharacters": "No characters in this project yet.",
     "noChannels": "No channel connected yet. Connect YouTube or TikTok to publish."
   },

@@ -2,3 +2,4 @@
 *.rs linguist-detectable=true
 data/** linguist-vendored=true
 tool/dashboard/public/** linguist-vendored=true
+

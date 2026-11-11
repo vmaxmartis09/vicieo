@@ -1,6 +1,6 @@
 # ViciEO: Lightweight High-Performance Multiplatform AI Video Studio
 
-> **Dự án kế thừa và tiến hóa từ socnhotv**, hướng tới kiến trúc hiện đại, đa nền tảng, siêu nhẹ và tối ưu hiệu năng.
+> **Nền tảng sáng tạo & sản xuất video KOC/Hoạt hình 3D đa nền tảng, hiệu năng cao**, xây dựng trên kiến trúc Rust Native Engine và Next.js Studio Canvas.
 
 ---
 
@@ -10,24 +10,27 @@
    - **Kích thước cực nhỏ:** Single executable binary (~15MB), không cần Python runtime hay virtualenv.
    - **Tốc độ:** Khởi động tức thì (<0.01s), RAM <25MB.
    - **Xử lý bất đồng bộ & đa luồng:** Tận dụng `tokio` để điều phối pipeline render, xử lý asset song song.
+   - **REST API Server:** Tích hợp máy chủ Axum hiệu năng cao phục vụ trên Port 9000.
    - **Schema hợp đồng 2 tầng (Two-Tier Schema):** Kết hợp giữa định kiểu tĩnh chặt chẽ (`serde`) và payload động (`serde_json::Value`), giúp đón nhận mọi thay đổi từ các API AI bên thứ 3 mà không làm gián đoạn hệ thống.
 
-2. **`tool/dashboard/`**: Giao diện Studio Canvas Next.js / React (tương lai có thể đóng gói Desktop App siêu nhẹ qua Tauri).
+2. **`tool/dashboard/`**: Giao diện Studio Canvas Next.js / React (phục vụ trên Port 3600).
 3. **`data/`**: Hệ thống dữ liệu đa dự án độc lập (`projects/`, `shared/`).
 
 ---
 
-## 2. LỘ TRÌNH CHUYỂN ĐỔI (ROADMAP)
+## 2. KHỞI CHẠY HỆ THỐNG
 
-- [x] **Giai đoạn 1: Khởi tạo Repo & Bản quyền**
-  - Khởi tạo repo `vicieo` độc lập trên GitHub.
-  - Clone và bảo tồn toàn bộ dữ liệu lịch sử từ `socnhotv`.
-- [x] **Giai đoạn 2: Khung kiến trúc Core Engine (Rust Native)**
-  - Cấu trúc module: `workspace`, `schema`, `ai`, `video`, `cli`.
-  - Hỗ trợ CLI đa lệnh: `info`, `project`, `render`, `ai`.
-- [ ] **Giai đoạn 3: Tích hợp FFmpeg & HyperFrames Pipeline**
-  - FFmpeg filtergraph TikTok mastering (-14 LUFS, voice EQ).
-  - Headless browser rendering với Ego Lite.
-- [ ] **Giai đoạn 4: Đóng gói Desktop App (Tauri + Rust)**
-  - Gộp dashboard và core engine thành 1 ứng dụng desktop duy nhất <35MB.
+### Frontend Next.js Studio (Port 3600):
+```powershell
+cd tool/dashboard
+npm run dev:web
+# Truy cập: http://localhost:3600
+```
+
+### Backend Rust Native Engine (Port 9000):
+```powershell
+cd engine-rust
+cargo run -- serve --port 9000
+# Endpoint kiểm tra: http://localhost:9000/health
+```
 

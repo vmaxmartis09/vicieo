@@ -30,7 +30,7 @@ const mono = IBM_Plex_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "AI Video Studio - SocNhoTV",
+  title: "ViciEO - Multiplatform AI Video Studio",
   description:
     "Nền tảng quản lý dự án video & sáng tạo hoạt hình 3D bằng AI Node Canvas",
 };
