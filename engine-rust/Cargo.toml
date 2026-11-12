@@ -48,6 +48,7 @@ walkdir = "2"
 sha2 = "0.10"
 base64 = "0.22"
 once_cell = "1"
+libc = "0.2" # social store: flock interop with Python
 
 [[bin]]
 name = "vicieo"

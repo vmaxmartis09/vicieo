@@ -2088,6 +2088,7 @@ dependencies = [
  "dotenvy",
  "futures",
  "indicatif",
+ "libc",
  "once_cell",
  "regex",
  "reqwest",
