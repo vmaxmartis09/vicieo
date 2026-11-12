@@ -55,6 +55,10 @@ zip = { version = "2", default-features = false, features = ["deflate"] } # soci
 multer = "3"
 url = "2"
 
+# Track B (video templates)
+minijinja = "2"
+minijinja-contrib = { version = "2", features = ["pycompat"] }
+
 [[bin]]
 name = "vicieo"
 path = "src/main.rs"
