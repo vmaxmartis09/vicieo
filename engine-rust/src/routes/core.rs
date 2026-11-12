@@ -928,7 +928,6 @@ pub(crate) async fn ai_character(AxumPath(pid): AxumPath<String>, Json(b): Json<
 }
 
 /// ZIP for making clips by hand on a free web tool (port of data_routes.get_shot_pack).
-/// shortcut: DNA fallback uses the character's first image, not Python dna_reference_files (profile-ranked); upgrade when profile ranking is ported.
 pub(crate) async fn get_shot_pack(AxumPath((pid, eid)): AxumPath<(String, String)>, Query(q): Query<HashMap<String, String>>) -> Result<impl IntoResponse, ApiErr> {
     use std::io::Write;
     if !is_valid_slug(&pid) || !is_valid_slug(&eid) {
@@ -969,11 +968,7 @@ pub(crate) async fn get_shot_pack(AxumPath((pid, eid)): AxumPath<(String, String
             let cid = sh["speakerId"].as_str().or_else(|| sh["characterIds"][0].as_str()).unwrap_or("").to_string();
             let (src, src_label) = match keyframes.get(&sid) {
                 Some(p) => (Some(p.clone()), "keyframe".to_string()),
-                None => (
-                    fs::read_dir(chars_dir.join(&cid)).ok().into_iter().flatten().flatten().map(|e| e.path())
-                        .filter(|p| IMAGE_EXT.contains(&ext_of(&p.to_string_lossy()).as_str())).min(),
-                    format!("dna:{cid}"),
-                ),
+                None => (dna_reference_files(&chars_dir, &cid, 3).into_iter().next(), format!("dna:{cid}")),
             };
             let (img_name, img_src) = match src {
                 Some(p) => {
@@ -1042,4 +1037,57 @@ fn latest_keyframes(pid: &str) -> HashMap<String, PathBuf> {
         }
     }
     out
+}
+
+/// DNA reference images, best first (port of character_profile.dna_reference_files).
+/// Profile `dnaReferences` win; otherwise *.png minus sheet/turnaround/back/_old/cutout, ranked _02, _01, then name.
+pub(crate) fn dna_reference_files(chars_dir: &Path, cid: &str, limit: usize) -> Vec<PathBuf> {
+    let d = chars_dir.join(cid);
+    if !d.is_dir() {
+        return vec![];
+    }
+    let profile: Option<Value> = fs::read_to_string(chars_dir.join("studio_characters.json")).ok()
+        .and_then(|t| serde_json::from_str::<Value>(&t).ok())
+        .and_then(|v| v["characters"].as_array().and_then(|a| a.iter().find(|c| c["id"] == cid).cloned()));
+    let mut out: Vec<PathBuf> = vec![];
+    for name in profile.as_ref().and_then(|p| p["dnaReferences"].as_array()).into_iter().flatten().filter_map(|n| n.as_str()) {
+        let Some(base) = Path::new(name).file_name() else { continue };
+        let p = d.join(base);
+        if p.is_file() && !out.contains(&p) {
+            out.push(p);
+        }
+    }
+    if out.is_empty() {
+        let not_ref = regex::Regex::new(r"(?i)(dna_sheet|sheet|turnaround|back|_old|cutout)").unwrap();
+        let mut pngs: Vec<PathBuf> = fs::read_dir(&d).ok().into_iter().flatten().flatten().map(|e| e.path())
+            .filter(|p| p.extension().and_then(|e| e.to_str()) == Some("png"))
+            .filter(|p| !not_ref.is_match(p.file_stem().and_then(|s| s.to_str()).unwrap_or("")))
+            .collect();
+        let rank = |p: &PathBuf| {
+            let stem = p.file_stem().and_then(|s| s.to_str()).unwrap_or("").to_string();
+            let n = regex::Regex::new(r"_(\d+)$").unwrap().captures(&stem).and_then(|c| c[1].parse::<i64>().ok()).unwrap_or(99);
+            (match n { 2 => 0, 1 => 1, _ => 2 }, p.file_name().map(|f| f.to_os_string()))
+        };
+        pngs.sort_by_key(|p| rank(p));
+        out = pngs;
+    }
+    out.truncate(limit.max(1));
+    out
+}
+
+#[cfg(test)]
+mod dna_tests {
+    use super::dna_reference_files;
+
+    #[test]
+    fn ranks_front_views_first_and_skips_sheets() {
+        let root = tempfile::tempdir().unwrap();
+        let d = root.path().join("hero");
+        std::fs::create_dir_all(&d).unwrap();
+        for f in ["hero_01.png", "hero_02.png", "hero_04.png", "hero_back.png", "dna_sheet.png"] {
+            std::fs::write(d.join(f), b"x").unwrap();
+        }
+        let names: Vec<String> = dna_reference_files(root.path(), "hero", 3).iter().map(|p| p.file_name().unwrap().to_string_lossy().into_owned()).collect();
+        assert_eq!(names, ["hero_02.png", "hero_01.png", "hero_04.png"]);
+    }
 }

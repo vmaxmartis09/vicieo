@@ -56,9 +56,12 @@ async fn verify_live(norm: &str, key: &str) -> Result<Value, ApiErr> {
 
 /// Write or remove one key in .env.local, keeping the other entries (0600 like key_vault.py).
 fn write_key(norm: &str, key: &str) -> Result<(), ApiErr> {
+    write_key_at(&crate::workspace::repo_root().join(".env.local"), norm, key)
+}
+
+fn write_key_at(path: &std::path::Path, norm: &str, key: &str) -> Result<(), ApiErr> {
     let io = |e: std::io::Error| api_err(StatusCode::INTERNAL_SERVER_ERROR, e.to_string());
-    let path = crate::workspace::repo_root().join(".env.local");
-    let mut vals: std::collections::BTreeMap<String, String> = parse_env(&path).into_iter().collect();
+    let mut vals: std::collections::BTreeMap<String, String> = parse_env(path).into_iter().collect();
     let primary = SPECS.iter().find(|s| s.0 == norm).map(|s| s.1[0]).unwrap_or_default();
     if key.is_empty() {
         vals.remove(primary);
@@ -67,13 +70,31 @@ fn write_key(norm: &str, key: &str) -> Result<(), ApiErr> {
     }
     let mut lines = vec!["# Khóa API cục bộ của AI Video Studio (gitignore, không đẩy lên git)".to_string()];
     lines.extend(vals.iter().map(|(k, v)| format!("{k}=\"{v}\"")));
-    std::fs::write(&path, lines.join("\n") + "\n").map_err(io)?;
+    std::fs::write(path, lines.join("\n") + "\n").map_err(io)?;
     #[cfg(unix)]
     {
         use std::os::unix::fs::PermissionsExt;
-        let _ = std::fs::set_permissions(&path, std::fs::Permissions::from_mode(0o600));
+        let _ = std::fs::set_permissions(path, std::fs::Permissions::from_mode(0o600));
     }
     Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::write_key_at;
+
+    #[test]
+    fn writes_then_clears_one_key_keeping_others() {
+        let dir = tempfile::tempdir().unwrap();
+        let f = dir.path().join(".env.local");
+        std::fs::write(&f, "OTHER_VAR=\"keep\"\n").unwrap();
+        write_key_at(&f, "fal", "fal-test-value-0123456789").unwrap();
+        let t = std::fs::read_to_string(&f).unwrap();
+        assert!(t.contains("FAL_KEY=\"fal-test-value-0123456789\"") && t.contains("OTHER_VAR=\"keep\""), "{t}");
+        write_key_at(&f, "fal", "").unwrap();
+        let t = std::fs::read_to_string(&f).unwrap();
+        assert!(!t.contains("FAL_KEY") && t.contains("OTHER_VAR"), "{t}");
+    }
 }
 
 async fn get_status() -> Json<Value> {
