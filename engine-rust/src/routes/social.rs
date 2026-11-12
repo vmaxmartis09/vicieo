@@ -111,18 +111,9 @@ async fn create_post_draft(AxumPath(p): AxumPath<String>, b: Bytes) -> R {
     let body = jb(&b);
     let st = store(&p)?;
     let platforms: Vec<String> = body["platforms"].as_array().map(|a| a.iter().filter_map(|x| x.as_str().map(String::from)).collect()).unwrap_or_else(|| vec!["youtube".into()]);
-    let accounts = st.list_accounts();
-    let media = sstr(&body, "media_path");
-    let targets: Vec<Value> = platforms.iter().map(|pl| {
-        let acc = accounts.iter().find(|a| s(a, "platform") == pl);
-        json!({"account_id": acc.map(|a| s(a, "id")).unwrap_or("manual"), "platform": pl, "caption": sstr(&body, "caption"), "title": body["title"].as_str().unwrap_or("Untitled Draft")})
-    }).collect();
-    let post = json!({"project_id": p, "title": body["title"].as_str().unwrap_or("Untitled Draft"),
-        "media": if media.is_empty() { json!([]) } else { json!([{"path": media}]) },
-        "source_ref": body["source_ref"], "render_job_id": body["render_job_id"], "targets": targets});
-    let saved = st.save_post(post).map_err(ApiErr::invalid)?;
-    st.append_audit("contracts", "create_draft", s(&saved, "id"), None, None, Some("draft"), "");
-    Ok(Json(saved))
+    let id = crate::social::contracts::create_draft_post(&p, body["media_path"].as_str().unwrap_or(""), body["title"].as_str().unwrap_or("Untitled Draft"),
+        body["caption"].as_str().unwrap_or(""), &platforms, body["source_ref"].as_str(), body["render_job_id"].as_str()).map_err(ApiErr::bad)?;
+    Ok(Json(st.get_post(&id).unwrap_or(json!({"id":id,"status":"draft"}))))
 }
 async fn get_post(AxumPath((p, id)): AxumPath<(String, String)>) -> R { store(&p)?.get_post(&id).map(Json).ok_or_else(|| ApiErr::not_found("Post not found")) }
 async fn patch_post(AxumPath((p, id)): AxumPath<(String, String)>, b: Bytes) -> R {
@@ -472,6 +463,106 @@ async fn delete_rule(AxumPath((p, id)): AxumPath<(String, String)>) -> R {
     if store(&p)?.delete_automation_rule(&id) { Ok(Json(json!({"status":"deleted","id":id}))) } else { Err(ApiErr::not_found("Rule not found")) }
 }
 
+// ---------------- library / plans / captions ----------------
+async fn videos(AxumPath(p): AxumPath<String>) -> R { store(&p)?; Ok(Json(json!(crate::social::video_library::list_videos(&p)))) }
+async fn videos_alias(Query(q): Q) -> R { videos(AxumPath(pid(&q))).await }
+async fn library(AxumPath(p): AxumPath<String>, Query(q): Q) -> R {
+    store(&p)?;
+    Ok(Json(json!(crate::social::video_library::list_library(&p, qp(&q, "filter"), qp(&q, "account"), qp(&q, "platform"), qp(&q, "q")))))
+}
+async fn library_alias(Query(q): Q) -> R { library(AxumPath(pid(&q)), Query(q.clone())).await }
+async fn plan_preview(AxumPath(p): AxumPath<String>, b: Bytes) -> R { store(&p)?; crate::social::planner::preview_plan(&p, &jb_strict(&b)?).map(Json) }
+async fn plan_preview_alias(Query(q): Q, b: Bytes) -> R { plan_preview(AxumPath(pid(&q)), b).await }
+async fn plan_commit(AxumPath(p): AxumPath<String>, b: Bytes) -> R { store(&p)?; crate::social::planner::commit_plan(&p, &jb_strict(&b)?).map(Json) }
+async fn plan_commit_alias(Query(q): Q, b: Bytes) -> R { plan_commit(AxumPath(pid(&q)), b).await }
+async fn captions_gen(AxumPath(p): AxumPath<String>, b: Bytes) -> R { store(&p)?; crate::social::captions::generate(&p, &jb_strict(&b)?).await.map(Json) }
+async fn captions_alias(Query(q): Q, b: Bytes) -> R { captions_gen(AxumPath(pid(&q)), b).await }
+
+// ---------------- analytics ----------------
+fn eng(p: &str) -> Result<crate::social::insights::Engine, ApiErr> { store(p)?; crate::social::insights::Engine::new(p).map_err(ApiErr::bad) }
+async fn an_overview(AxumPath(p): AxumPath<String>, Query(q): Q) -> R {
+    let e = eng(&p)?;
+    let daily = e.daily_insights(None);
+    // Python computes kpis for the requested window/filters, then daily insights separately.
+    let kpis = e.kpis(qp(&q, "window").unwrap_or("30d"), qp(&q, "platform"), qp(&q, "account_id"));
+    Ok(Json(json!({"kpis":kpis,"views_by_day":daily["views_by_day"],"outliers":daily["outliers"]})))
+}
+async fn an_overview_alias(Query(q): Q) -> R { an_overview(AxumPath(pid(&q)), Query(q.clone())).await }
+async fn an_heatmap(AxumPath(p): AxumPath<String>) -> R { Ok(Json(eng(&p)?.golden_hours())) }
+async fn an_creatives(AxumPath(p): AxumPath<String>) -> R { Ok(Json(eng(&p)?.creatives())) }
+async fn an_outliers(AxumPath(p): AxumPath<String>) -> R { Ok(Json(eng(&p)?.outliers())) }
+async fn an_learnings(AxumPath(p): AxumPath<String>) -> R { let e = eng(&p)?; Ok(Json(json!({"learnings_md":e.learnings_md(),"recommendations":e.recommendations()}))) }
+async fn an_generate(AxumPath(p): AxumPath<String>) -> R {
+    let e = eng(&p)?;
+    let d = e.daily_insights(None);
+    Ok(Json(json!({"status":"ok","date":d["date"],"kpis":d["kpis"],"learnings_md":e.learnings_md(),"recommendations":e.recommendations()})))
+}
+async fn an_collect(AxumPath(p): AxumPath<String>) -> R { Ok(Json(json!({"status":"collected","count":crate::social::collectors::collect_all(&store(&p)?).await}))) }
+async fn an_apply_windows(AxumPath(p): AxumPath<String>, b: Bytes) -> R {
+    let st = store(&p)?;
+    let b = jb_strict(&b)?;
+    let aid = b["account_id"].as_str().filter(|x| !x.is_empty());
+    let mut wins = b["windows"].clone();
+    if !wins.as_array().map_or(false, |a| !a.is_empty()) { wins = eng(&p)?.golden_hours()["recommended_windows"].clone(); }
+    for w in wins.as_array().cloned().unwrap_or_default() {
+        if !(w["weekday"].as_i64().map_or(false, |d| (0..=6).contains(&d)) && w["start"].is_string() && w["end"].is_string()) { return Err(ApiErr::invalid("invalid posting window")); }
+    }
+    let mut updated = vec![];
+    for mut a in st.list_accounts().into_iter().filter(|a| aid.map_or(true, |x| s(a, "id") == x)) {
+        a["posting_windows"] = wins.clone();
+        st.save_account(a.clone(), false).map_err(ApiErr::conflict)?;
+        updated.push(s(&a, "id").to_string());
+    }
+    st.append_audit("user", "apply_golden_windows", "all", None, None, None, &format!("Updated accounts: {updated:?}"));
+    Ok(Json(json!({"status":"applied","updated_accounts":updated,"windows":wins})))
+}
+async fn an_manual(AxumPath(p): AxumPath<String>, b: Bytes) -> R {
+    let st = store(&p)?;
+    let b = jb_strict(&b)?;
+    if b["target_id"].as_str().map_or(true, |x| x.is_empty()) { return Err(ApiErr::bad("target_id is required")); }
+    let n = |k: &str| b[k].as_i64().or_else(|| b[k].as_f64().map(|x| x as i64)).unwrap_or(0);
+    let fl = |k: &str| b[k].as_f64().unwrap_or(0.0);
+    let snap = norm_snapshot(json!({"post_id":b["post_id"].as_str().unwrap_or(""),"target_id":b["target_id"],"platform":b["platform"].as_str().unwrap_or("youtube"),"checkpoint":"manual",
+        "views":n("views"),"likes":n("likes"),"comments":n("comments"),"shares":n("shares"),"saves":n("saves"),"watch_time_s":fl("watch_time_s"),
+        "avg_retention_pct":fl("avg_retention_pct"),"subscribers_gained":n("subscribers_gained"),"ctr":fl("ctr"),"revenue":fl("revenue")})).map_err(ApiErr::invalid)?;
+    st.append_metrics_snapshot(&snap);
+    Ok(Json(json!({"status":"saved","snapshot":snap})))
+}
+async fn an_import_csv(AxumPath(p): AxumPath<String>, b: Bytes) -> R {
+    let st = store(&p)?;
+    let b = jb_strict(&b)?;
+    let text = b["csv_text"].as_str().unwrap_or("");
+    let plat = b["platform"].as_str().unwrap_or("youtube");
+    if text.trim().is_empty() { return Err(ApiErr::bad("csv_text is required")); }
+    let records = crate::social::collectors::parse_csv(text);
+    let posts = st.list_posts(None, None, None, None, None, None);
+    let mut matched = 0;
+    for rec in &records {
+        let title = s(rec, "title").trim().to_lowercase();
+        if title.is_empty() { continue; }
+        let Some(post) = posts.iter().find(|p| { let pt = s(p, "title").to_lowercase(); title.contains(&pt) || pt.contains(&title) }) else { continue };
+        let ts = post["targets"].as_array().cloned().unwrap_or_default();
+        let Some(t) = ts.iter().find(|t| s(t, "platform") == plat).or(ts.first()) else { continue };
+        let mut snap = json!({"post_id":post["id"],"target_id":t["id"],"platform":t["platform"],"checkpoint":"manual","raw":rec});
+        for k in ["views","likes","comments","shares","saves","watch_time_s","avg_retention_pct","subscribers_gained","ctr","revenue"] { snap[k] = rec[k].clone(); }
+        st.append_metrics_snapshot(&norm_snapshot(snap).map_err(ApiErr::invalid)?);
+        matched += 1;
+    }
+    Ok(Json(json!({"status":"imported","total_records":records.len(),"matched_count":matched,"records":records.iter().take(10).collect::<Vec<_>>()})))
+}
+
+async fn automation_run(AxumPath(p): AxumPath<String>, Query(q): Q) -> R {
+    store(&p)?;
+    match qp(&q, "rule_id") {
+        Some(id) => crate::social::automation::test_run_rule(&p, id).map(|r| Json(json!({"reports":[r]}))).map_err(ApiErr::not_found),
+        None => crate::social::automation::run_rules(&p).map(|r| Json(json!({"reports":r}))).map_err(ApiErr::bad),
+    }
+}
+async fn migrate_route(AxumPath(p): AxumPath<String>, Query(q): Q) -> R {
+    store(&p)?;
+    crate::social::migrate::migrate_legacy_publishing(&p, qp(&q, "force") == Some("true")).map(Json).map_err(ApiErr::bad)
+}
+
 async fn ping() -> Json<Value> { Json(json!({"status":"ok","module":"social"})) }
 
 // ---------------- notifications / automation rules (store-only parts) ----------------
@@ -491,6 +582,23 @@ pub fn router() -> Router<AppState> {
         .route("/projects/{project_id}/publishing", get(get_project_publishing))
         .route("/projects/{project_id}/publishing/schedule", post(save_project_scheduled_post))
         .route("/social/_ping", get(ping))
+        .route(&format!("{pp}/automation/run"), post(automation_run))
+        .route(&format!("{pp}/migrate"), post(migrate_route))
+        .route(&format!("{pp}/analytics/overview"), get(an_overview)).route("/api/social/analytics", get(an_overview_alias))
+        .route(&format!("{pp}/analytics/heatmap"), get(an_heatmap))
+        .route(&format!("{pp}/analytics/apply-golden-windows"), post(an_apply_windows))
+        .route(&format!("{pp}/analytics/creatives"), get(an_creatives))
+        .route(&format!("{pp}/analytics/outliers"), get(an_outliers))
+        .route(&format!("{pp}/analytics/learnings"), get(an_learnings))
+        .route(&format!("{pp}/analytics/generate-insights"), post(an_generate))
+        .route(&format!("{pp}/analytics/collect"), post(an_collect))
+        .route(&format!("{pp}/analytics/manual-metrics"), post(an_manual))
+        .route(&format!("{pp}/analytics/import-csv"), post(an_import_csv))
+        .route(&format!("{pp}/videos"), get(videos)).route("/social/videos", get(videos_alias))
+        .route(&format!("{pp}/library"), get(library)).route("/social/library", get(library_alias))
+        .route(&format!("{pp}/plans/preview"), post(plan_preview)).route("/social/plans/preview", post(plan_preview_alias))
+        .route(&format!("{pp}/plans/commit"), post(plan_commit)).route("/social/plans/commit", post(plan_commit_alias))
+        .route(&format!("{pp}/captions/generate"), post(captions_gen)).route("/social/captions/generate", post(captions_alias))
         .route(&format!("{pp}/accounts/{{account_id}}/connect"), get(oauth_connect))
         .route("/social/oauth/callback/{platform}", get(oauth_callback))
         .route(&format!("{pp}/accounts/{{account_id}}/refresh"), post(refresh_token))
