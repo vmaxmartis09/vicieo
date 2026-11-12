@@ -1,0 +1,41 @@
+# Sinh bởi tests/parity/tools/gen_parity.py. python_base chỉ dùng khi backend Python chạy.
+rust_base: http://127.0.0.1:9000
+python_base: http://127.0.0.1:8000
+endpoints:
+  - {method: GET, path: /api/data/assets, python: false, rust_expected: true, dashboard: false}
+  - {method: GET, path: /api/data/characters, python: false, rust_expected: true, dashboard: false}
+  - {method: GET, path: /api/data/library, python: false, rust_expected: true, dashboard: false}
+  - {method: GET, path: /api/data/products, python: false, rust_expected: true, dashboard: false}
+  - {method: GET, path: /api/social/accounts, python: false, rust_expected: true, dashboard: false}
+  - {method: GET, path: /api/social/analytics, python: false, rust_expected: true, dashboard: false}
+  - {method: GET, path: /api/social/posts, python: false, rust_expected: true, dashboard: false}
+  - {method: GET, path: /api/social/schedule, python: false, rust_expected: true, dashboard: false}
+  - {method: GET, path: /api/v1/info, python: false, rust_expected: true, dashboard: false}
+  - {method: GET, path: /api/v1/projects, python: false, rust_expected: true, dashboard: false}
+  - {method: GET, path: /api/voice/preview, python: false, rust_expected: true, dashboard: true}
+  - {method: GET, path: /custom-node-types, python: true, rust_expected: true, dashboard: true}
+  - {method: GET, path: /data/policy-packs, python: true, rust_expected: true, dashboard: true}
+  - {method: GET, path: /data/projects, python: true, rust_expected: true, dashboard: true}
+  - {method: GET, path: /graph, python: false, rust_expected: true, dashboard: false}
+  - {method: GET, path: /graph/events, python: false, rust_expected: true, dashboard: false}
+  - {method: GET, path: /health, python: true, rust_expected: true, dashboard: true}
+  - {method: GET, path: /intel/_ping, python: true, rust_expected: false, dashboard: false}
+  - {method: GET, path: /models, python: true, rust_expected: true, dashboard: false}
+  - {method: GET, path: /node-types, python: true, rust_expected: true, dashboard: true}
+  - {method: GET, path: /projects, python: true, rust_expected: true, dashboard: true}
+  - {method: GET, path: /projects/active, python: false, rust_expected: true, dashboard: true}
+  - {method: GET, path: /providers, python: true, rust_expected: true, dashboard: true}
+  - {method: GET, path: /settings/api-keys, python: true, rust_expected: false, dashboard: true}
+  - {method: GET, path: /social/_ping, python: true, rust_expected: false, dashboard: false}
+  - {method: GET, path: /social/accounts/stats, python: true, rust_expected: false, dashboard: false}
+  - {method: GET, path: /social/library, python: true, rust_expected: false, dashboard: false}
+  - {method: GET, path: /social/overview, python: true, rust_expected: false, dashboard: false}
+  - {method: GET, path: /social/queue, python: true, rust_expected: false, dashboard: false}
+  - {method: GET, path: /social/templates, python: true, rust_expected: false, dashboard: false}
+  - {method: GET, path: /social/videos, python: true, rust_expected: false, dashboard: false}
+  - {method: GET, path: /sources/_ping, python: true, rust_expected: false, dashboard: false}
+  - {method: GET, path: /video/_ping, python: true, rust_expected: false, dashboard: false}
+  - {method: GET, path: /video/platforms, python: true, rust_expected: false, dashboard: false}
+  - {method: GET, path: /video/templates, python: true, rust_expected: true, dashboard: true}
+  - {method: GET, path: /voice/speakers, python: false, rust_expected: true, dashboard: false}
+  - {method: GET, path: /voices, python: true, rust_expected: true, dashboard: true}
