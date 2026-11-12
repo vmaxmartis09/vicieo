@@ -24,8 +24,8 @@ for f in glob.glob(f"{API}/**/*.py", recursive=True):
 # ---- Rust
 rs = {}
 for f in glob.glob(f"{RS}/**/*.rs", recursive=True):
-    t = open(f).read()
-    for m in re.finditer(r'\.route\(\s*"([^"]*)"\s*,\s*((?:[a-z]+\([\w:]+\)\s*\.?\s*)+)\)', t, re.S):
+    t = open(f).read().replace("{pp}", "/projects/{project_id}/social").replace("{{", "{").replace("}}", "}")  # social.rs builds paths via format!
+    for m in re.finditer(r'\.route\(\s*(?:&format!\()?"([^"]*)"\)?\s*,\s*((?:[\w:]+\([\w:]+\)\s*\.?\s*)+)\)', t, re.S):
         path, h = m.groups()
         for mm in re.finditer(r'(get|post|put|delete|patch)\(([\w:]+)\)', h):
             rs.setdefault((mm.group(1).upper(), norm(path)), []).append((mm.group(2), os.path.relpath(f, RS)))
@@ -64,7 +64,12 @@ for m, p in keys:
 track = lambda p: ("A" if re.search(r"/(graph|run|runs|events|estimate|spend|outputs|artifacts|node-types|custom-node-types)\b", p) else
                    "B" if re.search(r"/(voice|voices|characters|video|editor|caption|audio)", p) else
                    "C" if "/social" in p else "D" if re.search(r"/(products|library|policy|channels|koc|episodes|scripts|script-data|projects|data)", p) else "E")
-ui_err = [r for r in rows if r[5] and not r[3]]
+# Dashboard fragments that cannot be resolved statically (template suffixes, ${...} builders); reviewed by hand.
+allow = set()
+af = f"{V}/tests/parity/known_false_positives.txt"
+if os.path.exists(af):
+    allow = {l.split("|")[0].strip() for l in open(af, encoding="utf-8") if l.strip() and not l.startswith("#")}
+ui_err = [r for r in rows if r[5] and not r[3] and r[1] not in allow]
 out = ["# PARITY — Python (FastAPI) vs Rust (Axum) vs Dashboard", "",
  "Sinh tự động bởi `tests/parity/tools/gen_parity.py` (chạy lại sau mỗi track merge). Track A–E là heuristic theo path — chỉnh tay nếu sai.", "",
  f"- Python: {len(py)} endpoint · Rust: {len(rs)} · Dashboard path gọi: {len(calls)}",

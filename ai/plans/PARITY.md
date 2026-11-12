@@ -2,8 +2,8 @@
 
 Sinh tự động bởi `tests/parity/tools/gen_parity.py` (chạy lại sau mỗi track merge). Track A–E là heuristic theo path — chỉnh tay nếu sai.
 
-- Python: 234 endpoint · Rust: 206 · Dashboard path gọi: 106
-- **Lỗi UI (dashboard gọi, Rust thiếu): 24**
+- Python: 234 endpoint · Rust: 275 · Dashboard path gọi: 106
+- **Lỗi UI (dashboard gọi, Rust thiếu): 0**
 
 ## Dashboard → Rust :9000 rewrites (next.config.mjs)
 
@@ -16,30 +16,6 @@ Route Next.js `app/api/*` (toolbox, templates): xử lý cục bộ trong Next, 
 
 | Method | Path | Python | Track | Gọi từ |
 |---|---|---|---|---|
-| * | `/data/projects/{}/output/final_render.mp4` | ✗ | D | components/studio/create-video-modal/api.ts |
-| * | `/models{}` | ✗ | E | lib/api/models.ts |
-| * | `/projects/{}` | ✗ | D | components/canvas/node-body/components/EpisodeOutputPreview.tsx |
-| * | `/projects/{}/files/${path.replace(/^\/+/,` | ✗ | D | components/project/ProductsManager.tsx |
-| * | `/projects/{}/files/${rel.replace(/^\/+/,` | ✗ | D | components/canvas/ProductNodeCard.tsx |
-| * | `/projects/{}/files/${uriOrUrl.replace(/^\/+/,` | ✗ | D | lib/api/nodes.ts |
-| PATCH | `/projects/{}/intel/ideas/{}` | ✓ | D | lib/api/intel.ts |
-| * | `/projects/{}/intel/ideas{}` | ✗ | D | lib/api/intel.ts |
-| * | `/projects/{}/intel/patterns{}` | ✗ | D | lib/api/intel.ts |
-| GET | `/projects/{}/social/accounts` | ✓ | C | components/social/hub/Accounts/AccountsView.tsx |
-| POST | `/projects/{}/social/accounts` | ✓ | C | components/social/hub/Accounts/AccountsView.tsx |
-| DELETE | `/projects/{}/social/accounts/{}` | ✓ | C | components/social/hub/Accounts/AccountsView.tsx |
-| GET | `/projects/{}/social/accounts/{}` | ✓ | C | components/social/hub/Accounts/AccountsView.tsx |
-| PUT | `/projects/{}/social/accounts/{}` | ✓ | C | components/social/hub/Accounts/AccountsView.tsx |
-| GET | `/projects/{}/social/queue` | ✓ | C | components/social/hub/Calendar/CalendarView.tsx |
-| GET | `/projects/{}/social/templates` | ✓ | C | components/social/hub/Templates/TemplatesView.tsx |
-| POST | `/projects/{}/social/templates` | ✓ | C | components/social/hub/Templates/TemplatesView.tsx |
-| DELETE | `/projects/{}/social/templates/{}` | ✓ | C | components/social/hub/Templates/TemplatesView.tsx |
-| PUT | `/projects/{}/social/templates/{}` | ✓ | C | components/social/hub/Templates/TemplatesView.tsx |
-| * | `/projects/{}/video/renders{}` | ✗ | B | lib/api/video.ts |
-| * | `/projects/{}/{}` | ✗ | D | components/studio/tabs/jobs-cost-tab/components/JobQueueCard.tsx, components/stu |
-| * | `/video/templates{}` | ✗ | B | lib/api/video.ts |
-| * | `/voices/${voiceId` | ✗ | B | components/canvas/node-body/components/VoiceHoverSpeaker.tsx |
-| * | `/{}` | ✗ | E | components/canvas/CharacterHero.tsx, components/canvas/ProductNodeCard.tsx, comp |
 
 ## Bảng đầy đủ
 
@@ -160,7 +136,7 @@ Route Next.js `app/api/*` (toolbox, templates): xử lý cục bộ trong Next, 
 | POST | `/projects/{}/intel/generate-script` | ✓ | ✓ | thật | ✓ | D |
 | GET | `/projects/{}/intel/ideas` | ✓ | ✓ | thật |  | D |
 | POST | `/projects/{}/intel/ideas/generate` | ✓ | ✓ | thật | ✓ | D |
-| PATCH | `/projects/{}/intel/ideas/{}` | ✓ |  | thiếu | ✓ | D |
+| PATCH | `/projects/{}/intel/ideas/{}` | ✓ | ✓ | thật | ✓ | D |
 | POST | `/projects/{}/intel/ideas/{}/promote` | ✓ | ✓ | thật | ✓ | D |
 | POST | `/projects/{}/intel/ideas/{}/schedule` | ✓ | ✓ | thật | ✓ | D |
 | * | `/projects/{}/intel/ideas{}` |  |  | thiếu | ✓ | D |
@@ -204,74 +180,75 @@ Route Next.js `app/api/*` (toolbox, templates): xử lý cục bộ trong Next, 
 | DELETE | `/projects/{}/runs/{}` | ✓ | ✓ | giả | ✓ | A |
 | GET | `/projects/{}/runs/{}` | ✓ | ✓ | giả | ✓ | A |
 | GET | `/projects/{}/script-data/{}` |  | ✓ | thật |  | D |
-| GET | `/projects/{}/social/accounts` | ✓ |  | thiếu | ✓ | C |
-| POST | `/projects/{}/social/accounts` | ✓ |  | thiếu | ✓ | C |
-| GET | `/projects/{}/social/accounts/stats` | ✓ |  | thiếu |  | C |
-| DELETE | `/projects/{}/social/accounts/{}` | ✓ |  | thiếu | ✓ | C |
-| GET | `/projects/{}/social/accounts/{}` | ✓ |  | thiếu | ✓ | C |
-| PUT | `/projects/{}/social/accounts/{}` | ✓ |  | thiếu | ✓ | C |
-| GET | `/projects/{}/social/accounts/{}/connect` | ✓ |  | thiếu |  | C |
-| POST | `/projects/{}/social/accounts/{}/refresh` | ✓ |  | thiếu |  | C |
-| POST | `/projects/{}/social/analytics/apply-golden-windows` | ✓ |  | thiếu |  | C |
-| POST | `/projects/{}/social/analytics/collect` | ✓ |  | thiếu |  | C |
-| GET | `/projects/{}/social/analytics/creatives` | ✓ |  | thiếu |  | C |
-| POST | `/projects/{}/social/analytics/generate-insights` | ✓ |  | thiếu |  | C |
-| GET | `/projects/{}/social/analytics/heatmap` | ✓ |  | thiếu |  | C |
-| POST | `/projects/{}/social/analytics/import-csv` | ✓ |  | thiếu |  | C |
-| GET | `/projects/{}/social/analytics/learnings` | ✓ |  | thiếu |  | C |
-| POST | `/projects/{}/social/analytics/manual-metrics` | ✓ |  | thiếu |  | C |
-| GET | `/projects/{}/social/analytics/outliers` | ✓ |  | thiếu |  | C |
-| GET | `/projects/{}/social/analytics/overview` | ✓ |  | thiếu |  | C |
-| GET | `/projects/{}/social/audit` | ✓ |  | thiếu |  | C |
-| GET | `/projects/{}/social/automation/rules` | ✓ |  | thiếu |  | C |
-| POST | `/projects/{}/social/automation/rules` | ✓ |  | thiếu |  | C |
-| DELETE | `/projects/{}/social/automation/rules/{}` | ✓ |  | thiếu |  | C |
-| POST | `/projects/{}/social/automation/rules/{}/toggle` | ✓ |  | thiếu |  | C |
-| POST | `/projects/{}/social/automation/run` | ✓ |  | thiếu |  | A |
-| GET | `/projects/{}/social/calendar` | ✓ |  | thiếu |  | C |
-| POST | `/projects/{}/social/caption-variants` | ✓ |  | thiếu |  | B |
-| POST | `/projects/{}/social/captions/generate` | ✓ |  | thiếu |  | B |
-| POST | `/projects/{}/social/ideas/{}/schedule` | ✓ |  | thiếu |  | C |
-| GET | `/projects/{}/social/library` | ✓ |  | thiếu |  | C |
-| POST | `/projects/{}/social/migrate` | ✓ |  | thiếu |  | C |
-| GET | `/projects/{}/social/notes` | ✓ |  | thiếu |  | C |
-| PUT | `/projects/{}/social/notes` | ✓ |  | thiếu |  | C |
-| DELETE | `/projects/{}/social/notifications` | ✓ |  | thiếu |  | C |
-| GET | `/projects/{}/social/notifications` | ✓ |  | thiếu |  | C |
-| POST | `/projects/{}/social/notifications/{}/read` | ✓ |  | thiếu |  | C |
-| GET | `/projects/{}/social/overview` | ✓ |  | thiếu |  | C |
-| GET | `/projects/{}/social/packages/{}/{}` | ✓ |  | thiếu |  | C |
+| GET | `/projects/{}/social/accounts` | ✓ | ✓ | giả | ✓ | C |
+| POST | `/projects/{}/social/accounts` | ✓ | ✓ | thật | ✓ | C |
+| GET | `/projects/{}/social/accounts/stats` | ✓ | ✓ | thật |  | C |
+| DELETE | `/projects/{}/social/accounts/{}` | ✓ | ✓ | giả | ✓ | C |
+| GET | `/projects/{}/social/accounts/{}` | ✓ | ✓ | thật | ✓ | C |
+| PUT | `/projects/{}/social/accounts/{}` | ✓ | ✓ | thật | ✓ | C |
+| GET | `/projects/{}/social/accounts/{}/connect` | ✓ | ✓ | thật |  | C |
+| POST | `/projects/{}/social/accounts/{}/refresh` | ✓ | ✓ | giả |  | C |
+| POST | `/projects/{}/social/analytics/apply-golden-windows` | ✓ | ✓ | thật |  | C |
+| POST | `/projects/{}/social/analytics/collect` | ✓ | ✓ | giả |  | C |
+| GET | `/projects/{}/social/analytics/creatives` | ✓ | ✓ | thật |  | C |
+| POST | `/projects/{}/social/analytics/generate-insights` | ✓ | ✓ | thật |  | C |
+| GET | `/projects/{}/social/analytics/heatmap` | ✓ | ✓ | thật |  | C |
+| POST | `/projects/{}/social/analytics/import-csv` | ✓ | ✓ | thật |  | C |
+| GET | `/projects/{}/social/analytics/learnings` | ✓ | ✓ | giả |  | C |
+| POST | `/projects/{}/social/analytics/manual-metrics` | ✓ | ✓ | thật |  | C |
+| GET | `/projects/{}/social/analytics/outliers` | ✓ | ✓ | thật |  | C |
+| GET | `/projects/{}/social/analytics/overview` | ✓ | ✓ | thật |  | C |
+| GET | `/projects/{}/social/audit` | ✓ | ✓ | giả |  | C |
+| GET | `/projects/{}/social/automation/rules` | ✓ | ✓ | giả |  | C |
+| POST | `/projects/{}/social/automation/rules` | ✓ | ✓ | thật |  | C |
+| DELETE | `/projects/{}/social/automation/rules/{}` | ✓ | ✓ | thật |  | C |
+| POST | `/projects/{}/social/automation/rules/{}/toggle` | ✓ | ✓ | thật |  | C |
+| POST | `/projects/{}/social/automation/run` | ✓ | ✓ | thật |  | A |
+| GET | `/projects/{}/social/calendar` | ✓ | ✓ | thật |  | C |
+| POST | `/projects/{}/social/caption-variants` | ✓ | ✓ | thật |  | B |
+| POST | `/projects/{}/social/captions/generate` | ✓ | ✓ | thật |  | B |
+| POST | `/projects/{}/social/ideas/{}/schedule` | ✓ | ✓ | thật |  | C |
+| GET | `/projects/{}/social/library` | ✓ | ✓ | giả |  | C |
+| POST | `/projects/{}/social/migrate` | ✓ | ✓ | thật |  | C |
+| GET | `/projects/{}/social/notes` | ✓ | ✓ | giả |  | C |
+| PUT | `/projects/{}/social/notes` | ✓ | ✓ | thật |  | C |
+| DELETE | `/projects/{}/social/notifications` | ✓ | ✓ | giả |  | C |
+| GET | `/projects/{}/social/notifications` | ✓ | ✓ | giả |  | C |
+| POST | `/projects/{}/social/notifications/{}/read` | ✓ | ✓ | giả |  | C |
+| GET | `/projects/{}/social/overview` | ✓ | ✓ | thật |  | C |
+| GET | `/projects/{}/social/packages/{}/{}` | ✓ | ✓ | thật |  | C |
 | GET | `/projects/{}/social/packages/{}/{}.zip` | ✓ |  | thiếu |  | C |
-| POST | `/projects/{}/social/packages/{}/{}/generate` | ✓ |  | thiếu |  | C |
-| POST | `/projects/{}/social/plans/commit` | ✓ |  | thiếu |  | C |
-| POST | `/projects/{}/social/plans/preview` | ✓ |  | thiếu |  | C |
-| GET | `/projects/{}/social/posts` | ✓ |  | thiếu |  | C |
-| POST | `/projects/{}/social/posts` | ✓ |  | thiếu |  | C |
-| POST | `/projects/{}/social/posts/draft` | ✓ |  | thiếu |  | C |
-| DELETE | `/projects/{}/social/posts/{}` | ✓ |  | thiếu |  | C |
-| GET | `/projects/{}/social/posts/{}` | ✓ |  | thiếu |  | C |
-| PATCH | `/projects/{}/social/posts/{}` | ✓ |  | thiếu |  | C |
-| POST | `/projects/{}/social/posts/{}/approve` | ✓ |  | thiếu |  | C |
-| POST | `/projects/{}/social/posts/{}/cancel` | ✓ |  | thiếu |  | C |
-| POST | `/projects/{}/social/posts/{}/duplicate` | ✓ |  | thiếu |  | C |
-| POST | `/projects/{}/social/posts/{}/publish-now` | ✓ |  | thiếu |  | C |
-| POST | `/projects/{}/social/posts/{}/reject` | ✓ |  | thiếu |  | C |
-| POST | `/projects/{}/social/posts/{}/schedule` | ✓ |  | thiếu |  | C |
-| POST | `/projects/{}/social/posts/{}/submit` | ✓ |  | thiếu |  | C |
-| POST | `/projects/{}/social/posts/{}/targets/{}/mark-published` | ✓ |  | thiếu |  | C |
-| PUT | `/projects/{}/social/posts/{}/targets/{}/time` | ✓ |  | thiếu |  | C |
-| POST | `/projects/{}/social/posts/{}/targets/{}/validate` | ✓ |  | thiếu |  | C |
-| GET | `/projects/{}/social/queue` | ✓ |  | thiếu | ✓ | C |
-| GET | `/projects/{}/social/scheduler/status` | ✓ |  | thiếu |  | C |
-| GET | `/projects/{}/social/slots` | ✓ |  | thiếu |  | C |
-| PUT | `/projects/{}/social/slots` | ✓ |  | thiếu |  | C |
-| POST | `/projects/{}/social/suggest-time` | ✓ |  | thiếu |  | C |
-| POST | `/projects/{}/social/targets/bulk` | ✓ |  | thiếu |  | C |
-| GET | `/projects/{}/social/templates` | ✓ |  | thiếu | ✓ | C |
-| POST | `/projects/{}/social/templates` | ✓ |  | thiếu | ✓ | C |
-| DELETE | `/projects/{}/social/templates/{}` | ✓ |  | thiếu | ✓ | C |
-| PUT | `/projects/{}/social/templates/{}` | ✓ |  | thiếu | ✓ | C |
-| GET | `/projects/{}/social/videos` | ✓ |  | thiếu |  | B |
+| POST | `/projects/{}/social/packages/{}/{}/generate` | ✓ | ✓ | thật |  | C |
+| POST | `/projects/{}/social/plans/commit` | ✓ | ✓ | thật |  | C |
+| POST | `/projects/{}/social/plans/preview` | ✓ | ✓ | thật |  | C |
+| GET | `/projects/{}/social/posts` | ✓ | ✓ | giả |  | C |
+| POST | `/projects/{}/social/posts` | ✓ | ✓ | thật |  | C |
+| POST | `/projects/{}/social/posts/draft` | ✓ | ✓ | thật |  | C |
+| DELETE | `/projects/{}/social/posts/{}` | ✓ | ✓ | thật |  | C |
+| GET | `/projects/{}/social/posts/{}` | ✓ | ✓ | thật |  | C |
+| PATCH | `/projects/{}/social/posts/{}` | ✓ | ✓ | thật |  | C |
+| POST | `/projects/{}/social/posts/{}/approve` | ✓ | ✓ | thật |  | C |
+| POST | `/projects/{}/social/posts/{}/cancel` | ✓ | ✓ | thật |  | C |
+| POST | `/projects/{}/social/posts/{}/duplicate` | ✓ | ✓ | thật |  | C |
+| POST | `/projects/{}/social/posts/{}/publish-now` | ✓ | ✓ | thật |  | C |
+| POST | `/projects/{}/social/posts/{}/reject` | ✓ | ✓ | thật |  | C |
+| POST | `/projects/{}/social/posts/{}/schedule` | ✓ | ✓ | thật |  | C |
+| POST | `/projects/{}/social/posts/{}/submit` | ✓ | ✓ | thật |  | C |
+| POST | `/projects/{}/social/posts/{}/targets/{}/mark-published` | ✓ | ✓ | thật |  | C |
+| PUT | `/projects/{}/social/posts/{}/targets/{}/time` | ✓ | ✓ | thật |  | C |
+| POST | `/projects/{}/social/posts/{}/targets/{}/validate` | ✓ | ✓ | thật |  | C |
+| GET | `/projects/{}/social/queue` | ✓ | ✓ | thật | ✓ | C |
+| GET | `/projects/{}/social/scheduler/status` | ✓ | ✓ | thật |  | C |
+| POST | `/projects/{}/social/scheduler/tick` |  | ✓ | thật |  | C |
+| GET | `/projects/{}/social/slots` | ✓ | ✓ | giả |  | C |
+| PUT | `/projects/{}/social/slots` | ✓ | ✓ | thật |  | C |
+| POST | `/projects/{}/social/suggest-time` | ✓ | ✓ | thật |  | C |
+| POST | `/projects/{}/social/targets/bulk` | ✓ | ✓ | thật |  | C |
+| GET | `/projects/{}/social/templates` | ✓ | ✓ | giả | ✓ | C |
+| POST | `/projects/{}/social/templates` | ✓ | ✓ | thật | ✓ | C |
+| DELETE | `/projects/{}/social/templates/{}` | ✓ | ✓ | giả | ✓ | C |
+| PUT | `/projects/{}/social/templates/{}` | ✓ | ✓ | thật | ✓ | C |
+| GET | `/projects/{}/social/videos` | ✓ | ✓ | giả |  | B |
 | GET | `/projects/{}/sources` | ✓ | ✓ | thật | ✓ | D |
 | POST | `/projects/{}/sources` | ✓ | ✓ | thật | ✓ | D |
 | GET | `/projects/{}/sources/jobs/{}` | ✓ | ✓ | thật |  | D |

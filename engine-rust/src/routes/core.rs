@@ -923,7 +923,7 @@ pub(crate) async fn ai_character(AxumPath(pid): AxumPath<String>, Json(b): Json<
 }
 
 /// ZIP for making clips by hand on a free web tool (port of data_routes.get_shot_pack).
-/// shortcut: keyframes are not looked up (Python _latest_keyframes); each shot uses the character's first DNA image, upgrade when keyframes are stored in Rust-readable form.
+/// shortcut: DNA fallback uses the character's first image, not Python dna_reference_files (profile-ranked); upgrade when profile ranking is ported.
 pub(crate) async fn get_shot_pack(AxumPath((pid, eid)): AxumPath<(String, String)>, Query(q): Query<HashMap<String, String>>) -> Result<impl IntoResponse, ApiErr> {
     use std::io::Write;
     if !is_valid_slug(&pid) || !is_valid_slug(&eid) {
@@ -951,6 +951,7 @@ pub(crate) async fn get_shot_pack(AxumPath((pid, eid)): AxumPath<(String, String
     }
     let clips_dir = format!("data/projects/{pid}/content/episodes/{eid}/clips");
     let chars_dir = workspace::project_path(&pid, &["characters"], false).unwrap_or_default();
+    let keyframes = latest_keyframes(&pid);
     let mut buf = std::io::Cursor::new(Vec::new());
     let mut manifest = vec![];
     {
@@ -961,14 +962,20 @@ pub(crate) async fn get_shot_pack(AxumPath((pid, eid)): AxumPath<(String, String
         for sh in &picked {
             let sid = sh["id"].as_str().unwrap_or("").to_string();
             let cid = sh["speakerId"].as_str().or_else(|| sh["characterIds"][0].as_str()).unwrap_or("").to_string();
-            let dna_img = fs::read_dir(chars_dir.join(&cid)).ok().into_iter().flatten().flatten().map(|e| e.path())
-                .filter(|p| IMAGE_EXT.contains(&ext_of(&p.to_string_lossy()).as_str())).min();
-            let (img_name, img_src) = match dna_img {
+            let (src, src_label) = match keyframes.get(&sid) {
+                Some(p) => (Some(p.clone()), "keyframe".to_string()),
+                None => (
+                    fs::read_dir(chars_dir.join(&cid)).ok().into_iter().flatten().flatten().map(|e| e.path())
+                        .filter(|p| IMAGE_EXT.contains(&ext_of(&p.to_string_lossy()).as_str())).min(),
+                    format!("dna:{cid}"),
+                ),
+            };
+            let (img_name, img_src) = match src {
                 Some(p) => {
                     let ext = ext_of(&p.to_string_lossy());
                     z.start_file(format!("{sid}.{ext}"), opt).map_err(zerr)?;
                     z.write_all(&fs::read(&p).map_err(io)?).map_err(io)?;
-                    (format!("{sid}.{ext}"), format!("dna:{cid}"))
+                    (format!("{sid}.{ext}"), src_label)
                 }
                 None => (String::new(), "none".to_string()),
             };
@@ -1006,4 +1013,28 @@ pub(crate) async fn get_shot_pack(AxumPath((pid, eid)): AxumPath<(String, String
         (axum::http::header::CONTENT_DISPOSITION, format!("attachment; filename=\"{eid}_shot-pack.zip\"")),
     ];
     Ok((headers, buf.into_inner()))
+}
+
+/// shotId -> newest keyframe image from each image_gen node's saved output snapshot (port of data_routes._latest_keyframes).
+fn latest_keyframes(pid: &str) -> HashMap<String, PathBuf> {
+    let root = workspace::project_path(pid, &[], false).unwrap_or_default();
+    let mut out = HashMap::new();
+    let graph: Value = fs::read_to_string(root.join("graph.json")).ok().and_then(|t| serde_json::from_str(&t).ok()).unwrap_or(json!({}));
+    let gid = graph["id"].as_str().map(str::to_string).unwrap_or_else(|| format!("graph_{pid}"));
+    for n in graph["nodes"].as_array().into_iter().flatten().filter(|n| n["type"] == "image_gen") {
+        let nid = n["id"].as_str().unwrap_or("");
+        let snap: Value = fs::read_to_string(root.join("runs").join("_node_outputs").join(&gid).join(format!("{nid}.json")))
+            .ok().and_then(|t| serde_json::from_str(&t).ok()).unwrap_or(json!({}));
+        for sc in snap["outputs"]["scenes"].as_array().into_iter().flatten() {
+            let (Some(sid), Some(uri)) = (sc["shotId"].as_str(), sc["imageUri"].as_str()) else { continue };
+            // canonicalize + prefix check: the snapshot path must stay inside the project folder
+            let p = root.join(uri).canonicalize().ok();
+            if let (Some(p), Some(r)) = (p, root.canonicalize().ok()) {
+                if p.is_file() && p.starts_with(&r) {
+                    out.insert(sid.to_string(), p);
+                }
+            }
+        }
+    }
+    out
 }

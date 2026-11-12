@@ -1,0 +1,14 @@
+# path | reason (dashboard fragments the generator cannot resolve; each checked by hand)
+/models{} | suffix built at runtime; GET /models exists (Rust 200)
+/video/templates{} | suffix built at runtime; GET /video/templates exists (Rust 200)
+/projects/{}/video/renders{} | suffix built at runtime; GET /projects/{id}/video/renders exists
+/projects/{}/intel/ideas{} | suffix built at runtime; GET /projects/{id}/intel/ideas exists
+/projects/{}/intel/patterns{} | suffix built at runtime; GET .../intel/patterns exists
+/projects/{} | template prefix of a larger concatenated URL
+/projects/{}/files/${path.replace(/^\/+/,  | ${} builder; /projects/{id}/files/{path} served by Rust (serve_project_file)
+/projects/{}/files/${rel.replace(/^\/+/,  | ${} builder; same route as above
+/projects/{}/files/${uriOrUrl.replace(/^\/+/,  | ${} builder; same route as above
+/projects/{}/{} | generic template in JobQueueCard; not a real endpoint
+/voices/${voiceId | ${} builder; /voices/{id}/sample served by Rust
+/{} | generic template fragment, not an endpoint
+/data/projects/{}/output/final_render.mp4 | static file under /data (ServeDir), not an API route
