@@ -49,6 +49,10 @@ sha2 = "0.10"
 base64 = "0.22"
 once_cell = "1"
 
+# Track D (multipart upload parsing for /sources)
+multer = "3"
+url = "2"
+
 [[bin]]
 name = "vicieo"
 path = "src/main.rs"
