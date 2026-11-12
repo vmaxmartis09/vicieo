@@ -1,10 +1,13 @@
-pub mod ai;
+pub mod engine;
+pub mod providers;
 pub mod audio_mastering;
 pub mod caption;
 pub mod cli;
 pub mod intelligence;
 pub mod schema;
+pub mod routes;
 pub mod server;
+pub mod state;
 pub mod social;
 pub mod video;
 pub mod workspace;
@@ -46,7 +49,7 @@ async fn main() -> Result<()> {
             video::render_pipeline(&project, &script, output.as_deref()).await?;
         }
         Commands::Ai { prompt, provider, model } => {
-            ai::generate_text(&prompt, &provider, model.as_deref()).await?;
+            providers::google::generate_text(&prompt, &provider, model.as_deref()).await?;
         }
     }
 

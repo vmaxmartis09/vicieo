@@ -1,0 +1,6 @@
+# method path expected_status required_top_level_keys (empty = any JSON)
+- {method: GET, path: /health, status: 200, keys: []}
+- {method: GET, path: /node-types, status: 200, keys: []}
+- {method: GET, path: /voices, status: 200, keys: []}
+- {method: GET, path: /video/templates, status: 200, keys: []}
+- {method: GET, path: /projects/soc-nho-tv/graph, status: 200, keys: [nodes, edges]}

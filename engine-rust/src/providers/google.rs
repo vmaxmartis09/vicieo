@@ -43,3 +43,12 @@ pub async fn generate_text(prompt: &str, provider: &str, model: Option<&str>) ->
     }
 }
 
+
+pub struct GeminiText;
+
+#[async_trait::async_trait]
+impl super::TextLlm for GeminiText {
+    async fn generate(&self, prompt: &str, _system: Option<&str>, model: Option<&str>, _json_mode: bool) -> Result<String> {
+        generate_text(prompt, "gemini", model).await
+    }
+}
