@@ -1,5 +1,6 @@
 use anyhow::{Context, Result};
 use serde::{Deserialize, Serialize};
+use serde_json::{json, Value};
 use std::fs;
 use std::path::{Path, PathBuf};
 
@@ -78,6 +79,19 @@ pub fn project_path(project_id: &str, subpaths: &[&str], ensure: bool) -> Result
         }
     }
     Ok(target)
+}
+
+pub fn set_active_project(id: &str) -> Result<()> {
+    let manifest_path = data_root().join("workspace.json");
+    let mut manifest: Value = if manifest_path.exists() {
+        let content = fs::read_to_string(&manifest_path)?;
+        serde_json::from_str(&content).unwrap_or(json!({}))
+    } else {
+        json!({})
+    };
+    manifest["active_project"] = json!(id);
+    fs::write(manifest_path, serde_json::to_string_pretty(&manifest)?)?;
+    Ok(())
 }
 
 pub fn shared_path(subpaths: &[&str], ensure: bool) -> Result<PathBuf> {

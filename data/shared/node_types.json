@@ -1,0 +1,7309 @@
+[
+  {
+    "typeName": "text",
+    "displayName": "Văn bản / Prompt",
+    "category": "Input",
+    "description": "Nhập văn bản tự do, ý tưởng hoặc prompt tùy chỉnh",
+    "inputPorts": [],
+    "outputPorts": [
+      {
+        "name": "text",
+        "portType": "text",
+        "description": "Văn bản đầu ra",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "defaultParams": {
+      "content": ""
+    },
+    "mockable": true,
+    "baseType": null,
+    "scope": null,
+    "capabilities": [],
+    "slots": [
+      {
+        "slotId": "body_content",
+        "paramKey": "content",
+        "zone": "body",
+        "label": "content",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": "",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "out_text",
+        "paramKey": "text",
+        "zone": "out",
+        "label": "text",
+        "description": "Văn bản đầu ra",
+        "valueType": "text",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      }
+    ]
+  },
+  {
+    "typeName": "image",
+    "displayName": "Tải ảnh / Thư viện",
+    "category": "Input",
+    "description": "Tải ảnh lên hoặc chọn ảnh từ thư viện tài nguyên",
+    "inputPorts": [],
+    "outputPorts": [
+      {
+        "name": "image",
+        "portType": "image",
+        "description": "Ảnh đã chọn",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "defaultParams": {
+      "uri": ""
+    },
+    "mockable": true,
+    "baseType": null,
+    "scope": null,
+    "capabilities": [],
+    "slots": [
+      {
+        "slotId": "body_uri",
+        "paramKey": "uri",
+        "zone": "body",
+        "label": "uri",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": "",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "out_image",
+        "paramKey": "image",
+        "zone": "out",
+        "label": "image",
+        "description": "Ảnh đã chọn",
+        "valueType": "image",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      }
+    ]
+  },
+  {
+    "typeName": "character",
+    "displayName": "Nhân vật (Character Bible)",
+    "category": "Identity",
+    "description": "Chọn nhân vật của dự án (DNA ảnh tham chiếu, prompt lock, voiceId, bộ nhớ)",
+    "inputPorts": [],
+    "outputPorts": [
+      {
+        "name": "character",
+        "portType": "character",
+        "description": "Dữ liệu hồ sơ nhân vật",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "reference_images",
+        "portType": "image[]",
+        "description": "Danh sách ảnh tham chiếu DNA",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "defaultParams": {
+      "characterId": "soc_nho"
+    },
+    "mockable": true,
+    "baseType": null,
+    "scope": null,
+    "capabilities": [
+      {
+        "name": "speak",
+        "displayName": "Nói",
+        "description": "Nhân vật tự đọc lời thoại của mình trong kịch bản bằng giọng của nhân vật",
+        "inputPorts": [
+          {
+            "name": "lines",
+            "portType": "dialogue",
+            "description": "Lời thoại từ Kịch bản (cổng lines): nhân vật tự lọc câu của mình",
+            "required": false,
+            "mapTo": null,
+            "defaultValue": null
+          },
+          {
+            "name": "text",
+            "portType": "text",
+            "description": "Hoặc 1 đoạn văn bản để nhân vật đọc (khi không có lines)",
+            "required": false,
+            "mapTo": null,
+            "defaultValue": null
+          }
+        ],
+        "outputPorts": [
+          {
+            "name": "voice",
+            "portType": "voice_clips",
+            "description": "Các câu đã đọc (từng clip) — nối vào cổng voice_clips của bộ dựng",
+            "required": true,
+            "mapTo": null,
+            "defaultValue": null
+          }
+        ],
+        "defaultParams": {
+          "voiceId": "",
+          "tempo": null,
+          "concurrency": 2
+        },
+        "available": true
+      }
+    ],
+    "slots": [
+      {
+        "slotId": "body_characterId",
+        "paramKey": "characterId",
+        "zone": "body",
+        "label": "characterId",
+        "description": "",
+        "valueType": "character_id",
+        "defaultValue": "soc_nho",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "character_picker",
+        "group": null
+      },
+      {
+        "slotId": "out_character",
+        "paramKey": "character",
+        "zone": "out",
+        "label": "character",
+        "description": "Dữ liệu hồ sơ nhân vật",
+        "valueType": "character",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      },
+      {
+        "slotId": "out_reference_images",
+        "paramKey": "reference_images",
+        "zone": "out",
+        "label": "reference_images",
+        "description": "Danh sách ảnh tham chiếu DNA",
+        "valueType": "image[]",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      }
+    ]
+  },
+  {
+    "typeName": "product",
+    "displayName": "Sản phẩm",
+    "category": "Identity",
+    "description": "Chọn sản phẩm của dự án: xuất ảnh đã tách nền (ảnh set/biến thể) và hồ sơ sản phẩm (tên, giá, điểm bán, thông số) để thử đồ và dựng video review",
+    "inputPorts": [],
+    "outputPorts": [
+      {
+        "name": "product",
+        "portType": "product",
+        "description": "Hồ sơ sản phẩm",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "image",
+        "portType": "image",
+        "description": "Ảnh sản phẩm đã tách nền (ảnh được chọn)",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "images",
+        "portType": "image[]",
+        "description": "Các ảnh sản phẩm đã tách nền (ảnh được chọn đứng đầu)",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "defaultParams": {
+      "productId": "",
+      "variant": ""
+    },
+    "mockable": true,
+    "baseType": null,
+    "scope": null,
+    "capabilities": [],
+    "slots": [
+      {
+        "slotId": "body_productId",
+        "paramKey": "productId",
+        "zone": "body",
+        "label": "productId",
+        "description": "",
+        "valueType": "product_id",
+        "defaultValue": "",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "product_picker",
+        "group": null
+      },
+      {
+        "slotId": "body_variant",
+        "paramKey": "variant",
+        "zone": "body",
+        "label": "variant",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": "",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "out_product",
+        "paramKey": "product",
+        "zone": "out",
+        "label": "product",
+        "description": "Hồ sơ sản phẩm",
+        "valueType": "product",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      },
+      {
+        "slotId": "out_image",
+        "paramKey": "image",
+        "zone": "out",
+        "label": "image",
+        "description": "Ảnh sản phẩm đã tách nền (ảnh được chọn)",
+        "valueType": "image",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      },
+      {
+        "slotId": "out_images",
+        "paramKey": "images",
+        "zone": "out",
+        "label": "images",
+        "description": "Các ảnh sản phẩm đã tách nền (ảnh được chọn đứng đầu)",
+        "valueType": "image[]",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      }
+    ]
+  },
+  {
+    "typeName": "cast",
+    "displayName": "Dàn diễn viên (tự theo kịch bản)",
+    "category": "Identity",
+    "description": "Tự lấy các nhân vật xuất hiện trong kịch bản của tập, nạp ảnh DNA và đọc lời thoại bằng giọng từng nhân vật. Đổi tập thì dàn nhân vật tự đổi theo, không phải sửa flow",
+    "inputPorts": [
+      {
+        "name": "lines",
+        "portType": "dialogue",
+        "description": "Lời thoại có người nói (cổng lines của Kịch bản)",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "scenes",
+        "portType": "scenes",
+        "description": "Các cảnh (để lấy nhân vật có mặt nhưng không có thoại)",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "outputPorts": [
+      {
+        "name": "characters",
+        "portType": "character",
+        "description": "Hồ sơ từng nhân vật trong tập",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "reference_images",
+        "portType": "image[]",
+        "description": "Ảnh DNA của mọi nhân vật trong tập",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "voice",
+        "portType": "voice_clips",
+        "description": "Giọng từng câu của mọi nhân vật",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "defaultParams": {
+      "speak": {
+        "enabled": true
+      },
+      "include": [],
+      "exclude": [],
+      "onMissingVoice": "stop"
+    },
+    "mockable": true,
+    "baseType": null,
+    "scope": null,
+    "capabilities": [],
+    "slots": [
+      {
+        "slotId": "in_lines",
+        "paramKey": "lines",
+        "zone": "in",
+        "label": "lines",
+        "description": "Lời thoại có người nói (cổng lines của Kịch bản)",
+        "valueType": "dialogue",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "in_scenes",
+        "paramKey": "scenes",
+        "zone": "in",
+        "label": "scenes",
+        "description": "Các cảnh (để lấy nhân vật có mặt nhưng không có thoại)",
+        "valueType": "scenes",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "body_speak",
+        "paramKey": "speak",
+        "zone": "body",
+        "label": "speak",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": {
+          "enabled": true
+        },
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "body_include",
+        "paramKey": "include",
+        "zone": "body",
+        "label": "include",
+        "description": "",
+        "valueType": "string_list",
+        "defaultValue": [],
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "list",
+        "group": null
+      },
+      {
+        "slotId": "body_exclude",
+        "paramKey": "exclude",
+        "zone": "body",
+        "label": "exclude",
+        "description": "",
+        "valueType": "string_list",
+        "defaultValue": [],
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "list",
+        "group": null
+      },
+      {
+        "slotId": "body_onMissingVoice",
+        "paramKey": "onMissingVoice",
+        "zone": "body",
+        "label": "onMissingVoice",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": "stop",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "out_characters",
+        "paramKey": "characters",
+        "zone": "out",
+        "label": "characters",
+        "description": "Hồ sơ từng nhân vật trong tập",
+        "valueType": "character",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      },
+      {
+        "slotId": "out_reference_images",
+        "paramKey": "reference_images",
+        "zone": "out",
+        "label": "reference_images",
+        "description": "Ảnh DNA của mọi nhân vật trong tập",
+        "valueType": "image[]",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      },
+      {
+        "slotId": "out_voice",
+        "paramKey": "voice",
+        "zone": "out",
+        "label": "voice",
+        "description": "Giọng từng câu của mọi nhân vật",
+        "valueType": "voice_clips",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      }
+    ]
+  },
+  {
+    "typeName": "script",
+    "displayName": "Kịch bản phân cảnh",
+    "category": "Structure",
+    "description": "Biến kịch bản thành danh sách cảnh có prompt ảnh, chuyển động và lời thoại",
+    "inputPorts": [
+      {
+        "name": "text",
+        "portType": "text",
+        "description": "Ý tưởng hoặc cốt truyện",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "outputPorts": [
+      {
+        "name": "scenes",
+        "portType": "scenes",
+        "description": "Danh sách phân cảnh cấu trúc",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "prompt",
+        "portType": "text",
+        "description": "Prompt tạo ảnh/video theo cảnh",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "dialogue",
+        "portType": "text",
+        "description": "Lời thoại theo cảnh",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "lines",
+        "portType": "dialogue",
+        "description": "Lời thoại có người nói: từng câu kèm nhân vật, shot, mốc thời gian",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "defaultParams": {
+      "mode": "ai",
+      "rawScript": "",
+      "targetSceneCount": 6,
+      "targetDurationSec": 45
+    },
+    "mockable": true,
+    "baseType": null,
+    "scope": null,
+    "capabilities": [],
+    "slots": [
+      {
+        "slotId": "in_text",
+        "paramKey": "text",
+        "zone": "in",
+        "label": "text",
+        "description": "Ý tưởng hoặc cốt truyện",
+        "valueType": "text",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "body_mode",
+        "paramKey": "mode",
+        "zone": "body",
+        "label": "mode",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": "ai",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "body_rawScript",
+        "paramKey": "rawScript",
+        "zone": "body",
+        "label": "rawScript",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": "",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "body_targetSceneCount",
+        "paramKey": "targetSceneCount",
+        "zone": "body",
+        "label": "targetSceneCount",
+        "description": "",
+        "valueType": "integer",
+        "defaultValue": 6,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "number",
+        "group": null
+      },
+      {
+        "slotId": "body_targetDurationSec",
+        "paramKey": "targetDurationSec",
+        "zone": "body",
+        "label": "targetDurationSec",
+        "description": "",
+        "valueType": "integer",
+        "defaultValue": 45,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "number",
+        "group": null
+      },
+      {
+        "slotId": "out_scenes",
+        "paramKey": "scenes",
+        "zone": "out",
+        "label": "scenes",
+        "description": "Danh sách phân cảnh cấu trúc",
+        "valueType": "scenes",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      },
+      {
+        "slotId": "out_prompt",
+        "paramKey": "prompt",
+        "zone": "out",
+        "label": "prompt",
+        "description": "Prompt tạo ảnh/video theo cảnh",
+        "valueType": "text",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      },
+      {
+        "slotId": "out_dialogue",
+        "paramKey": "dialogue",
+        "zone": "out",
+        "label": "dialogue",
+        "description": "Lời thoại theo cảnh",
+        "valueType": "text",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      },
+      {
+        "slotId": "out_lines",
+        "paramKey": "lines",
+        "zone": "out",
+        "label": "lines",
+        "description": "Lời thoại có người nói: từng câu kèm nhân vật, shot, mốc thời gian",
+        "valueType": "dialogue",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      }
+    ]
+  },
+  {
+    "typeName": "vision_analyze",
+    "displayName": "Phân tích Video / Ảnh",
+    "category": "Intelligence",
+    "description": "Phân tích cấu trúc video, góc quay, nhịp cảnh và lời thoại qua model nhìn",
+    "inputPorts": [
+      {
+        "name": "video",
+        "portType": "video",
+        "description": "Video nguồn để phân tích",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "image",
+        "portType": "image",
+        "description": "Ảnh nguồn để phân tích",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "outputPorts": [
+      {
+        "name": "script",
+        "portType": "script",
+        "description": "Kịch bản cấu trúc trích xuất",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "scenes",
+        "portType": "scenes",
+        "description": "Danh sách phân cảnh trích xuất",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "defaultParams": {
+      "goal": "extract_scenes_and_dialogue"
+    },
+    "mockable": true,
+    "baseType": null,
+    "scope": null,
+    "capabilities": [],
+    "slots": [
+      {
+        "slotId": "in_video",
+        "paramKey": "video",
+        "zone": "in",
+        "label": "video",
+        "description": "Video nguồn để phân tích",
+        "valueType": "video",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "in_image",
+        "paramKey": "image",
+        "zone": "in",
+        "label": "image",
+        "description": "Ảnh nguồn để phân tích",
+        "valueType": "image",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "body_goal",
+        "paramKey": "goal",
+        "zone": "body",
+        "label": "goal",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": "extract_scenes_and_dialogue",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "out_script",
+        "paramKey": "script",
+        "zone": "out",
+        "label": "script",
+        "description": "Kịch bản cấu trúc trích xuất",
+        "valueType": "script",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      },
+      {
+        "slotId": "out_scenes",
+        "paramKey": "scenes",
+        "zone": "out",
+        "label": "scenes",
+        "description": "Danh sách phân cảnh trích xuất",
+        "valueType": "scenes",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      }
+    ]
+  },
+  {
+    "typeName": "quality_check",
+    "displayName": "Kiểm tra chất lượng (Gate)",
+    "category": "Quality",
+    "description": "Chấm điểm ảnh trước khi tốn tiền tạo video",
+    "inputPorts": [
+      {
+        "name": "media",
+        "portType": "image",
+        "description": "Ảnh hoặc video cần thẩm định",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "criteria",
+        "portType": "text",
+        "description": "Tiêu chí thẩm định (ví dụ: đúng đuôi xù, áo vàng)",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "text",
+        "portType": "text",
+        "description": "Lời nói / kịch bản / prompt cần kiểm chính sách",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "captions",
+        "portType": "captions",
+        "description": "Caption cần kiểm chính sách",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "scenes",
+        "portType": "scenes",
+        "description": "Danh sách cảnh (lời thoại + prompt) cần kiểm",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "policy",
+        "portType": "policy",
+        "description": "Chính sách riêng (mặc định: chính sách của dự án)",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "outputPorts": [
+      {
+        "name": "media",
+        "portType": "image",
+        "description": "Media đã qua kiểm duyệt",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "pass_fail",
+        "portType": "text",
+        "description": "Kết quả đạt/không đạt + điểm + vi phạm chính sách",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "violations",
+        "portType": "text",
+        "description": "Danh sách từ ngữ vi phạm chính sách",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "defaultParams": {
+      "thresholdScore": 0.85,
+      "maxRetries": 2,
+      "policyAutoScan": true,
+      "blockOnFail": false,
+      "criteria": "Nhân vật Sóc Nhỏ 100cm, áo phông vàng, quần short đen, đuôi xù lớn, không chữ lạ"
+    },
+    "mockable": true,
+    "baseType": null,
+    "scope": null,
+    "capabilities": [],
+    "slots": [
+      {
+        "slotId": "in_media",
+        "paramKey": "media",
+        "zone": "in",
+        "label": "media",
+        "description": "Ảnh hoặc video cần thẩm định",
+        "valueType": "image",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "in_criteria",
+        "paramKey": "criteria",
+        "zone": "in",
+        "label": "criteria",
+        "description": "Tiêu chí thẩm định (ví dụ: đúng đuôi xù, áo vàng)",
+        "valueType": "text",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "in_text",
+        "paramKey": "text",
+        "zone": "in",
+        "label": "text",
+        "description": "Lời nói / kịch bản / prompt cần kiểm chính sách",
+        "valueType": "text",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "in_captions",
+        "paramKey": "captions",
+        "zone": "in",
+        "label": "captions",
+        "description": "Caption cần kiểm chính sách",
+        "valueType": "captions",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "in_scenes",
+        "paramKey": "scenes",
+        "zone": "in",
+        "label": "scenes",
+        "description": "Danh sách cảnh (lời thoại + prompt) cần kiểm",
+        "valueType": "scenes",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "in_policy",
+        "paramKey": "policy",
+        "zone": "in",
+        "label": "policy",
+        "description": "Chính sách riêng (mặc định: chính sách của dự án)",
+        "valueType": "policy",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "body_thresholdScore",
+        "paramKey": "thresholdScore",
+        "zone": "body",
+        "label": "thresholdScore",
+        "description": "",
+        "valueType": "number",
+        "defaultValue": 0.85,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "number",
+        "group": null
+      },
+      {
+        "slotId": "body_maxRetries",
+        "paramKey": "maxRetries",
+        "zone": "body",
+        "label": "maxRetries",
+        "description": "",
+        "valueType": "integer",
+        "defaultValue": 2,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "number",
+        "group": null
+      },
+      {
+        "slotId": "body_policyAutoScan",
+        "paramKey": "policyAutoScan",
+        "zone": "body",
+        "label": "policyAutoScan",
+        "description": "",
+        "valueType": "boolean",
+        "defaultValue": true,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "toggle",
+        "group": null
+      },
+      {
+        "slotId": "body_blockOnFail",
+        "paramKey": "blockOnFail",
+        "zone": "body",
+        "label": "blockOnFail",
+        "description": "",
+        "valueType": "boolean",
+        "defaultValue": false,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "toggle",
+        "group": null
+      },
+      {
+        "slotId": "out_media",
+        "paramKey": "media",
+        "zone": "out",
+        "label": "media",
+        "description": "Media đã qua kiểm duyệt",
+        "valueType": "image",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      },
+      {
+        "slotId": "out_pass_fail",
+        "paramKey": "pass_fail",
+        "zone": "out",
+        "label": "pass_fail",
+        "description": "Kết quả đạt/không đạt + điểm + vi phạm chính sách",
+        "valueType": "text",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      },
+      {
+        "slotId": "out_violations",
+        "paramKey": "violations",
+        "zone": "out",
+        "label": "violations",
+        "description": "Danh sách từ ngữ vi phạm chính sách",
+        "valueType": "text",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      }
+    ]
+  },
+  {
+    "typeName": "policy",
+    "displayName": "Chính sách nội dung",
+    "category": "Quality",
+    "description": "Chính sách của dự án (từ cấm, mức vi phạm) — nối vào node Kiểm tra chất lượng hoặc để mặc định theo dự án",
+    "inputPorts": [],
+    "outputPorts": [
+      {
+        "name": "policy",
+        "portType": "policy",
+        "description": "Chính sách nội dung đang áp dụng",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "defaultParams": {
+      "extraTerms": [],
+      "extraSeverity": "block"
+    },
+    "mockable": true,
+    "baseType": null,
+    "scope": null,
+    "capabilities": [],
+    "slots": [
+      {
+        "slotId": "body_extraTerms",
+        "paramKey": "extraTerms",
+        "zone": "body",
+        "label": "extraTerms",
+        "description": "",
+        "valueType": "string_list",
+        "defaultValue": [],
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "list",
+        "group": null
+      },
+      {
+        "slotId": "body_extraSeverity",
+        "paramKey": "extraSeverity",
+        "zone": "body",
+        "label": "extraSeverity",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": "block",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "out_policy",
+        "paramKey": "policy",
+        "zone": "out",
+        "label": "policy",
+        "description": "Chính sách nội dung đang áp dụng",
+        "valueType": "policy",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      }
+    ]
+  },
+  {
+    "typeName": "image_gen",
+    "displayName": "Tạo ảnh AI",
+    "category": "Generation",
+    "description": "Tạo ảnh từ prompt mô tả kết hợp các ảnh tham chiếu nhận diện nhân vật",
+    "inputPorts": [
+      {
+        "name": "prompt",
+        "portType": "text",
+        "description": "Prompt mô tả cảnh",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "references",
+        "portType": "image[]",
+        "description": "Ảnh tham chiếu DNA",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "image",
+        "portType": "image",
+        "description": "Ảnh mẫu tham chiếu",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "scenes",
+        "portType": "scenes",
+        "description": "Lặp theo cảnh: nối danh sách cảnh để tạo mỗi cảnh 1 ảnh",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "outputPorts": [
+      {
+        "name": "images",
+        "portType": "image[]",
+        "description": "Danh sách ảnh sinh ra",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "image",
+        "portType": "image",
+        "description": "Ảnh đại diện / khung đầu tiên sinh ra",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "scenes",
+        "portType": "scenes",
+        "description": "Danh sách cảnh đã gắn ảnh (khi lặp theo cảnh)",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "defaultParams": {
+      "prompt": "",
+      "model": "mock-image",
+      "aspectRatio": "9:16",
+      "resolution": "1080p",
+      "referenceImages": [],
+      "n": 1,
+      "seed": null
+    },
+    "mockable": true,
+    "baseType": null,
+    "scope": null,
+    "capabilities": [],
+    "slots": [
+      {
+        "slotId": "in_prompt",
+        "paramKey": "prompt",
+        "zone": "in",
+        "label": "prompt",
+        "description": "Prompt mô tả cảnh",
+        "valueType": "text",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "in_references",
+        "paramKey": "references",
+        "zone": "in",
+        "label": "references",
+        "description": "Ảnh tham chiếu DNA",
+        "valueType": "image[]",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "in_image",
+        "paramKey": "image",
+        "zone": "in",
+        "label": "image",
+        "description": "Ảnh mẫu tham chiếu",
+        "valueType": "image",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "in_scenes",
+        "paramKey": "scenes",
+        "zone": "in",
+        "label": "scenes",
+        "description": "Lặp theo cảnh: nối danh sách cảnh để tạo mỗi cảnh 1 ảnh",
+        "valueType": "scenes",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "body_model",
+        "paramKey": "model",
+        "zone": "body",
+        "label": "model",
+        "description": "",
+        "valueType": "model_key",
+        "defaultValue": "mock-image",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "model_picker",
+        "group": null
+      },
+      {
+        "slotId": "body_aspectRatio",
+        "paramKey": "aspectRatio",
+        "zone": "body",
+        "label": "aspectRatio",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": "9:16",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "body_resolution",
+        "paramKey": "resolution",
+        "zone": "body",
+        "label": "resolution",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": "1080p",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "body_referenceImages",
+        "paramKey": "referenceImages",
+        "zone": "body",
+        "label": "referenceImages",
+        "description": "",
+        "valueType": "string_list",
+        "defaultValue": [],
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "list",
+        "group": null
+      },
+      {
+        "slotId": "body_n",
+        "paramKey": "n",
+        "zone": "body",
+        "label": "n",
+        "description": "",
+        "valueType": "integer",
+        "defaultValue": 1,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "number",
+        "group": null
+      },
+      {
+        "slotId": "body_seed",
+        "paramKey": "seed",
+        "zone": "body",
+        "label": "seed",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "out_images",
+        "paramKey": "images",
+        "zone": "out",
+        "label": "images",
+        "description": "Danh sách ảnh sinh ra",
+        "valueType": "image[]",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      },
+      {
+        "slotId": "out_image",
+        "paramKey": "image",
+        "zone": "out",
+        "label": "image",
+        "description": "Ảnh đại diện / khung đầu tiên sinh ra",
+        "valueType": "image",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      },
+      {
+        "slotId": "out_scenes",
+        "paramKey": "scenes",
+        "zone": "out",
+        "label": "scenes",
+        "description": "Danh sách cảnh đã gắn ảnh (khi lặp theo cảnh)",
+        "valueType": "scenes",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      }
+    ]
+  },
+  {
+    "typeName": "image_edit",
+    "displayName": "Sửa ảnh / Tách trang phục",
+    "category": "Generation",
+    "description": "Chỉnh sửa chi tiết hoặc thay đổi trang phục trên ảnh gốc",
+    "inputPorts": [
+      {
+        "name": "image",
+        "portType": "image",
+        "description": "Ảnh gốc cần sửa",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "references",
+        "portType": "image[]",
+        "description": "Ảnh tham chiếu mới",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "prompt",
+        "portType": "text",
+        "description": "Mô tả chỉnh sửa",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "outputPorts": [
+      {
+        "name": "image",
+        "portType": "image",
+        "description": "Ảnh kết quả sau sửa",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "defaultParams": {
+      "model": "mock-image",
+      "aspectRatio": "9:16"
+    },
+    "mockable": true,
+    "baseType": null,
+    "scope": null,
+    "capabilities": [],
+    "slots": [
+      {
+        "slotId": "in_image",
+        "paramKey": "image",
+        "zone": "in",
+        "label": "image",
+        "description": "Ảnh gốc cần sửa",
+        "valueType": "image",
+        "defaultValue": null,
+        "constraints": {
+          "required": true,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "in_references",
+        "paramKey": "references",
+        "zone": "in",
+        "label": "references",
+        "description": "Ảnh tham chiếu mới",
+        "valueType": "image[]",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "in_prompt",
+        "paramKey": "prompt",
+        "zone": "in",
+        "label": "prompt",
+        "description": "Mô tả chỉnh sửa",
+        "valueType": "text",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "body_model",
+        "paramKey": "model",
+        "zone": "body",
+        "label": "model",
+        "description": "",
+        "valueType": "model_key",
+        "defaultValue": "mock-image",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "model_picker",
+        "group": null
+      },
+      {
+        "slotId": "body_aspectRatio",
+        "paramKey": "aspectRatio",
+        "zone": "body",
+        "label": "aspectRatio",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": "9:16",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "out_image",
+        "paramKey": "image",
+        "zone": "out",
+        "label": "image",
+        "description": "Ảnh kết quả sau sửa",
+        "valueType": "image",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      }
+    ]
+  },
+  {
+    "typeName": "video_gen",
+    "displayName": "Tạo video chuyển động",
+    "category": "Generation",
+    "description": "Biến ảnh khung đầu thành video chuyển động 3D qua model Veo / LTX",
+    "inputPorts": [
+      {
+        "name": "scenes",
+        "portType": "scenes",
+        "description": "Cấu trúc các phân cảnh từ kịch bản / ảnh",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "first_frame",
+        "portType": "image",
+        "description": "Ảnh khung đầu (First frame)",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "image",
+        "portType": "image",
+        "description": "Ảnh khung đầu (alias)",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "prompt",
+        "portType": "text",
+        "description": "Prompt chuyển động camera",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "references",
+        "portType": "image[]",
+        "description": "Ảnh tham chiếu phụ",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "outputPorts": [
+      {
+        "name": "video",
+        "portType": "video",
+        "description": "Clip video đầu tiên sinh ra",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "videos",
+        "portType": "video",
+        "description": "Danh sách các clip video sinh ra",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "scenes",
+        "portType": "scenes",
+        "description": "Cấu trúc các cảnh đã kèm đường dẫn clip video",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "defaultParams": {
+      "model": "mock-video",
+      "variants": 1,
+      "aspectRatio": "16:9",
+      "resolution": "720p",
+      "durationSec": 6,
+      "hasAudio": false,
+      "seed": null,
+      "prompt": "",
+      "perShot": true,
+      "maxClips": 5,
+      "shotIds": [],
+      "clipSource": "auto"
+    },
+    "mockable": true,
+    "baseType": null,
+    "scope": null,
+    "capabilities": [],
+    "slots": [
+      {
+        "slotId": "in_scenes",
+        "paramKey": "scenes",
+        "zone": "in",
+        "label": "scenes",
+        "description": "Cấu trúc các phân cảnh từ kịch bản / ảnh",
+        "valueType": "scenes",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "in_first_frame",
+        "paramKey": "first_frame",
+        "zone": "in",
+        "label": "first_frame",
+        "description": "Ảnh khung đầu (First frame)",
+        "valueType": "image",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "in_image",
+        "paramKey": "image",
+        "zone": "in",
+        "label": "image",
+        "description": "Ảnh khung đầu (alias)",
+        "valueType": "image",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "in_prompt",
+        "paramKey": "prompt",
+        "zone": "in",
+        "label": "prompt",
+        "description": "Prompt chuyển động camera",
+        "valueType": "text",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "in_references",
+        "paramKey": "references",
+        "zone": "in",
+        "label": "references",
+        "description": "Ảnh tham chiếu phụ",
+        "valueType": "image[]",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "body_model",
+        "paramKey": "model",
+        "zone": "body",
+        "label": "model",
+        "description": "",
+        "valueType": "model_key",
+        "defaultValue": "mock-video",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "model_picker",
+        "group": null
+      },
+      {
+        "slotId": "body_variants",
+        "paramKey": "variants",
+        "zone": "body",
+        "label": "variants",
+        "description": "",
+        "valueType": "integer",
+        "defaultValue": 1,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "number",
+        "group": null
+      },
+      {
+        "slotId": "body_aspectRatio",
+        "paramKey": "aspectRatio",
+        "zone": "body",
+        "label": "aspectRatio",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": "16:9",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "body_resolution",
+        "paramKey": "resolution",
+        "zone": "body",
+        "label": "resolution",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": "720p",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "body_durationSec",
+        "paramKey": "durationSec",
+        "zone": "body",
+        "label": "durationSec",
+        "description": "",
+        "valueType": "integer",
+        "defaultValue": 6,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "number",
+        "group": null
+      },
+      {
+        "slotId": "body_hasAudio",
+        "paramKey": "hasAudio",
+        "zone": "body",
+        "label": "hasAudio",
+        "description": "",
+        "valueType": "boolean",
+        "defaultValue": false,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "toggle",
+        "group": null
+      },
+      {
+        "slotId": "body_seed",
+        "paramKey": "seed",
+        "zone": "body",
+        "label": "seed",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "body_perShot",
+        "paramKey": "perShot",
+        "zone": "body",
+        "label": "perShot",
+        "description": "",
+        "valueType": "boolean",
+        "defaultValue": true,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "toggle",
+        "group": null
+      },
+      {
+        "slotId": "body_maxClips",
+        "paramKey": "maxClips",
+        "zone": "body",
+        "label": "maxClips",
+        "description": "",
+        "valueType": "integer",
+        "defaultValue": 5,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "number",
+        "group": null
+      },
+      {
+        "slotId": "body_shotIds",
+        "paramKey": "shotIds",
+        "zone": "body",
+        "label": "shotIds",
+        "description": "",
+        "valueType": "string_list",
+        "defaultValue": [],
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "list",
+        "group": null
+      },
+      {
+        "slotId": "body_clipSource",
+        "paramKey": "clipSource",
+        "zone": "body",
+        "label": "clipSource",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": "auto",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "out_video",
+        "paramKey": "video",
+        "zone": "out",
+        "label": "video",
+        "description": "Clip video đầu tiên sinh ra",
+        "valueType": "video",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      },
+      {
+        "slotId": "out_videos",
+        "paramKey": "videos",
+        "zone": "out",
+        "label": "videos",
+        "description": "Danh sách các clip video sinh ra",
+        "valueType": "video",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      },
+      {
+        "slotId": "out_scenes",
+        "paramKey": "scenes",
+        "zone": "out",
+        "label": "scenes",
+        "description": "Cấu trúc các cảnh đã kèm đường dẫn clip video",
+        "valueType": "scenes",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      }
+    ]
+  },
+  {
+    "typeName": "voice_tts",
+    "displayName": "Văn bản thành giọng nói",
+    "category": "Audio",
+    "description": "Đọc lời thoại kịch bản bằng giọng Sóc Nhỏ (soc-nho) chuẩn ngữ điệu cảm xúc",
+    "inputPorts": [
+      {
+        "name": "text",
+        "portType": "text",
+        "description": "Lời thoại cần đọc",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "character",
+        "portType": "character",
+        "description": "Hồ sơ nhân vật chứa voiceId",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "outputPorts": [
+      {
+        "name": "audio",
+        "portType": "audio",
+        "description": "Tệp âm thanh MP3 đã master -14 LUFS",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "defaultParams": {
+      "text": "",
+      "voiceId": "soc-nho",
+      "tempo": 1.1,
+      "mastering": true
+    },
+    "mockable": true,
+    "baseType": null,
+    "scope": null,
+    "capabilities": [],
+    "slots": [
+      {
+        "slotId": "in_text",
+        "paramKey": "text",
+        "zone": "in",
+        "label": "text",
+        "description": "Lời thoại cần đọc",
+        "valueType": "text",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "in_character",
+        "paramKey": "character",
+        "zone": "in",
+        "label": "character",
+        "description": "Hồ sơ nhân vật chứa voiceId",
+        "valueType": "character",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "body_voiceId",
+        "paramKey": "voiceId",
+        "zone": "body",
+        "label": "voiceId",
+        "description": "",
+        "valueType": "voice_id",
+        "defaultValue": "soc-nho",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "voice_picker",
+        "group": null
+      },
+      {
+        "slotId": "body_tempo",
+        "paramKey": "tempo",
+        "zone": "body",
+        "label": "tempo",
+        "description": "",
+        "valueType": "number",
+        "defaultValue": 1.1,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "number",
+        "group": null
+      },
+      {
+        "slotId": "body_mastering",
+        "paramKey": "mastering",
+        "zone": "body",
+        "label": "mastering",
+        "description": "",
+        "valueType": "boolean",
+        "defaultValue": true,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "toggle",
+        "group": null
+      },
+      {
+        "slotId": "out_audio",
+        "paramKey": "audio",
+        "zone": "out",
+        "label": "audio",
+        "description": "Tệp âm thanh MP3 đã master -14 LUFS",
+        "valueType": "audio",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      }
+    ]
+  },
+  {
+    "typeName": "captions",
+    "displayName": "Phụ đề Karaoke (Whisper)",
+    "category": "Audio",
+    "description": "Trích xuất phụ đề từng từ khớp mốc thời gian (Word-level timestamps)",
+    "inputPorts": [
+      {
+        "name": "audio",
+        "portType": "audio",
+        "description": "Tệp âm thanh thoại",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "text",
+        "portType": "text",
+        "description": "Text đối chiếu chuẩn",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "outputPorts": [
+      {
+        "name": "captions",
+        "portType": "captions",
+        "description": "Dữ liệu phụ đề mốc thời gian",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "defaultParams": {
+      "language": "vi",
+      "style": "kinetic_karaoke"
+    },
+    "mockable": true,
+    "baseType": null,
+    "scope": null,
+    "capabilities": [],
+    "slots": [
+      {
+        "slotId": "in_audio",
+        "paramKey": "audio",
+        "zone": "in",
+        "label": "audio",
+        "description": "Tệp âm thanh thoại",
+        "valueType": "audio",
+        "defaultValue": null,
+        "constraints": {
+          "required": true,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "in_text",
+        "paramKey": "text",
+        "zone": "in",
+        "label": "text",
+        "description": "Text đối chiếu chuẩn",
+        "valueType": "text",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "body_language",
+        "paramKey": "language",
+        "zone": "body",
+        "label": "language",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": "vi",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "body_style",
+        "paramKey": "style",
+        "zone": "body",
+        "label": "style",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": "kinetic_karaoke",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "out_captions",
+        "paramKey": "captions",
+        "zone": "out",
+        "label": "captions",
+        "description": "Dữ liệu phụ đề mốc thời gian",
+        "valueType": "captions",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      }
+    ]
+  },
+  {
+    "typeName": "hyperframes_render",
+    "displayName": "Dựng phim HyperFrames",
+    "category": "Composition",
+    "description": "Ghép các phân cảnh, chạy phụ đề karaoke, chèn BGM ducking chuẩn Safe Zone 9:16",
+    "inputPorts": [
+      {
+        "name": "scenes",
+        "portType": "scenes",
+        "description": "Cấu trúc các cảnh",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "audio",
+        "portType": "audio",
+        "description": "Thoại chính voiceover",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "voice",
+        "portType": "audio",
+        "description": "Thoại chính voiceover (alias)",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "voice_clips",
+        "portType": "voice_clips",
+        "description": "Giọng từng câu của các nhân vật (nhận nhiều dây): bộ dựng tự xếp mốc, trộn và làm phụ đề",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "captions",
+        "portType": "captions",
+        "description": "Phụ đề karaoke",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "bgm",
+        "portType": "audio",
+        "description": "Nhạc nền BGM",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "gate",
+        "portType": "text",
+        "description": "Nối kết quả Kiểm định (pass_fail): kiểm định không đạt thì không dựng",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "video",
+        "portType": "video",
+        "description": "Video clip đầu vào",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "image",
+        "portType": "image",
+        "description": "Ảnh tĩnh đầu vào",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "outputPorts": [
+      {
+        "name": "video",
+        "portType": "video",
+        "description": "Video thành phẩm MP4",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "captions",
+        "portType": "captions",
+        "description": "Phụ đề SRT theo mốc thật của từng câu (khi nhận voice_clips)",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "defaultParams": {
+      "aspectRatio": "9:16",
+      "timing": "script",
+      "gapSec": 0.35,
+      "template": "default_cartoon",
+      "templateId": "default_cartoon",
+      "platform": "tiktok",
+      "safeZonePaddingTop": 180,
+      "safeZonePaddingBottom": 320,
+      "duckingLevel": 0.25,
+      "requireHyperFrames": true
+    },
+    "mockable": true,
+    "baseType": null,
+    "scope": null,
+    "capabilities": [],
+    "slots": [
+      {
+        "slotId": "in_scenes",
+        "paramKey": "scenes",
+        "zone": "in",
+        "label": "scenes",
+        "description": "Cấu trúc các cảnh",
+        "valueType": "scenes",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "in_audio",
+        "paramKey": "audio",
+        "zone": "in",
+        "label": "audio",
+        "description": "Thoại chính voiceover",
+        "valueType": "audio",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "in_voice",
+        "paramKey": "voice",
+        "zone": "in",
+        "label": "voice",
+        "description": "Thoại chính voiceover (alias)",
+        "valueType": "audio",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "in_voice_clips",
+        "paramKey": "voice_clips",
+        "zone": "in",
+        "label": "voice_clips",
+        "description": "Giọng từng câu của các nhân vật (nhận nhiều dây): bộ dựng tự xếp mốc, trộn và làm phụ đề",
+        "valueType": "voice_clips",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "in_captions",
+        "paramKey": "captions",
+        "zone": "in",
+        "label": "captions",
+        "description": "Phụ đề karaoke",
+        "valueType": "captions",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "in_bgm",
+        "paramKey": "bgm",
+        "zone": "in",
+        "label": "bgm",
+        "description": "Nhạc nền BGM",
+        "valueType": "audio",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "in_gate",
+        "paramKey": "gate",
+        "zone": "in",
+        "label": "gate",
+        "description": "Nối kết quả Kiểm định (pass_fail): kiểm định không đạt thì không dựng",
+        "valueType": "text",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "in_video",
+        "paramKey": "video",
+        "zone": "in",
+        "label": "video",
+        "description": "Video clip đầu vào",
+        "valueType": "video",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "in_image",
+        "paramKey": "image",
+        "zone": "in",
+        "label": "image",
+        "description": "Ảnh tĩnh đầu vào",
+        "valueType": "image",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "body_aspectRatio",
+        "paramKey": "aspectRatio",
+        "zone": "body",
+        "label": "aspectRatio",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": "9:16",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "body_timing",
+        "paramKey": "timing",
+        "zone": "body",
+        "label": "timing",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": "script",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "body_gapSec",
+        "paramKey": "gapSec",
+        "zone": "body",
+        "label": "gapSec",
+        "description": "",
+        "valueType": "number",
+        "defaultValue": 0.35,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "number",
+        "group": null
+      },
+      {
+        "slotId": "body_template",
+        "paramKey": "template",
+        "zone": "body",
+        "label": "template",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": "default_cartoon",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "body_templateId",
+        "paramKey": "templateId",
+        "zone": "body",
+        "label": "templateId",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": "default_cartoon",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "body_platform",
+        "paramKey": "platform",
+        "zone": "body",
+        "label": "platform",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": "tiktok",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "body_safeZonePaddingTop",
+        "paramKey": "safeZonePaddingTop",
+        "zone": "body",
+        "label": "safeZonePaddingTop",
+        "description": "",
+        "valueType": "integer",
+        "defaultValue": 180,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "number",
+        "group": null
+      },
+      {
+        "slotId": "body_safeZonePaddingBottom",
+        "paramKey": "safeZonePaddingBottom",
+        "zone": "body",
+        "label": "safeZonePaddingBottom",
+        "description": "",
+        "valueType": "integer",
+        "defaultValue": 320,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "number",
+        "group": null
+      },
+      {
+        "slotId": "body_duckingLevel",
+        "paramKey": "duckingLevel",
+        "zone": "body",
+        "label": "duckingLevel",
+        "description": "",
+        "valueType": "number",
+        "defaultValue": 0.25,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "number",
+        "group": null
+      },
+      {
+        "slotId": "body_requireHyperFrames",
+        "paramKey": "requireHyperFrames",
+        "zone": "body",
+        "label": "requireHyperFrames",
+        "description": "",
+        "valueType": "boolean",
+        "defaultValue": true,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "toggle",
+        "group": null
+      },
+      {
+        "slotId": "out_video",
+        "paramKey": "video",
+        "zone": "out",
+        "label": "video",
+        "description": "Video thành phẩm MP4",
+        "valueType": "video",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      },
+      {
+        "slotId": "out_captions",
+        "paramKey": "captions",
+        "zone": "out",
+        "label": "captions",
+        "description": "Phụ đề SRT theo mốc thật của từng câu (khi nhận voice_clips)",
+        "valueType": "captions",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      }
+    ]
+  },
+  {
+    "typeName": "export",
+    "displayName": "Xuất & Phân phối",
+    "category": "Output",
+    "description": "Xuất video hoàn chỉnh vào thư mục output/ và tạo manifest đóng gói",
+    "inputPorts": [
+      {
+        "name": "video",
+        "portType": "video",
+        "description": "Video cần xuất bản",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "outputPorts": [
+      {
+        "name": "manifest",
+        "portType": "composition",
+        "description": "Manifest thành phẩm",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "defaultParams": {
+      "platforms": [
+        "tiktok",
+        "youtube"
+      ],
+      "outputFileName": "final_video.mp4"
+    },
+    "mockable": true,
+    "baseType": null,
+    "scope": null,
+    "capabilities": [],
+    "slots": [
+      {
+        "slotId": "in_video",
+        "paramKey": "video",
+        "zone": "in",
+        "label": "video",
+        "description": "Video cần xuất bản",
+        "valueType": "video",
+        "defaultValue": null,
+        "constraints": {
+          "required": true,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "body_platforms",
+        "paramKey": "platforms",
+        "zone": "body",
+        "label": "platforms",
+        "description": "",
+        "valueType": "string_list",
+        "defaultValue": [
+          "tiktok",
+          "youtube"
+        ],
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "list",
+        "group": null
+      },
+      {
+        "slotId": "body_outputFileName",
+        "paramKey": "outputFileName",
+        "zone": "body",
+        "label": "outputFileName",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": "final_video.mp4",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "out_manifest",
+        "paramKey": "manifest",
+        "zone": "out",
+        "label": "manifest",
+        "description": "Manifest thành phẩm",
+        "valueType": "composition",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      }
+    ]
+  },
+  {
+    "typeName": "character_image",
+    "displayName": "Nhân vật từ ảnh",
+    "category": "Identity",
+    "description": "Dùng một ảnh bất kỳ làm nhân vật tham chiếu, không cần tạo hồ sơ đầy đủ",
+    "inputPorts": [],
+    "outputPorts": [
+      {
+        "name": "image",
+        "portType": "image",
+        "description": "Ảnh nhân vật",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "reference_images",
+        "portType": "image[]",
+        "description": "Ảnh tham chiếu nhân vật",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "defaultParams": {
+      "uri": "",
+      "name": ""
+    },
+    "mockable": true,
+    "baseType": null,
+    "scope": null,
+    "capabilities": [],
+    "slots": [
+      {
+        "slotId": "body_uri",
+        "paramKey": "uri",
+        "zone": "body",
+        "label": "uri",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": "",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "body_name",
+        "paramKey": "name",
+        "zone": "body",
+        "label": "name",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": "",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "out_image",
+        "paramKey": "image",
+        "zone": "out",
+        "label": "image",
+        "description": "Ảnh nhân vật",
+        "valueType": "image",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      },
+      {
+        "slotId": "out_reference_images",
+        "paramKey": "reference_images",
+        "zone": "out",
+        "label": "reference_images",
+        "description": "Ảnh tham chiếu nhân vật",
+        "valueType": "image[]",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      }
+    ]
+  },
+  {
+    "typeName": "scene",
+    "displayName": "Cảnh",
+    "category": "Structure",
+    "description": "Ghép một ảnh và lời thoại thành một cảnh để dựng phim",
+    "inputPorts": [
+      {
+        "name": "image",
+        "portType": "image",
+        "description": "Ảnh của cảnh",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "text",
+        "portType": "text",
+        "description": "Lời thoại hoặc mô tả cảnh",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "outputPorts": [
+      {
+        "name": "scenes",
+        "portType": "scenes",
+        "description": "Cảnh đã ghép",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "image",
+        "portType": "image",
+        "description": "Ảnh của cảnh",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "defaultParams": {
+      "title": "Cảnh mới",
+      "durationSec": 6
+    },
+    "mockable": true,
+    "baseType": null,
+    "scope": null,
+    "capabilities": [],
+    "slots": [
+      {
+        "slotId": "in_image",
+        "paramKey": "image",
+        "zone": "in",
+        "label": "image",
+        "description": "Ảnh của cảnh",
+        "valueType": "image",
+        "defaultValue": null,
+        "constraints": {
+          "required": true,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "in_text",
+        "paramKey": "text",
+        "zone": "in",
+        "label": "text",
+        "description": "Lời thoại hoặc mô tả cảnh",
+        "valueType": "text",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "body_title",
+        "paramKey": "title",
+        "zone": "body",
+        "label": "title",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": "Cảnh mới",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "body_durationSec",
+        "paramKey": "durationSec",
+        "zone": "body",
+        "label": "durationSec",
+        "description": "",
+        "valueType": "integer",
+        "defaultValue": 6,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "number",
+        "group": null
+      },
+      {
+        "slotId": "out_scenes",
+        "paramKey": "scenes",
+        "zone": "out",
+        "label": "scenes",
+        "description": "Cảnh đã ghép",
+        "valueType": "scenes",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      },
+      {
+        "slotId": "out_image",
+        "paramKey": "image",
+        "zone": "out",
+        "label": "image",
+        "description": "Ảnh của cảnh",
+        "valueType": "image",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      }
+    ]
+  },
+  {
+    "typeName": "transition",
+    "displayName": "Chuyển cảnh",
+    "category": "Structure",
+    "description": "Đặt kiểu chuyển cảnh (mờ dần, trượt, cắt) giữa các cảnh",
+    "inputPorts": [
+      {
+        "name": "scenes",
+        "portType": "scenes",
+        "description": "Các cảnh cần chuyển tiếp",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "outputPorts": [
+      {
+        "name": "scenes",
+        "portType": "scenes",
+        "description": "Các cảnh kèm chuyển cảnh",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "defaultParams": {
+      "style": "fade",
+      "durationSec": 0.5
+    },
+    "mockable": true,
+    "baseType": null,
+    "scope": null,
+    "capabilities": [],
+    "slots": [
+      {
+        "slotId": "in_scenes",
+        "paramKey": "scenes",
+        "zone": "in",
+        "label": "scenes",
+        "description": "Các cảnh cần chuyển tiếp",
+        "valueType": "scenes",
+        "defaultValue": null,
+        "constraints": {
+          "required": true,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "body_style",
+        "paramKey": "style",
+        "zone": "body",
+        "label": "style",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": "fade",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "body_durationSec",
+        "paramKey": "durationSec",
+        "zone": "body",
+        "label": "durationSec",
+        "description": "",
+        "valueType": "number",
+        "defaultValue": 0.5,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "number",
+        "group": null
+      },
+      {
+        "slotId": "out_scenes",
+        "paramKey": "scenes",
+        "zone": "out",
+        "label": "scenes",
+        "description": "Các cảnh kèm chuyển cảnh",
+        "valueType": "scenes",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      }
+    ]
+  },
+  {
+    "typeName": "source_video",
+    "displayName": "Nguồn Video (Douyin/YT/Local)",
+    "category": "Input",
+    "description": "Trích xuất video, âm thanh, metadata từ liên kết hoặc file tải lên. [CẢNH BÁO BẢN QUYỀN]: Tải và đăng lại video người khác có rủi ro vi phạm bản quyền và chính sách nền tảng. Mặc định 'reference_only' (chỉ dùng tham khảo cấu trúc). Không tự động hoá re-up nội dung khi chưa có quyền sở hữu hợp pháp.",
+    "inputPorts": [
+      {
+        "name": "url",
+        "portType": "text",
+        "description": "Đường dẫn video (Douyin, TikTok, YouTube) hoặc mã nguồn",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "outputPorts": [
+      {
+        "name": "video",
+        "portType": "video",
+        "description": "Video nguồn đã tải",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "audio",
+        "portType": "audio",
+        "description": "Audio tách từ video (16k mono)",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "metadata",
+        "portType": "text",
+        "description": "Thông tin tiêu đề, mô tả, chỉ số tương tác",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "defaultParams": {
+      "url": "",
+      "rights": "reference_only"
+    },
+    "mockable": true,
+    "baseType": null,
+    "scope": null,
+    "capabilities": [],
+    "slots": [
+      {
+        "slotId": "in_url",
+        "paramKey": "url",
+        "zone": "in",
+        "label": "url",
+        "description": "Đường dẫn video (Douyin, TikTok, YouTube) hoặc mã nguồn",
+        "valueType": "text",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "body_rights",
+        "paramKey": "rights",
+        "zone": "body",
+        "label": "rights",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": "reference_only",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "out_video",
+        "paramKey": "video",
+        "zone": "out",
+        "label": "video",
+        "description": "Video nguồn đã tải",
+        "valueType": "video",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      },
+      {
+        "slotId": "out_audio",
+        "paramKey": "audio",
+        "zone": "out",
+        "label": "audio",
+        "description": "Audio tách từ video (16k mono)",
+        "valueType": "audio",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      },
+      {
+        "slotId": "out_metadata",
+        "paramKey": "metadata",
+        "zone": "out",
+        "label": "metadata",
+        "description": "Thông tin tiêu đề, mô tả, chỉ số tương tác",
+        "valueType": "text",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      }
+    ]
+  },
+  {
+    "typeName": "localize",
+    "displayName": "Bản địa hoá (Douyin/TikTok -> VI)",
+    "category": "Intelligence",
+    "description": "Tự động nhận diện lời thoại (ASR), dịch câu, viết lại theo giọng thương hiệu và lồng tiếng. Chế độ Remake (Mode R, mặc định): An toàn, chỉ lấy cấu trúc ý, dựng lại bằng hình ảnh kênh mình. Chế độ Localize (Mode L): Giữ video gốc, YÊU CẦU có quyền sử dụng hợp pháp (rights != 'reference_only').",
+    "inputPorts": [
+      {
+        "name": "video",
+        "portType": "video",
+        "description": "Video nguồn",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "audio",
+        "portType": "audio",
+        "description": "Audio gốc của video",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "outputPorts": [
+      {
+        "name": "script",
+        "portType": "script",
+        "description": "Kịch bản tiếng Việt đã viết lại",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "audio",
+        "portType": "audio",
+        "description": "Giọng đọc tiếng Việt (-14 LUFS)",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "captions",
+        "portType": "captions",
+        "description": "Phụ đề tiếng Việt",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "defaultParams": {
+      "mode": "R",
+      "style": "faithful",
+      "voice_id": "soc-nho",
+      "auto_draft": true
+    },
+    "mockable": true,
+    "baseType": null,
+    "scope": null,
+    "capabilities": [],
+    "slots": [
+      {
+        "slotId": "in_video",
+        "paramKey": "video",
+        "zone": "in",
+        "label": "video",
+        "description": "Video nguồn",
+        "valueType": "video",
+        "defaultValue": null,
+        "constraints": {
+          "required": true,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "in_audio",
+        "paramKey": "audio",
+        "zone": "in",
+        "label": "audio",
+        "description": "Audio gốc của video",
+        "valueType": "audio",
+        "defaultValue": null,
+        "constraints": {
+          "required": true,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "body_mode",
+        "paramKey": "mode",
+        "zone": "body",
+        "label": "mode",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": "R",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "body_style",
+        "paramKey": "style",
+        "zone": "body",
+        "label": "style",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": "faithful",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "body_voice_id",
+        "paramKey": "voice_id",
+        "zone": "body",
+        "label": "voice_id",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": "soc-nho",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "body_auto_draft",
+        "paramKey": "auto_draft",
+        "zone": "body",
+        "label": "auto_draft",
+        "description": "",
+        "valueType": "boolean",
+        "defaultValue": true,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "toggle",
+        "group": null
+      },
+      {
+        "slotId": "out_script",
+        "paramKey": "script",
+        "zone": "out",
+        "label": "script",
+        "description": "Kịch bản tiếng Việt đã viết lại",
+        "valueType": "script",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      },
+      {
+        "slotId": "out_audio",
+        "paramKey": "audio",
+        "zone": "out",
+        "label": "audio",
+        "description": "Giọng đọc tiếng Việt (-14 LUFS)",
+        "valueType": "audio",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      },
+      {
+        "slotId": "out_captions",
+        "paramKey": "captions",
+        "zone": "out",
+        "label": "captions",
+        "description": "Phụ đề tiếng Việt",
+        "valueType": "captions",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      }
+    ]
+  },
+  {
+    "typeName": "blueprint_analyze",
+    "displayName": "Phân tích Blueprint Video",
+    "category": "Intelligence",
+    "description": "Bóc tách cấu trúc video mẫu thành các nhịp Hook, Problem, Demo, Proof, Offer, CTA",
+    "inputPorts": [
+      {
+        "name": "video",
+        "portType": "video",
+        "description": "Video mẫu",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "outputPorts": [
+      {
+        "name": "blueprint",
+        "portType": "text",
+        "description": "Dữ liệu VideoBlueprint JSON",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "defaultParams": {},
+    "mockable": true,
+    "baseType": null,
+    "scope": null,
+    "capabilities": [],
+    "slots": [
+      {
+        "slotId": "in_video",
+        "paramKey": "video",
+        "zone": "in",
+        "label": "video",
+        "description": "Video mẫu",
+        "valueType": "video",
+        "defaultValue": null,
+        "constraints": {
+          "required": true,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "out_blueprint",
+        "paramKey": "blueprint",
+        "zone": "out",
+        "label": "blueprint",
+        "description": "Dữ liệu VideoBlueprint JSON",
+        "valueType": "text",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      }
+    ]
+  },
+  {
+    "typeName": "script_from_blueprint",
+    "displayName": "Sinh kịch bản KOC/Affiliate",
+    "category": "Intelligence",
+    "description": "Áp dụng cấu trúc Blueprint cho sản phẩm và nhân vật, kiểm tra tuân thủ chính sách quảng cáo",
+    "inputPorts": [
+      {
+        "name": "blueprint",
+        "portType": "text",
+        "description": "Dữ liệu Blueprint mẫu",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "character",
+        "portType": "character",
+        "description": "Nhân vật KOC",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "outputPorts": [
+      {
+        "name": "script",
+        "portType": "script",
+        "description": "Kịch bản phân cảnh hoàn chỉnh",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "render_request",
+        "portType": "text",
+        "description": "Cấu hình RenderRequest",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "defaultParams": {
+      "generator_type": "koc_review",
+      "voice_id": "soc-nho"
+    },
+    "mockable": true,
+    "baseType": null,
+    "scope": null,
+    "capabilities": [],
+    "slots": [
+      {
+        "slotId": "in_blueprint",
+        "paramKey": "blueprint",
+        "zone": "in",
+        "label": "blueprint",
+        "description": "Dữ liệu Blueprint mẫu",
+        "valueType": "text",
+        "defaultValue": null,
+        "constraints": {
+          "required": true,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "in_character",
+        "paramKey": "character",
+        "zone": "in",
+        "label": "character",
+        "description": "Nhân vật KOC",
+        "valueType": "character",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "body_generator_type",
+        "paramKey": "generator_type",
+        "zone": "body",
+        "label": "generator_type",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": "koc_review",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "body_voice_id",
+        "paramKey": "voice_id",
+        "zone": "body",
+        "label": "voice_id",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": "soc-nho",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "out_script",
+        "paramKey": "script",
+        "zone": "out",
+        "label": "script",
+        "description": "Kịch bản phân cảnh hoàn chỉnh",
+        "valueType": "script",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      },
+      {
+        "slotId": "out_render_request",
+        "paramKey": "render_request",
+        "zone": "out",
+        "label": "render_request",
+        "description": "Cấu hình RenderRequest",
+        "valueType": "text",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      }
+    ]
+  },
+  {
+    "typeName": "channel_insight",
+    "displayName": "Phân tích Kênh Đối thủ",
+    "category": "Intelligence",
+    "description": "Bóc tách thống kê, chủ đề pillars, mẫu tiêu đề và công thức viral từ kênh YouTube/TikTok",
+    "inputPorts": [
+      {
+        "name": "channel_url",
+        "portType": "text",
+        "description": "URL kênh đối thủ",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "outputPorts": [
+      {
+        "name": "blueprint",
+        "portType": "text",
+        "description": "Dữ liệu ChannelBlueprint",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "pillars",
+        "portType": "text",
+        "description": "Danh sách pillars nội dung",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "summary",
+        "portType": "text",
+        "description": "Tóm tắt phân tích kênh",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "defaultParams": {
+      "max_videos": 50
+    },
+    "mockable": true,
+    "baseType": null,
+    "scope": null,
+    "capabilities": [],
+    "slots": [
+      {
+        "slotId": "in_channel_url",
+        "paramKey": "channel_url",
+        "zone": "in",
+        "label": "channel_url",
+        "description": "URL kênh đối thủ",
+        "valueType": "text",
+        "defaultValue": null,
+        "constraints": {
+          "required": true,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "body_max_videos",
+        "paramKey": "max_videos",
+        "zone": "body",
+        "label": "max_videos",
+        "description": "",
+        "valueType": "integer",
+        "defaultValue": 50,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "number",
+        "group": null
+      },
+      {
+        "slotId": "out_blueprint",
+        "paramKey": "blueprint",
+        "zone": "out",
+        "label": "blueprint",
+        "description": "Dữ liệu ChannelBlueprint",
+        "valueType": "text",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      },
+      {
+        "slotId": "out_pillars",
+        "paramKey": "pillars",
+        "zone": "out",
+        "label": "pillars",
+        "description": "Danh sách pillars nội dung",
+        "valueType": "text",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      },
+      {
+        "slotId": "out_summary",
+        "paramKey": "summary",
+        "zone": "out",
+        "label": "summary",
+        "description": "Tóm tắt phân tích kênh",
+        "valueType": "text",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      }
+    ]
+  },
+  {
+    "typeName": "bg_remove",
+    "displayName": "Tách nền ảnh",
+    "category": "Structure",
+    "description": "Tách nền ảnh thành PNG trong suốt + mặt nạ (rembg/u2net, chạy CPU). Nối ảnh nhân vật hoặc chọn nhân vật để có ảnh cắt sẵn, giữ nhất quán.",
+    "inputPorts": [
+      {
+        "name": "image",
+        "portType": "image",
+        "description": "Ảnh cần tách nền (bỏ trống nếu chọn nhân vật)",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "outputPorts": [
+      {
+        "name": "image",
+        "portType": "image",
+        "description": "Ảnh đã tách nền (PNG RGBA)",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "mask",
+        "portType": "image",
+        "description": "Mặt nạ alpha",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "defaultParams": {
+      "model": "u2net",
+      "alpha_matting": false,
+      "characterId": "",
+      "imageIndex": 0
+    },
+    "mockable": false,
+    "baseType": null,
+    "scope": null,
+    "capabilities": [],
+    "slots": [
+      {
+        "slotId": "in_image",
+        "paramKey": "image",
+        "zone": "in",
+        "label": "image",
+        "description": "Ảnh cần tách nền (bỏ trống nếu chọn nhân vật)",
+        "valueType": "image",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "body_model",
+        "paramKey": "model",
+        "zone": "body",
+        "label": "model",
+        "description": "",
+        "valueType": "model_key",
+        "defaultValue": "u2net",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "model_picker",
+        "group": null
+      },
+      {
+        "slotId": "body_alpha_matting",
+        "paramKey": "alpha_matting",
+        "zone": "body",
+        "label": "alpha_matting",
+        "description": "",
+        "valueType": "boolean",
+        "defaultValue": false,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "toggle",
+        "group": null
+      },
+      {
+        "slotId": "body_characterId",
+        "paramKey": "characterId",
+        "zone": "body",
+        "label": "characterId",
+        "description": "",
+        "valueType": "character_id",
+        "defaultValue": "",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "character_picker",
+        "group": null
+      },
+      {
+        "slotId": "body_imageIndex",
+        "paramKey": "imageIndex",
+        "zone": "body",
+        "label": "imageIndex",
+        "description": "",
+        "valueType": "integer",
+        "defaultValue": 0,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "number",
+        "group": null
+      },
+      {
+        "slotId": "out_image",
+        "paramKey": "image",
+        "zone": "out",
+        "label": "image",
+        "description": "Ảnh đã tách nền (PNG RGBA)",
+        "valueType": "image",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      },
+      {
+        "slotId": "out_mask",
+        "paramKey": "mask",
+        "zone": "out",
+        "label": "mask",
+        "description": "Mặt nạ alpha",
+        "valueType": "image",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      }
+    ]
+  },
+  {
+    "typeName": "word_captions",
+    "displayName": "Phụ đề từng từ",
+    "category": "Audio",
+    "description": "Nhận dạng lời và canh thời gian từng từ (faster-whisper, CPU). Ra phụ đề SRT và danh sách từ có mốc thời gian cho chữ karaoke.",
+    "inputPorts": [
+      {
+        "name": "audio",
+        "portType": "audio",
+        "description": "Giọng đọc / âm thanh",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "outputPorts": [
+      {
+        "name": "captions",
+        "portType": "captions",
+        "description": "Phụ đề SRT",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "words",
+        "portType": "text",
+        "description": "JSON từng từ: word, start, end",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "defaultParams": {
+      "model_size": "small",
+      "language": "vi"
+    },
+    "mockable": false,
+    "baseType": null,
+    "scope": null,
+    "capabilities": [],
+    "slots": [
+      {
+        "slotId": "in_audio",
+        "paramKey": "audio",
+        "zone": "in",
+        "label": "audio",
+        "description": "Giọng đọc / âm thanh",
+        "valueType": "audio",
+        "defaultValue": null,
+        "constraints": {
+          "required": true,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "body_model_size",
+        "paramKey": "model_size",
+        "zone": "body",
+        "label": "model_size",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": "small",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "body_language",
+        "paramKey": "language",
+        "zone": "body",
+        "label": "language",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": "vi",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "out_captions",
+        "paramKey": "captions",
+        "zone": "out",
+        "label": "captions",
+        "description": "Phụ đề SRT",
+        "valueType": "captions",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      },
+      {
+        "slotId": "out_words",
+        "paramKey": "words",
+        "zone": "out",
+        "label": "words",
+        "description": "JSON từng từ: word, start, end",
+        "valueType": "text",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      }
+    ]
+  },
+  {
+    "typeName": "scene_cut",
+    "displayName": "Cắt cảnh video",
+    "category": "Structure",
+    "description": "Phát hiện điểm đổi cảnh trong video (PySceneDetect). Tuỳ chọn xuất clip từng cảnh để cắt Shorts từ tập dài.",
+    "inputPorts": [
+      {
+        "name": "video",
+        "portType": "video",
+        "description": "Video cần tách cảnh",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "outputPorts": [
+      {
+        "name": "scenes",
+        "portType": "scenes",
+        "description": "Danh sách cảnh: mốc bắt đầu, kết thúc, độ dài",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "report",
+        "portType": "text",
+        "description": "Tóm tắt số cảnh",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "defaultParams": {
+      "threshold": 3.0,
+      "min_scene_s": 1.0,
+      "export_clips": false,
+      "aspect": "keep",
+      "max_scenes": 200
+    },
+    "mockable": false,
+    "baseType": null,
+    "scope": null,
+    "capabilities": [],
+    "slots": [
+      {
+        "slotId": "in_video",
+        "paramKey": "video",
+        "zone": "in",
+        "label": "video",
+        "description": "Video cần tách cảnh",
+        "valueType": "video",
+        "defaultValue": null,
+        "constraints": {
+          "required": true,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "body_threshold",
+        "paramKey": "threshold",
+        "zone": "body",
+        "label": "threshold",
+        "description": "",
+        "valueType": "number",
+        "defaultValue": 3.0,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "number",
+        "group": null
+      },
+      {
+        "slotId": "body_min_scene_s",
+        "paramKey": "min_scene_s",
+        "zone": "body",
+        "label": "min_scene_s",
+        "description": "",
+        "valueType": "number",
+        "defaultValue": 1.0,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "number",
+        "group": null
+      },
+      {
+        "slotId": "body_export_clips",
+        "paramKey": "export_clips",
+        "zone": "body",
+        "label": "export_clips",
+        "description": "",
+        "valueType": "boolean",
+        "defaultValue": false,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "toggle",
+        "group": null
+      },
+      {
+        "slotId": "body_aspect",
+        "paramKey": "aspect",
+        "zone": "body",
+        "label": "aspect",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": "keep",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "body_max_scenes",
+        "paramKey": "max_scenes",
+        "zone": "body",
+        "label": "max_scenes",
+        "description": "",
+        "valueType": "integer",
+        "defaultValue": 200,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "number",
+        "group": null
+      },
+      {
+        "slotId": "out_scenes",
+        "paramKey": "scenes",
+        "zone": "out",
+        "label": "scenes",
+        "description": "Danh sách cảnh: mốc bắt đầu, kết thúc, độ dài",
+        "valueType": "scenes",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      },
+      {
+        "slotId": "out_report",
+        "paramKey": "report",
+        "zone": "out",
+        "label": "report",
+        "description": "Tóm tắt số cảnh",
+        "valueType": "text",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      }
+    ]
+  },
+  {
+    "typeName": "depth_layers",
+    "displayName": "Tách lớp chiều sâu",
+    "category": "Structure",
+    "description": "Tách ảnh thành nền / trung cảnh / tiền cảnh (Depth Anything V2 Small, CPU) cho hiệu ứng parallax.",
+    "inputPorts": [
+      {
+        "name": "image",
+        "portType": "image",
+        "description": "Ảnh cần tách lớp",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "outputPorts": [
+      {
+        "name": "bg",
+        "portType": "image",
+        "description": "Lớp nền (không lỗ hổng)",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "mid",
+        "portType": "image",
+        "description": "Lớp trung + tiền cảnh (RGBA)",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "fg",
+        "portType": "image",
+        "description": "Lớp tiền cảnh (RGBA)",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "depth",
+        "portType": "image",
+        "description": "Bản đồ độ sâu (sáng = gần)",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "defaultParams": {
+      "fg_pct": 70,
+      "mid_pct": 35,
+      "feather": 3,
+      "max_side": 1280,
+      "characterId": "",
+      "imageIndex": 0
+    },
+    "mockable": false,
+    "baseType": null,
+    "scope": null,
+    "capabilities": [],
+    "slots": [
+      {
+        "slotId": "in_image",
+        "paramKey": "image",
+        "zone": "in",
+        "label": "image",
+        "description": "Ảnh cần tách lớp",
+        "valueType": "image",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "body_fg_pct",
+        "paramKey": "fg_pct",
+        "zone": "body",
+        "label": "fg_pct",
+        "description": "",
+        "valueType": "integer",
+        "defaultValue": 70,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "number",
+        "group": null
+      },
+      {
+        "slotId": "body_mid_pct",
+        "paramKey": "mid_pct",
+        "zone": "body",
+        "label": "mid_pct",
+        "description": "",
+        "valueType": "integer",
+        "defaultValue": 35,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "number",
+        "group": null
+      },
+      {
+        "slotId": "body_feather",
+        "paramKey": "feather",
+        "zone": "body",
+        "label": "feather",
+        "description": "",
+        "valueType": "integer",
+        "defaultValue": 3,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "number",
+        "group": null
+      },
+      {
+        "slotId": "body_max_side",
+        "paramKey": "max_side",
+        "zone": "body",
+        "label": "max_side",
+        "description": "",
+        "valueType": "integer",
+        "defaultValue": 1280,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "number",
+        "group": null
+      },
+      {
+        "slotId": "body_characterId",
+        "paramKey": "characterId",
+        "zone": "body",
+        "label": "characterId",
+        "description": "",
+        "valueType": "character_id",
+        "defaultValue": "",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "character_picker",
+        "group": null
+      },
+      {
+        "slotId": "body_imageIndex",
+        "paramKey": "imageIndex",
+        "zone": "body",
+        "label": "imageIndex",
+        "description": "",
+        "valueType": "integer",
+        "defaultValue": 0,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "number",
+        "group": null
+      },
+      {
+        "slotId": "out_bg",
+        "paramKey": "bg",
+        "zone": "out",
+        "label": "bg",
+        "description": "Lớp nền (không lỗ hổng)",
+        "valueType": "image",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      },
+      {
+        "slotId": "out_mid",
+        "paramKey": "mid",
+        "zone": "out",
+        "label": "mid",
+        "description": "Lớp trung + tiền cảnh (RGBA)",
+        "valueType": "image",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      },
+      {
+        "slotId": "out_fg",
+        "paramKey": "fg",
+        "zone": "out",
+        "label": "fg",
+        "description": "Lớp tiền cảnh (RGBA)",
+        "valueType": "image",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      },
+      {
+        "slotId": "out_depth",
+        "paramKey": "depth",
+        "zone": "out",
+        "label": "depth",
+        "description": "Bản đồ độ sâu (sáng = gần)",
+        "valueType": "image",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      }
+    ]
+  },
+  {
+    "typeName": "handdraw",
+    "displayName": "Vẽ tay bảng trắng",
+    "category": "Generation",
+    "description": "Biến ảnh phác thảo nét đen nền trắng thành video vẽ dần từng nét kèm bàn tay cầm bút (9:16, cần ffmpeg).",
+    "inputPorts": [
+      {
+        "name": "image",
+        "portType": "image",
+        "description": "Ảnh nét đen trên nền trắng",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "outputPorts": [
+      {
+        "name": "video",
+        "portType": "video",
+        "description": "Video vẽ tay (MP4)",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "defaultParams": {
+      "duration_sec": 5.0,
+      "fps": 24,
+      "width": 540,
+      "height": 960,
+      "show_hand": true
+    },
+    "mockable": false,
+    "baseType": null,
+    "scope": null,
+    "capabilities": [],
+    "slots": [
+      {
+        "slotId": "in_image",
+        "paramKey": "image",
+        "zone": "in",
+        "label": "image",
+        "description": "Ảnh nét đen trên nền trắng",
+        "valueType": "image",
+        "defaultValue": null,
+        "constraints": {
+          "required": true,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "body_duration_sec",
+        "paramKey": "duration_sec",
+        "zone": "body",
+        "label": "duration_sec",
+        "description": "",
+        "valueType": "number",
+        "defaultValue": 5.0,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "number",
+        "group": null
+      },
+      {
+        "slotId": "body_fps",
+        "paramKey": "fps",
+        "zone": "body",
+        "label": "fps",
+        "description": "",
+        "valueType": "integer",
+        "defaultValue": 24,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "number",
+        "group": null
+      },
+      {
+        "slotId": "body_width",
+        "paramKey": "width",
+        "zone": "body",
+        "label": "width",
+        "description": "",
+        "valueType": "integer",
+        "defaultValue": 540,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "number",
+        "group": null
+      },
+      {
+        "slotId": "body_height",
+        "paramKey": "height",
+        "zone": "body",
+        "label": "height",
+        "description": "",
+        "valueType": "integer",
+        "defaultValue": 960,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "number",
+        "group": null
+      },
+      {
+        "slotId": "body_show_hand",
+        "paramKey": "show_hand",
+        "zone": "body",
+        "label": "show_hand",
+        "description": "",
+        "valueType": "boolean",
+        "defaultValue": true,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "toggle",
+        "group": null
+      },
+      {
+        "slotId": "out_video",
+        "paramKey": "video",
+        "zone": "out",
+        "label": "video",
+        "description": "Video vẽ tay (MP4)",
+        "valueType": "video",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      }
+    ]
+  },
+  {
+    "typeName": "voice_clone",
+    "displayName": "Clone giọng",
+    "category": "Audio",
+    "description": "Nhân bản giọng từ mẫu 3.5–6s vào kho giọng (OmniVoice). Bắt buộc ghi rõ mẫu của ai và đã được đồng ý. Không ghi đè giọng có sẵn; mock chỉ kiểm điều kiện.",
+    "inputPorts": [
+      {
+        "name": "audio",
+        "portType": "audio",
+        "description": "Mẫu giọng sạch, một người nói",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "outputPorts": [
+      {
+        "name": "voice_id",
+        "portType": "text",
+        "description": "Mã giọng trong kho",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "preview",
+        "portType": "audio",
+        "description": "Câu đọc thử bằng giọng mới",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "report",
+        "portType": "text",
+        "description": "Kết quả",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "defaultParams": {
+      "name": "",
+      "display_name": "",
+      "consent_note": "",
+      "dialect": "south",
+      "duration": 4.5,
+      "verify": true
+    },
+    "mockable": false,
+    "baseType": null,
+    "scope": null,
+    "capabilities": [],
+    "slots": [
+      {
+        "slotId": "in_audio",
+        "paramKey": "audio",
+        "zone": "in",
+        "label": "audio",
+        "description": "Mẫu giọng sạch, một người nói",
+        "valueType": "audio",
+        "defaultValue": null,
+        "constraints": {
+          "required": true,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "body_name",
+        "paramKey": "name",
+        "zone": "body",
+        "label": "name",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": "",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "body_display_name",
+        "paramKey": "display_name",
+        "zone": "body",
+        "label": "display_name",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": "",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "body_consent_note",
+        "paramKey": "consent_note",
+        "zone": "body",
+        "label": "consent_note",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": "",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "body_dialect",
+        "paramKey": "dialect",
+        "zone": "body",
+        "label": "dialect",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": "south",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "body_duration",
+        "paramKey": "duration",
+        "zone": "body",
+        "label": "duration",
+        "description": "",
+        "valueType": "number",
+        "defaultValue": 4.5,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "number",
+        "group": null
+      },
+      {
+        "slotId": "body_verify",
+        "paramKey": "verify",
+        "zone": "body",
+        "label": "verify",
+        "description": "",
+        "valueType": "boolean",
+        "defaultValue": true,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "toggle",
+        "group": null
+      },
+      {
+        "slotId": "out_voice_id",
+        "paramKey": "voice_id",
+        "zone": "out",
+        "label": "voice_id",
+        "description": "Mã giọng trong kho",
+        "valueType": "text",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      },
+      {
+        "slotId": "out_preview",
+        "paramKey": "preview",
+        "zone": "out",
+        "label": "preview",
+        "description": "Câu đọc thử bằng giọng mới",
+        "valueType": "audio",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      },
+      {
+        "slotId": "out_report",
+        "paramKey": "report",
+        "zone": "out",
+        "label": "report",
+        "description": "Kết quả",
+        "valueType": "text",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      }
+    ]
+  },
+  {
+    "typeName": "template_render",
+    "displayName": "Dựng video theo Template",
+    "category": "Composition",
+    "description": "Đổ dữ liệu slot vào HyperFrames Template và render chuẩn đa nền tảng",
+    "inputPorts": [
+      {
+        "name": "text",
+        "portType": "text",
+        "description": "Văn bản / Hook đầu vào",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "script",
+        "portType": "script",
+        "description": "Kịch bản phân cảnh",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "images",
+        "portType": "image[]",
+        "description": "Danh sách ảnh B-roll",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "image",
+        "portType": "image",
+        "description": "Ảnh đơn sản phẩm",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "video",
+        "portType": "video",
+        "description": "Clip video nguồn",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "audio",
+        "portType": "audio",
+        "description": "Thoại chính voiceover",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "voice_clips",
+        "portType": "voice_clips",
+        "description": "Thoại từng câu từ chức năng Nói của nhân vật (tự ghép thành 1 giọng)",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "reference_images",
+        "portType": "image[]",
+        "description": "Ảnh nhân vật (làm avatar KOC)",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      },
+      {
+        "name": "product",
+        "portType": "product",
+        "description": "Hồ sơ sản phẩm (điền tên và giá vào slot sản phẩm)",
+        "required": false,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "outputPorts": [
+      {
+        "name": "video",
+        "portType": "video",
+        "description": "Video thành phẩm MP4",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "defaultParams": {
+      "template_id": "tiktok-sales-v1",
+      "platforms": [
+        "tiktok"
+      ],
+      "slot_mapping": {}
+    },
+    "mockable": true,
+    "baseType": null,
+    "scope": null,
+    "capabilities": [],
+    "slots": [
+      {
+        "slotId": "in_text",
+        "paramKey": "text",
+        "zone": "in",
+        "label": "text",
+        "description": "Văn bản / Hook đầu vào",
+        "valueType": "text",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "in_script",
+        "paramKey": "script",
+        "zone": "in",
+        "label": "script",
+        "description": "Kịch bản phân cảnh",
+        "valueType": "script",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "in_images",
+        "paramKey": "images",
+        "zone": "in",
+        "label": "images",
+        "description": "Danh sách ảnh B-roll",
+        "valueType": "image[]",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "in_image",
+        "paramKey": "image",
+        "zone": "in",
+        "label": "image",
+        "description": "Ảnh đơn sản phẩm",
+        "valueType": "image",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "in_video",
+        "paramKey": "video",
+        "zone": "in",
+        "label": "video",
+        "description": "Clip video nguồn",
+        "valueType": "video",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "in_audio",
+        "paramKey": "audio",
+        "zone": "in",
+        "label": "audio",
+        "description": "Thoại chính voiceover",
+        "valueType": "audio",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "in_voice_clips",
+        "paramKey": "voice_clips",
+        "zone": "in",
+        "label": "voice_clips",
+        "description": "Thoại từng câu từ chức năng Nói của nhân vật (tự ghép thành 1 giọng)",
+        "valueType": "voice_clips",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "in_reference_images",
+        "paramKey": "reference_images",
+        "zone": "in",
+        "label": "reference_images",
+        "description": "Ảnh nhân vật (làm avatar KOC)",
+        "valueType": "image[]",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "in_product",
+        "paramKey": "product",
+        "zone": "in",
+        "label": "product",
+        "description": "Hồ sơ sản phẩm (điền tên và giá vào slot sản phẩm)",
+        "valueType": "product",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "body_template_id",
+        "paramKey": "template_id",
+        "zone": "body",
+        "label": "template_id",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": "tiktok-sales-v1",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "body_platforms",
+        "paramKey": "platforms",
+        "zone": "body",
+        "label": "platforms",
+        "description": "",
+        "valueType": "string_list",
+        "defaultValue": [
+          "tiktok"
+        ],
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "list",
+        "group": null
+      },
+      {
+        "slotId": "body_slot_mapping",
+        "paramKey": "slot_mapping",
+        "zone": "body",
+        "label": "slot_mapping",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": {},
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "out_video",
+        "paramKey": "video",
+        "zone": "out",
+        "label": "video",
+        "description": "Video thành phẩm MP4",
+        "valueType": "video",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      }
+    ]
+  },
+  {
+    "typeName": "platform_export",
+    "displayName": "Xuất đa nền tảng (Fit Strategy)",
+    "category": "Output",
+    "description": "Tự động biến đổi kích thước video sang các tỷ lệ đa nền tảng (cover, contain, blur-pad)",
+    "inputPorts": [
+      {
+        "name": "video",
+        "portType": "video",
+        "description": "Video nguồn cần chuyển đổi",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "outputPorts": [
+      {
+        "name": "video",
+        "portType": "video",
+        "description": "Video thành phẩm theo tỷ lệ mới",
+        "required": true,
+        "mapTo": null,
+        "defaultValue": null
+      }
+    ],
+    "defaultParams": {
+      "target_platforms": [
+        "tiktok",
+        "youtube",
+        "facebook"
+      ],
+      "fit_strategy": "cover"
+    },
+    "mockable": true,
+    "baseType": null,
+    "scope": null,
+    "capabilities": [],
+    "slots": [
+      {
+        "slotId": "in_video",
+        "paramKey": "video",
+        "zone": "in",
+        "label": "video",
+        "description": "Video nguồn cần chuyển đổi",
+        "valueType": "video",
+        "defaultValue": null,
+        "constraints": {
+          "required": true,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": true,
+        "uiWidget": "port",
+        "group": null
+      },
+      {
+        "slotId": "body_target_platforms",
+        "paramKey": "target_platforms",
+        "zone": "body",
+        "label": "target_platforms",
+        "description": "",
+        "valueType": "string_list",
+        "defaultValue": [
+          "tiktok",
+          "youtube",
+          "facebook"
+        ],
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "list",
+        "group": null
+      },
+      {
+        "slotId": "body_fit_strategy",
+        "paramKey": "fit_strategy",
+        "zone": "body",
+        "label": "fit_strategy",
+        "description": "",
+        "valueType": "text",
+        "defaultValue": "cover",
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": false,
+        "allowDynamic": true,
+        "uiWidget": "text",
+        "group": null
+      },
+      {
+        "slotId": "out_video",
+        "paramKey": "video",
+        "zone": "out",
+        "label": "video",
+        "description": "Video thành phẩm theo tỷ lệ mới",
+        "valueType": "video",
+        "defaultValue": null,
+        "constraints": {
+          "required": false,
+          "multi": false,
+          "min": null,
+          "max": null,
+          "step": null,
+          "enumValues": null,
+          "acceptMime": null,
+          "modelKind": null,
+          "placeholder": null
+        },
+        "exposeAsPort": true,
+        "allowDynamic": false,
+        "uiWidget": "output_badge",
+        "group": null
+      }
+    ]
+  }
+]

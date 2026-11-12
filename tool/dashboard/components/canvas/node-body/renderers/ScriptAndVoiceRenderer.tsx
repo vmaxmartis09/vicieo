@@ -43,11 +43,11 @@ export function ScriptAndVoiceRenderer({
           <Reveal show={Boolean(expanded)}>
             <NodeScriptInput
               nodeId={nodeId}
-              mode={p.mode}
-              rawScript={p.rawScript}
+              mode={p.mode || "paste"}
+              rawScript={p.rawScript || p.content || p.text || ""}
               episodeId={p.episodeId}
               granularity={p.granularity}
-              ideaText={p.text || p.content}
+              ideaText={p.text || p.content || ""}
               targetSceneCount={p.targetSceneCount}
               targetDurationSec={p.targetDurationSec}
               connectedText={connectedInputs.includes("text")}

@@ -80,6 +80,17 @@ export const createProjectGraphSubSlice = (
             const normalizedStatus = (
               rawState === "completed" ? "succeeded" : rawState
             ) as NodeStatus;
+            const rawImg = n.params?.image || n.params?.variant;
+            const fallbackImgUrl = typeof rawImg === "string" && rawImg.trim()
+              ? (rawImg.startsWith("http") ? rawImg : rawImg.startsWith("/") ? `${CORE_URL}${rawImg}` : `${CORE_URL}/data/projects/${projectId}/files/${rawImg}`)
+              : undefined;
+            const rawVid = n.params?.video;
+            const fallbackVidUrl = typeof rawVid === "string" && rawVid.trim()
+              ? (rawVid.startsWith("http") ? rawVid : rawVid.startsWith("/") ? `${CORE_URL}${rawVid}` : `${CORE_URL}/data/projects/${projectId}/files/${rawVid}`)
+              : undefined;
+            const resolvedPreviewUrl = ui.previewUrl ?? fallbackVidUrl ?? fallbackImgUrl ?? prev?.previewUrl;
+            const resolvedPreviewType = ui.previewType ?? (fallbackVidUrl ? "video" : fallbackImgUrl ? "image" : prev?.previewType);
+
             return {
               id: n.id,
               type: "studioCard",
@@ -94,8 +105,8 @@ export const createProjectGraphSubSlice = (
                 inputs: n.inputs || prev?.inputs || {},
                 pinnedGenerationId: n.pinnedGenerationId ?? null,
                 generations: n.generations || prev?.generations || [],
-                previewUrl: ui.previewUrl ?? prev?.previewUrl,
-                previewType: ui.previewType ?? prev?.previewType,
+                previewUrl: resolvedPreviewUrl,
+                previewType: resolvedPreviewType,
                 summaryText: ui.summaryText ?? prev?.summaryText,
                 inputSummary: ui.inputSummary ?? prev?.inputSummary,
                 outputSummary: ui.outputSummary ?? prev?.outputSummary,

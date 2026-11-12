@@ -196,11 +196,11 @@ export function NodeTab() {
         {def.typeName === "script" && (
           <NodeScriptInput
             nodeId={node.id}
-            mode={params.mode}
-            rawScript={params.rawScript}
+            mode={params.mode || "paste"}
+            rawScript={params.rawScript || params.content || params.text || ""}
             episodeId={params.episodeId}
             granularity={params.granularity}
-            ideaText={params.text || params.content}
+            ideaText={params.text || params.content || ""}
             targetSceneCount={params.targetSceneCount}
             targetDurationSec={params.targetDurationSec}
             connectedText={isConnected("text")}

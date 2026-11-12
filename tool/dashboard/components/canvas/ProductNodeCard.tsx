@@ -12,8 +12,12 @@ const STATUS_LABEL: Record<string, { text: string; dot: string }> = {
   da_lam: { text: "Đã làm video review", dot: "bg-semantic-success" },
 };
 
-const imgUrl = (projectId: string, rel?: string) =>
-  rel ? (/^https?:/.test(rel) ? rel : `${CORE_URL}/projects/${projectId}/files/${rel.replace(/^\/+/, "")}`) : "";
+const imgUrl = (projectId: string, rel?: string) => {
+  if (!rel) return "";
+  if (/^https?:/.test(rel)) return rel;
+  if (rel.startsWith("/data/") || rel.startsWith("/projects/")) return `${CORE_URL}${rel}`;
+  return `${CORE_URL}/projects/${projectId}/files/${rel.replace(/^\/+/, "")}`;
+};
 
 const money = (v?: number | null) =>
   typeof v === "number" && v > 0 ? `${new Intl.NumberFormat("vi-VN").format(v)}₫` : "";
