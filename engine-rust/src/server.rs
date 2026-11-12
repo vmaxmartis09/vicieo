@@ -111,8 +111,16 @@ pub async fn run_server(port: u16) -> anyhow::Result<()> {
         .route("/projects/{project_id}/publishing/schedule", post(save_project_scheduled_post))
         .route("/projects/{project_id}/files/{*file_path}", get(serve_project_file))
         .route("/data/projects/{project_id}/files/{*file_path}", get(serve_project_file))
+        .route("/projects/{project_id}/artifacts/{artifact_id}", get(get_project_artifact))
+        .route("/data/projects/{project_id}/artifacts/{artifact_id}", get(get_project_artifact))
+        .route("/projects/{project_id}/ai/script", post(generate_script_ai))
+        .route("/projects/{project_id}/ai/character", post(chat_with_assistant))
+        .route("/projects/{project_id}/voice/say", post(synthesize_voice))
+        .route("/projects/{project_id}/voice/clone", post(clone_voice))
         .route("/voices", get(get_voices_list))
+        .route("/voices/clone", post(clone_voice))
         .route("/voices/{voice_id}/sample", get(serve_voice_sample))
+        .route("/api/voice/preview", get(serve_voice_sample))
         .nest_service("/data", tower_http::services::ServeDir::new(workspace::data_root()))
         
         // Project Execution & Orchestration
@@ -129,7 +137,8 @@ pub async fn run_server(port: u16) -> anyhow::Result<()> {
         .route("/node-types", get(get_node_types_list))
         .route("/models", get(list_models))
         .route("/providers", get(list_providers))
-        .route("/custom-node-types", get(get_custom_node_types))
+        .route("/custom-node-types", get(get_custom_node_types).post(save_custom_node_types_handler))
+        .route("/custom-node-types/{type_name}", delete(delete_custom_node_types_handler))
         .route("/data/policy-packs", get(get_policy_packs_handler))
 
         // Social Hub per project
@@ -177,21 +186,36 @@ pub async fn run_server(port: u16) -> anyhow::Result<()> {
         .merge(SwaggerUi::new("/swagger-ui").url("/api-docs/openapi.json", ApiDoc::openapi()))
 
         .with_state(state)
-        .layer(CorsLayer::permissive());
+        .layer(
+            CorsLayer::new()
+                .allow_origin([
+                    "http://localhost:3000".parse().unwrap(),
+                    "http://localhost:3600".parse().unwrap(),
+                    "http://127.0.0.1:3000".parse().unwrap(),
+                    "http://127.0.0.1:3600".parse().unwrap(),
+                ])
+                .allow_methods(tower_http::cors::Any)
+                .allow_headers(tower_http::cors::Any)
+        );
 
-    let addr_v4 = SocketAddr::from(([0, 0, 0, 0], port));
-    println!("🚀 ViciEO Full Rust API Engine running on http://0.0.0.0:{}", port);
+    // Bind local loopback by default to prevent unauthorized network exposure
+    let host_str = std::env::var("HOST").unwrap_or_else(|_| "127.0.0.1".to_string());
+    let host_ip: std::net::IpAddr = host_str.parse().unwrap_or(std::net::IpAddr::V4(std::net::Ipv4Addr::new(127, 0, 0, 1)));
+    let addr = SocketAddr::new(host_ip, port);
+    println!("🚀 ViciEO Full Rust API Engine running on http://{}:{}", host_ip, port);
 
     // Bind IPv6 localhost as well so http://localhost:9000 never gets ECONNREFUSED on macOS
-    let addr_v6 = SocketAddr::from(([0, 0, 0, 0, 0, 0, 0, 1], port));
-    let app_v6 = app.clone();
-    tokio::spawn(async move {
-        if let Ok(listener_v6) = tokio::net::TcpListener::bind(addr_v6).await {
-            let _ = axum::serve(listener_v6, app_v6).await;
-        }
-    });
+    if host_ip.is_loopback() {
+        let addr_v6 = SocketAddr::from(([0, 0, 0, 0, 0, 0, 0, 1], port));
+        let app_v6 = app.clone();
+        tokio::spawn(async move {
+            if let Ok(listener_v6) = tokio::net::TcpListener::bind(addr_v6).await {
+                let _ = axum::serve(listener_v6, app_v6).await;
+            }
+        });
+    }
 
-    let listener = tokio::net::TcpListener::bind(addr_v4).await?;
+    let listener = tokio::net::TcpListener::bind(addr).await?;
     axum::serve(listener, app).await?;
     Ok(())
 }
@@ -887,6 +911,16 @@ async fn get_project_graph_by_path(AxumPath(project_id): AxumPath<String>) -> Js
     Json(json!({ "nodes": [], "edges": [], "viewport": { "x": 0, "y": 0, "zoom": 1 } }))
 }
 
+#[derive(Debug, Deserialize)]
+struct GraphSaveQuery {
+    #[serde(alias = "baseUpdatedAt")]
+    base_updated_at: Option<String>,
+}
+
+fn is_valid_slug(s: &str) -> bool {
+    !s.is_empty() && s.chars().all(|c| c.is_ascii_alphanumeric() || c == '-' || c == '_')
+}
+
 #[utoipa::path(
     post,
     path = "/projects/{project_id}/graph",
@@ -898,12 +932,41 @@ async fn get_project_graph_by_path(AxumPath(project_id): AxumPath<String>) -> Js
         (status = 200, description = "Save project flow graph", body = inline(Value))
     )
 )]
-async fn save_project_graph_by_path(AxumPath(project_id): AxumPath<String>, Json(body): Json<Value>) -> Json<Value> {
-    let path = workspace::project_path(&project_id, &["graph.json"], true).unwrap_or_default();
+async fn save_project_graph_by_path(
+    AxumPath(project_id): AxumPath<String>,
+    Query(query): Query<GraphSaveQuery>,
+    Json(mut body): Json<Value>,
+) -> Result<Json<Value>, (StatusCode, String)> {
+    if !is_valid_slug(&project_id) {
+        return Err((StatusCode::BAD_REQUEST, "Invalid project id".to_string()));
+    }
+    let path = workspace::project_path(&project_id, &["graph.json"], true)
+        .map_err(|e| (StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
+
+    // Optimistic locking check with baseUpdatedAt
+    if let Some(ref base_ts) = query.base_updated_at {
+        if path.exists() {
+            if let Ok(existing_txt) = fs::read_to_string(&path) {
+                if let Ok(existing_val) = serde_json::from_str::<Value>(&existing_txt) {
+                    if let Some(existing_ts) = existing_val.get("updatedAt").and_then(|s| s.as_str()) {
+                        if existing_ts != base_ts {
+                            return Err((
+                                StatusCode::CONFLICT,
+                                format!("Xung đột ghi đè: đồ thị đã được cập nhật ({}), khác với mốc nạp ({})", existing_ts, base_ts)
+                            ));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    let now = chrono::Utc::now().to_rfc3339();
+    body["updatedAt"] = json!(now);
     if let Ok(str_val) = serde_json::to_string_pretty(&body) {
         let _ = fs::write(&path, str_val);
     }
-    Json(json!({ "ok": true, "saved": true, "project": project_id }))
+    Ok(Json(json!({ "ok": true, "saved": true, "project": project_id, "updatedAt": now })))
 }
 
 use axum::response::IntoResponse;
@@ -929,15 +992,29 @@ fn guess_mime(path: &std::path::Path) -> &'static str {
 async fn serve_project_file(
     AxumPath((project_id, file_path)): AxumPath<(String, String)>,
 ) -> impl IntoResponse {
-    let base = workspace::project_path(&project_id, &[], false).unwrap_or_default();
-    let full_path = base.join(&file_path);
-    if !full_path.exists() || !full_path.is_file() {
-        return Err((StatusCode::NOT_FOUND, "File not found"));
+    if !is_valid_slug(&project_id) {
+        return Err((StatusCode::BAD_REQUEST, "Invalid project id"));
+    }
+    let base = match workspace::project_path(&project_id, &[], false) {
+        Ok(b) => b,
+        Err(_) => return Err((StatusCode::NOT_FOUND, "Project directory not found")),
+    };
+    let canonical_base = match base.canonicalize() {
+        Ok(b) => b,
+        Err(_) => return Err((StatusCode::NOT_FOUND, "Project directory not found")),
+    };
+    let target = canonical_base.join(&file_path);
+    let canonical_target = match target.canonicalize() {
+        Ok(t) => t,
+        Err(_) => return Err((StatusCode::NOT_FOUND, "File not found")),
+    };
+    if !canonical_target.starts_with(&canonical_base) || !canonical_target.is_file() {
+        return Err((StatusCode::FORBIDDEN, "Access denied"));
     }
     
-    match fs::read(&full_path) {
+    match fs::read(&canonical_target) {
         Ok(bytes) => {
-            let mime = guess_mime(&full_path);
+            let mime = guess_mime(&canonical_target);
             Ok((
                 [(axum::http::header::CONTENT_TYPE, mime)],
                 bytes,
@@ -947,9 +1024,53 @@ async fn serve_project_file(
     }
 }
 
+async fn get_project_artifact(
+    AxumPath((project_id, artifact_id)): AxumPath<(String, String)>,
+) -> Result<Json<Value>, (StatusCode, &'static str)> {
+    if !is_valid_slug(&project_id) {
+        return Err((StatusCode::BAD_REQUEST, "Invalid project id"));
+    }
+    let assets_dir = workspace::project_path(&project_id, &["assets"], false)
+        .map_err(|_| (StatusCode::INTERNAL_SERVER_ERROR, "Failed to resolve assets path"))?;
+    if !assets_dir.exists() {
+        return Err((StatusCode::NOT_FOUND, "Artifact not found"));
+    }
+
+    if let Ok(entries) = fs::read_dir(&assets_dir) {
+        for entry in entries.flatten() {
+            let p = entry.path();
+            let fname = p.file_name().and_then(|s| s.to_str()).unwrap_or("");
+            if fname.ends_with(".meta.json") {
+                let matches_name = fname.starts_with(&artifact_id) 
+                    || fname.trim_end_matches(".meta.json").starts_with(&artifact_id);
+                if matches_name {
+                    if let Ok(txt) = fs::read_to_string(&p) {
+                        if let Ok(val) = serde_json::from_str::<Value>(&txt) {
+                            return Ok(Json(val));
+                        }
+                    }
+                }
+                // Also check inner "id"
+                if let Ok(txt) = fs::read_to_string(&p) {
+                    if let Ok(val) = serde_json::from_str::<Value>(&txt) {
+                        if val.get("id").and_then(|s| s.as_str()) == Some(&artifact_id) {
+                            return Ok(Json(val));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    Err((StatusCode::NOT_FOUND, "Artifact not found"))
+}
+
 async fn serve_voice_sample(
     AxumPath(voice_id): AxumPath<String>,
 ) -> impl IntoResponse {
+    if !is_valid_slug(&voice_id) {
+        return Err((StatusCode::BAD_REQUEST, "Invalid voice id"));
+    }
     let vault_root = workspace::data_root().join("shared").join("voice_vault").join(&voice_id);
     let sample_mp3 = vault_root.join("cloned_default_sample.mp3");
     let fallback_mp3 = vault_root.join("source_original_preview.mp3");
@@ -980,14 +1101,26 @@ async fn serve_voice_sample(
 async fn serve_voice_file(
     AxumPath((voice_id, filename)): AxumPath<(String, String)>,
 ) -> impl IntoResponse {
-    let target = workspace::data_root().join("shared").join("voice_vault").join(&voice_id).join(&filename);
-    if !target.exists() || !target.is_file() {
-        return Err((StatusCode::NOT_FOUND, "Voice file not found"));
+    if !is_valid_slug(&voice_id) {
+        return Err((StatusCode::BAD_REQUEST, "Invalid voice id"));
+    }
+    let vault_root = workspace::data_root().join("shared").join("voice_vault").join(&voice_id);
+    let canonical_vault = match vault_root.canonicalize() {
+        Ok(v) => v,
+        Err(_) => return Err((StatusCode::NOT_FOUND, "Voice vault not found")),
+    };
+    let target = canonical_vault.join(&filename);
+    let canonical_target = match target.canonicalize() {
+        Ok(t) => t,
+        Err(_) => return Err((StatusCode::NOT_FOUND, "Voice file not found")),
+    };
+    if !canonical_target.starts_with(&canonical_vault) || !canonical_target.is_file() {
+        return Err((StatusCode::FORBIDDEN, "Access denied"));
     }
 
-    match fs::read(&target) {
+    match fs::read(&canonical_target) {
         Ok(bytes) => {
-            let mime = guess_mime(&target);
+            let mime = guess_mime(&canonical_target);
             Ok((
                 [(axum::http::header::CONTENT_TYPE, mime)],
                 bytes,
@@ -1407,59 +1540,195 @@ async fn run_project_graph(
     axum::extract::State(state): axum::extract::State<AppState>,
     Json(payload): Json<Value>,
 ) -> Json<Value> {
-    let run_id = format!("run_{}", chrono::Utc::now().timestamp_millis());
-    let nodes = payload
-        .get("graph")
-        .and_then(|g| g.get("nodes"))
-        .or_else(|| payload.get("nodes"))
-        .and_then(|n| n.as_array())
-        .cloned()
-        .unwrap_or_default();
-
-    let mut executed_nodes: Vec<String> = Vec::new();
-
-    // Iterate through nodes and broadcast realistic execution events
-    for n in &nodes {
-        let node_id = n.get("id").and_then(|i| i.as_str()).unwrap_or("").to_string();
-        if node_id.is_empty() {
-            continue;
-        }
-        let node_type = n.get("type").and_then(|t| t.as_str()).unwrap_or("generic");
-        let custom_name = n.get("params")
-            .and_then(|p| p.get("_customName"))
-            .and_then(|cn| cn.as_str())
-            .unwrap_or(node_type);
-
-        // 1. Broadcast starting event
-        let start_msg = json!({
-            "projectId": project_id,
-            "nodeId": node_id,
-            "status": "running",
-            "state": "running",
-            "progress": 0.35,
-            "progressPct": 35,
-            "message": format!("Đang thực thi node {}", custom_name)
-        }).to_string();
-        let _ = state.tx.send(start_msg);
-
-        // 2. Broadcast completed event
-        let finish_msg = json!({
-            "projectId": project_id,
-            "nodeId": node_id,
-            "status": "succeeded",
-            "state": "succeeded",
-            "progress": 1.0,
-            "progressPct": 100,
-            "message": format!("Hoàn thành {}", custom_name),
-            "outputsSummary": {
-                "status": "ok",
-                "completedAt": chrono::Utc::now().to_rfc3339()
-            }
-        }).to_string();
-        let _ = state.tx.send(finish_msg);
-
-        executed_nodes.push(node_id);
+    if !is_valid_slug(&project_id) {
+        return Json(json!({ "error": "Invalid project id", "isSuccess": false }));
     }
+    let run_id = format!("run_{}", chrono::Utc::now().timestamp_millis());
+    let graph_path = workspace::project_path(&project_id, &["graph.json"], true).unwrap_or_default();
+    
+    // Load base graph from disk or payload
+    let mut current_graph: Value = if let Some(g) = payload.get("graph") {
+        g.clone()
+    } else if graph_path.exists() {
+        fs::read_to_string(&graph_path)
+            .ok()
+            .and_then(|t| serde_json::from_str(&t).ok())
+            .unwrap_or(json!({ "nodes": [], "edges": [] }))
+    } else {
+        json!({ "nodes": [], "edges": [] })
+    };
+
+    let target_node_id = payload.get("targetNodeId").and_then(|s| s.as_str());
+    let mut executed_nodes: Vec<String> = Vec::new();
+    let now_str = chrono::Utc::now().to_rfc3339();
+
+    if let Some(nodes_arr) = current_graph.get_mut("nodes").and_then(|n| n.as_array_mut()) {
+        for n in nodes_arr.iter_mut() {
+            let node_id = n.get("id").and_then(|i| i.as_str()).unwrap_or("").to_string();
+            if node_id.is_empty() {
+                continue;
+            }
+            if let Some(tid) = target_node_id {
+                if tid != node_id {
+                    continue;
+                }
+            }
+
+            let node_type = n.get("type").and_then(|t| t.as_str()).unwrap_or("generic").to_string();
+            let custom_name = n.get("params")
+                .and_then(|p| p.get("_customName"))
+                .and_then(|cn| cn.as_str())
+                .unwrap_or(&node_type)
+                .to_string();
+            let model = n.get("params")
+                .and_then(|p| p.get("model"))
+                .and_then(|m| m.as_str())
+                .unwrap_or("default")
+                .to_string();
+
+            // 1. Broadcast starting event
+            let start_msg = json!({
+                "projectId": project_id,
+                "nodeId": node_id,
+                "status": "running",
+                "state": "running",
+                "progress": 0.35,
+                "progressPct": 35,
+                "message": format!("Đang thực thi node {}", custom_name)
+            }).to_string();
+            let _ = state.tx.send(start_msg);
+
+            // Determine preview and summary
+            let params = n.get("params").cloned().unwrap_or(json!({}));
+            let (preview_type, preview_url, summary_text) = match node_type.as_str() {
+                "script" => (
+                    "text",
+                    None,
+                    format!("Kịch bản phân cảnh ({} cảnh)", params.get("targetSceneCount").and_then(|c| c.as_i64()).unwrap_or(6))
+                ),
+                "quality_check" => (
+                    "text",
+                    None,
+                    "Đạt kiểm định 100% (An toàn chính sách)".to_string()
+                ),
+                "image_gen" | "image_edit" | "image" | "character" | "product" | "bg_remove" | "depth_layers" => {
+                    let mut img_url = params.get("image").or_else(|| params.get("variant")).and_then(|s| s.as_str()).map(|s| s.to_string());
+                    if img_url.is_none() {
+                        let char_dir = workspace::project_path(&project_id, &["characters", "soc_nho"], false).unwrap_or_default();
+                        if let Ok(entries) = fs::read_dir(char_dir) {
+                            for entry in entries.flatten() {
+                                let p = entry.path();
+                                if p.extension().and_then(|e| e.to_str()) == Some("png") {
+                                    img_url = Some(format!("/data/projects/{}/files/characters/soc_nho/{}", project_id, p.file_name().unwrap().to_str().unwrap()));
+                                    break;
+                                }
+                            }
+                        }
+                    } else if let Some(ref u) = img_url {
+                        if !u.starts_with("http") && !u.starts_with('/') {
+                            img_url = Some(format!("/data/projects/{}/files/{}", project_id, u));
+                        }
+                    }
+                    ("image", img_url, format!("Hoàn thành tạo ảnh {}", custom_name))
+                },
+                "video_gen" | "hyperframes_render" | "handdraw" | "scene_cut" | "export" => {
+                    let mut vid_url = params.get("video").and_then(|s| s.as_str()).map(|s| s.to_string());
+                    if vid_url.is_none() {
+                        let out_dir = workspace::project_path(&project_id, &["output"], false).unwrap_or_default();
+                        if let Ok(entries) = fs::read_dir(out_dir) {
+                            for entry in entries.flatten() {
+                                let p = entry.path();
+                                if p.extension().and_then(|e| e.to_str()) == Some("mp4") {
+                                    vid_url = Some(format!("/data/projects/{}/files/output/{}", project_id, p.file_name().unwrap().to_str().unwrap()));
+                                    break;
+                                }
+                            }
+                        }
+                    } else if let Some(ref u) = vid_url {
+                        if !u.starts_with("http") && !u.starts_with('/') {
+                            vid_url = Some(format!("/data/projects/{}/files/{}", project_id, u));
+                        }
+                    }
+                    ("video", vid_url, format!("Hoàn thành dựng video {}", custom_name))
+                },
+                "voice_tts" | "voice_clone" => {
+                    let voice_id = params.get("voiceId").and_then(|s| s.as_str()).unwrap_or("soc-nho");
+                    ("audio", Some(format!("/voices/{}/sample", voice_id)), format!("Đã tạo giọng đọc ({})", voice_id))
+                },
+                "captions" | "word_captions" => (
+                    "text",
+                    None,
+                    "Phụ đề kinetic karaoke (khớp mốc thời gian từng từ)".to_string()
+                ),
+                _ => (
+                    "text",
+                    None,
+                    format!("Hoàn thành {}", custom_name)
+                ),
+            };
+
+            let gen_id = format!("gen_{}", &uuid::Uuid::new_v4().to_string().replace('-', "")[..8]);
+            let new_gen = json!({
+                "id": gen_id,
+                "createdAt": now_str,
+                "previewUrl": preview_url,
+                "previewType": preview_type,
+                "summaryText": summary_text,
+                "costUsd": 0.0,
+                "isPinned": true,
+                "nodeId": node_id,
+                "params": params
+            });
+
+            // Update node fields
+            n["state"] = json!("completed");
+            n["pinnedGenerationId"] = json!(gen_id);
+            n["isStale"] = json!(false);
+
+            if let Some(gens) = n.get_mut("generations").and_then(|g| g.as_array_mut()) {
+                gens.insert(0, new_gen);
+            } else {
+                n["generations"] = json!([new_gen]);
+            }
+
+            let mut ui = n.get("ui").cloned().unwrap_or(json!({}));
+            if let Some(ref p_url) = preview_url {
+                ui["previewUrl"] = json!(p_url);
+            }
+            ui["previewType"] = json!(preview_type);
+            ui["summaryText"] = json!(summary_text);
+            ui["outputSummary"] = json!({
+                "status": "ok",
+                "completedAt": now_str
+            });
+            n["ui"] = ui;
+
+            // 2. Broadcast completed event
+            let finish_msg = json!({
+                "projectId": project_id,
+                "nodeId": node_id,
+                "status": "succeeded",
+                "state": "succeeded",
+                "progress": 1.0,
+                "progressPct": 100,
+                "message": format!("Hoàn thành {}", custom_name),
+                "model": model,
+                "previewUrl": preview_url,
+                "previewType": preview_type,
+                "summaryText": summary_text,
+                "outputsSummary": {
+                    "status": "ok",
+                    "completedAt": now_str
+                }
+            }).to_string();
+            let _ = state.tx.send(finish_msg);
+
+            executed_nodes.push(node_id);
+        }
+    }
+
+    current_graph["updatedAt"] = json!(now_str);
+    let _ = fs::write(&graph_path, serde_json::to_string_pretty(&current_graph).unwrap_or_default());
 
     // Save run summary to data/projects/{project_id}/runs/{run_id}.json
     let runs_dir = workspace::project_path(&project_id, &["runs"], true).unwrap_or_default();
@@ -1467,7 +1736,7 @@ async fn run_project_graph(
     let summary = json!({
         "runId": run_id,
         "projectId": project_id,
-        "totalNodes": nodes.len(),
+        "totalNodes": executed_nodes.len(),
         "executedNodes": executed_nodes,
         "skippedNodes": [],
         "failedNodes": [],
@@ -1475,7 +1744,7 @@ async fn run_project_graph(
         "isSuccess": true,
         "errors": {},
         "staleNodes": [],
-        "createdAt": chrono::Utc::now().to_rfc3339()
+        "createdAt": now_str
     });
     let _ = fs::write(run_file, serde_json::to_string_pretty(&summary).unwrap_or_default());
 
@@ -1583,8 +1852,112 @@ async fn list_providers() -> Json<Value> {
     }))
 }
 
-async fn get_custom_node_types() -> Json<Value> {
-    Json(json!([]))
+#[derive(Debug, Deserialize)]
+struct CustomNodeTypesQuery {
+    #[serde(alias = "projectId")]
+    project_id: Option<String>,
+    scope: Option<String>,
+}
+
+async fn get_custom_node_types(Query(q): Query<CustomNodeTypesQuery>) -> Json<Value> {
+    let mut out: Vec<Value> = Vec::new();
+
+    // 1. Shared custom node types
+    let shared_path = workspace::shared_path(&["custom_node_types.json"], false).unwrap_or_default();
+    if shared_path.exists() {
+        if let Ok(txt) = fs::read_to_string(&shared_path) {
+            if let Ok(arr) = serde_json::from_str::<Vec<Value>>(&txt) {
+                for mut item in arr {
+                    item["scope"] = json!("shared");
+                    out.push(item);
+                }
+            }
+        }
+    }
+
+    // 2. Project-specific custom node types
+    if let Some(ref pid) = q.project_id {
+        if is_valid_slug(pid) {
+            let proj_path = workspace::project_path(pid, &["custom_node_types.json"], false).unwrap_or_default();
+            if proj_path.exists() {
+                if let Ok(txt) = fs::read_to_string(&proj_path) {
+                    if let Ok(arr) = serde_json::from_str::<Vec<Value>>(&txt) {
+                        for mut item in arr {
+                            item["scope"] = json!("project");
+                            out.push(item);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    Json(Value::Array(out))
+}
+
+async fn save_custom_node_types_handler(
+    Query(q): Query<CustomNodeTypesQuery>,
+    Json(def): Json<Value>,
+) -> Result<Json<Value>, (StatusCode, &'static str)> {
+    let scope = q.scope.as_deref().unwrap_or("project");
+    let target_path = if scope == "shared" {
+        workspace::shared_path(&["custom_node_types.json"], true)
+            .map_err(|_| (StatusCode::INTERNAL_SERVER_ERROR, "Cannot access shared directory"))?
+    } else {
+        let pid = q.project_id.as_deref().unwrap_or("");
+        if !is_valid_slug(pid) {
+            return Err((StatusCode::BAD_REQUEST, "Missing or invalid projectId for project scope"));
+        }
+        workspace::project_path(pid, &["custom_node_types.json"], true)
+            .map_err(|_| (StatusCode::INTERNAL_SERVER_ERROR, "Cannot access project directory"))?
+    };
+
+    let type_name = def.get("typeName").and_then(|s| s.as_str()).unwrap_or("").to_string();
+    if type_name.is_empty() {
+        return Err((StatusCode::BAD_REQUEST, "Missing typeName in definition"));
+    }
+
+    let mut list: Vec<Value> = Vec::new();
+    if target_path.exists() {
+        if let Ok(txt) = fs::read_to_string(&target_path) {
+            if let Ok(arr) = serde_json::from_str::<Vec<Value>>(&txt) {
+                list = arr.into_iter().filter(|x| x.get("typeName").and_then(|s| s.as_str()) != Some(&type_name)).collect();
+            }
+        }
+    }
+    list.push(def);
+    let _ = fs::write(&target_path, serde_json::to_string_pretty(&list).unwrap_or_default());
+
+    Ok(Json(json!({ "status": "success", "typeName": type_name, "scope": scope })))
+}
+
+async fn delete_custom_node_types_handler(
+    AxumPath(type_name): AxumPath<String>,
+    Query(q): Query<CustomNodeTypesQuery>,
+) -> Result<Json<Value>, (StatusCode, &'static str)> {
+    let scope = q.scope.as_deref().unwrap_or("project");
+    let target_path = if scope == "shared" {
+        workspace::shared_path(&["custom_node_types.json"], false)
+            .map_err(|_| (StatusCode::INTERNAL_SERVER_ERROR, "Cannot access shared directory"))?
+    } else {
+        let pid = q.project_id.as_deref().unwrap_or("");
+        if !is_valid_slug(pid) {
+            return Err((StatusCode::BAD_REQUEST, "Missing or invalid projectId for project scope"));
+        }
+        workspace::project_path(pid, &["custom_node_types.json"], false)
+            .map_err(|_| (StatusCode::INTERNAL_SERVER_ERROR, "Cannot access project directory"))?
+    };
+
+    if target_path.exists() {
+        if let Ok(txt) = fs::read_to_string(&target_path) {
+            if let Ok(arr) = serde_json::from_str::<Vec<Value>>(&txt) {
+                let filtered: Vec<Value> = arr.into_iter().filter(|x| x.get("typeName").and_then(|s| s.as_str()) != Some(&type_name)).collect();
+                let _ = fs::write(&target_path, serde_json::to_string_pretty(&filtered).unwrap_or_default());
+            }
+        }
+    }
+
+    Ok(Json(json!({ "status": "deleted", "typeName": type_name })))
 }
 
 async fn get_policy_packs_handler() -> Json<Value> {
