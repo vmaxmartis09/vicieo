@@ -74,9 +74,10 @@ export const useStudioStore = create<StudioStore>()(
                     : st === "running" || st === "queued"
                     ? "idle"
                     : st || "idle";
-                return n?.data
-                  ? { ...n, data: { ...n.data, status: nextStatus } }
-                  : n;
+                // errorMessage là lỗi của lần chạy trước: không khôi phục từ bản lưu cũ (gây lỗi chung trên mọi node)
+                if (!n?.data) return n;
+                const { errorMessage: _staleRunError, ...data } = n.data;
+                return { ...n, data: { ...data, status: nextStatus } };
               })
             : [];
         const merged: StudioStore = {
