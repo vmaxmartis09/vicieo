@@ -76,6 +76,7 @@ impl SocialStore {
     fn write_list(&self, name: &str, items: &[Value]) {
         let _ = atomic_write_json(&self.pub_dir.join(name), &Value::Array(items.to_vec()));
     }
+    #[allow(dead_code)] // port of store.upsert; kept for the account/template writers that call it later
     fn upsert(&self, name: &str, norm: fn(Value) -> Result<Value, String>, item: &Value, replace_pos: bool) {
         self.locked(|| {
             let mut items = self.list_file_unlocked(name, norm);

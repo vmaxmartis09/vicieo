@@ -29,7 +29,7 @@ async fn main() -> Result<()> {
             println!("{}", format!("Starting ViciEO Rust Backend on Port {}", port).green().bold());
             server::run_server(port).await?;
         }
-        Commands::Info { project } => {
+        Commands::Info { project: _ } => {
             println!("{}", "=== VICIEO CORE ENGINE (RUST NATIVE) ===".green().bold());
             let root = workspace::repo_root();
             let act_proj = workspace::active_project_id();

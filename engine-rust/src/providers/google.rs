@@ -1,4 +1,4 @@
-use anyhow::{Context, Result};
+use anyhow::Result;
 use serde_json::Value;
 
 pub async fn generate_text(prompt: &str, provider: &str, model: Option<&str>) -> Result<String> {

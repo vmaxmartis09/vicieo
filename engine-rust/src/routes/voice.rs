@@ -143,7 +143,7 @@ async fn clone_impl(project: Option<String>, body: Value) -> Result<Json<Value>,
         let mut c = vec![workspace::repo_root().join(rel), vc::vault_dir().join(rel), vc::vault_dir().join(&id).join(rel)];
         if let Some(p) = project.as_deref().filter(|p| is_valid_slug(p)) { c.push(workspace::data_root().join("projects").join(p).join(rel)); }
         // reject path escapes: sourceFile must stay inside the repo
-        c.into_iter().filter(|p| !sf.contains("..")).find(|p| p.is_file()).ok_or_else(|| err(StatusCode::BAD_REQUEST, "Không tìm thấy tệp âm thanh nguồn."))?
+        c.into_iter().filter(|_p| !sf.contains("..")).find(|p| p.is_file()).ok_or_else(|| err(StatusCode::BAD_REQUEST, "Không tìm thấy tệp âm thanh nguồn."))?
     } else {
         return Err(err(StatusCode::BAD_REQUEST, "Thiếu audioData hoặc sourceFile (.mp3, .wav, .m4a, .mp4)."));
     };

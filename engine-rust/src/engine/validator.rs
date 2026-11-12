@@ -77,7 +77,7 @@ pub fn build_deps(graph: &Value) -> (Vec<String>, HashMap<String, Vec<String>>, 
     let set: HashSet<&String> = ids.iter().collect();
     let mut parents: HashMap<String, Vec<String>> = ids.iter().map(|i| (i.clone(), vec![])).collect();
     let mut errors = vec![];
-    let mut add = |parents: &mut HashMap<String, Vec<String>>, src: &str, tgt: &str| {
+    let add = |parents: &mut HashMap<String, Vec<String>>, src: &str, tgt: &str| {
         if let Some(p) = parents.get_mut(tgt) {
             if !p.iter().any(|x| x == src) {
                 p.push(src.to_string());

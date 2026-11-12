@@ -614,11 +614,11 @@ pub(crate) async fn save_character(Query(q): Query<ProjectQuery>, Json(body): Js
     Json(json!({ "ok": true, "id": id }))
 }
 
-pub(crate) async fn get_assets(Query(q): Query<ProjectQuery>) -> Json<Value> {
+pub(crate) async fn get_assets(Query(_q): Query<ProjectQuery>) -> Json<Value> {
     Json(json!({ "assets": [] }))
 }
 
-pub(crate) async fn get_library(Query(q): Query<ProjectQuery>) -> Json<Value> {
+pub(crate) async fn get_library(Query(_q): Query<ProjectQuery>) -> Json<Value> {
     Json(json!({ "items": [] }))
 }
 
@@ -688,7 +688,7 @@ pub(crate) async fn upload_library_asset(
 ) -> Json<Value> {
     let name = payload.get("name").and_then(|n| n.as_str()).unwrap_or("asset.bin");
     let lib_dir = workspace::project_path(&project_id, &["library"], true).unwrap_or_default();
-    let target = lib_dir.join(name);
+    let _target = lib_dir.join(name);
     let rel_url = format!("/data/projects/{}/files/library/{}", project_id, name);
     Json(json!({ "ok": true, "name": name, "url": rel_url }))
 }

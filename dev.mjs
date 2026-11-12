@@ -1,4 +1,4 @@
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import path from "node:path";
 import process from "node:process";
 import { fileURLToPath } from "node:url";
@@ -18,11 +18,25 @@ console.log(" Rust Server:  http://localhost:9000 (Health: /health)\n");
 
 const children = [];
 
+// Mỗi lần chạy dọn tiến trình cũ đang LẮNG NGHE cổng (không đụng client như trình duyệt), tránh "Address already in use".
+function freePort(port) {
+  if (isWindows) return;
+  const out = spawnSync("lsof", ["-ti", `tcp:${port}`, "-sTCP:LISTEN"], { encoding: "utf8" }).stdout || "";
+  for (const pid of out.split("\n").map((x) => x.trim()).filter(Boolean)) {
+    try {
+      process.kill(Number(pid), "SIGKILL");
+      console.log(`\x1b[33mĐã dừng tiến trình cũ trên cổng ${port} (pid ${pid})\x1b[0m`);
+    } catch {}
+  }
+}
+freePort(9000);
+freePort(3600);
+
 function startProcess(name, command, args, cwd) {
   const proc = spawn(command, args, {
     cwd,
     stdio: "inherit",
-    shell: true,
+    shell: isWindows, // không dùng shell trên Unix: tránh cảnh báo DEP0190 và lỗi escape đối số
   });
 
   proc.on("error", (err) => {
