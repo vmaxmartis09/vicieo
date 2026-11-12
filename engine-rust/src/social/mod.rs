@@ -1,8 +1,13 @@
 //! Social Hub (Track E): port of socnhotv.social. Data stays as `serde_json::Value` normalised to the
 //! pydantic defaults so files written by Python and Rust round-trip with no field loss.
+pub mod adapters;
 pub mod models;
+pub mod platform_rules;
+pub mod queue;
+pub mod scheduler;
 pub mod service;
 pub mod store;
+pub mod vault;
 
 use axum::{http::StatusCode, response::IntoResponse, Json};
 use serde_json::json;

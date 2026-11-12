@@ -337,6 +337,141 @@ async fn caption_variants_route(AxumPath(_p): AxumPath<String>, b: Bytes) -> R {
 async fn audit(AxumPath(p): AxumPath<String>, Query(q): Q) -> R {
     Ok(Json(json!(store(&p)?.get_audit_log(qp(&q, "post_id"), qp(&q, "limit").and_then(|x| x.parse().ok()).unwrap_or(100)))))
 }
+async fn queue_route(AxumPath(p): AxumPath<String>, Query(q): Q) -> R {
+    let st = store(&p)?;
+    let n = |k: &str, d: usize| qp(&q, k).and_then(|x| x.parse::<usize>().ok()).unwrap_or(d);
+    let page = n("page", 1);
+    let ps = n("page_size", 100);
+    if page < 1 || !(1..=500).contains(&ps) { return Err(ApiErr::invalid("page>=1, 1<=page_size<=500")); }
+    let bucket = if q.contains_key("bucket") { qp(&q, "bucket") } else { Some("upcoming") };
+    Ok(Json(crate::social::queue::get_social_queue(&st, &crate::social::queue::QueueParams { bucket, account_id: qp(&q, "account"), platform: qp(&q, "platform"),
+        from: qp(&q, "from"), group_by: qp(&q, "group_by"), sort: qp(&q, "sort"), page, page_size: ps })))
+}
+async fn queue_alias(Query(q): Q) -> R { queue_route(AxumPath(pid(&q)), Query(q.clone())).await }
+fn dry(q: &HashMap<String, String>) -> bool { match qp(q, "dry_run") { Some("false") | Some("0") => false, Some(_) => true, None => crate::social::vault::dry_run_default() } }
+
+async fn oauth_connect(AxumPath((p, id)): AxumPath<(String, String)>, Query(q): Q) -> R {
+    let acc = store(&p)?.get_account(&id).ok_or_else(|| ApiErr::not_found("Account not found"))?;
+    let redirect = qp(&q, "redirect_uri").unwrap_or("http://localhost:3000/api/auth/callback");
+    Ok(Json(json!({"account_id":id,"platform":acc["platform"],"connect_url":crate::social::adapters::connect_url(s(&acc,"platform"), &id, redirect)})))
+}
+async fn oauth_callback(AxumPath(platform): AxumPath<String>, Query(q): Q) -> R {
+    let code = qp(&q, "code").ok_or_else(|| ApiErr::invalid("code is required"))?;
+    let redirect = qp(&q, "redirect_uri").unwrap_or("http://localhost:3000/api/auth/callback");
+    let t = crate::social::adapters::exchange_code(&platform, code, redirect).await.map_err(ApiErr::bad)?;
+    let state = qp(&q, "state");
+    if let Some(sid) = state {
+        if !sid.chars().all(|c| c.is_ascii_alphanumeric() || c == '_' || c == '-') { return Err(ApiErr::bad("invalid state")); }
+        crate::social::vault::set_key(&format!("oauth_{platform}_{sid}_access"), t["access_token"].as_str().unwrap_or(""));
+        if let Some(r) = t["refresh_token"].as_str() { crate::social::vault::set_key(&format!("oauth_{platform}_{sid}_refresh"), r); }
+    }
+    Ok(Json(json!({"status":"connected","platform":platform,"account_id":state})))
+}
+async fn refresh_token(AxumPath((p, id)): AxumPath<(String, String)>) -> R {
+    let acc = store(&p)?.get_account(&id).ok_or_else(|| ApiErr::not_found("Account not found"))?;
+    Ok(Json(json!({"status":"refreshed","details":crate::social::adapters::refresh(&acc).await})))
+}
+async fn validate_target(AxumPath((p, pid, tid)): AxumPath<(String, String, String)>) -> R {
+    let st = store(&p)?;
+    let post = st.get_post(&pid).ok_or_else(|| ApiErr::not_found("Post not found"))?;
+    let t = post["targets"].as_array().and_then(|a| a.iter().find(|t| s(t, "id") == tid)).ok_or_else(|| ApiErr::not_found("Target not found"))?;
+    let mode = st.get_account(s(t, "account_id")).and_then(|a| a["auth"]["mode"].as_str().map(String::from)).unwrap_or("manual".into());
+    Ok(Json(json!({"target_id":tid,"issues":crate::social::adapters::validate(s(t,"platform"), &mode, t, post["media"].get(0))})))
+}
+async fn publish_now(AxumPath((p, pid)): AxumPath<(String, String)>, Query(q): Q) -> R {
+    let st = store(&p)?;
+    let mut post = st.get_post(&pid).ok_or_else(|| ApiErr::not_found("Post not found"))?;
+    if post["approval"]["required"] != json!(false) && !matches!(s(&post, "status"), "approved" | "scheduled") {
+        return Err(ApiErr::conflict("Bài viết cần được phê duyệt trước khi xuất bản (approval required)"));
+    }
+    let dry_run = dry(&q);
+    let mut results = vec![];
+    for i in 0..post["targets"].as_array().map_or(0, |a| a.len()) {
+        let t = post["targets"][i].clone();
+        if s(&t, "status") == "published" { continue; }
+        let acc = st.get_account(s(&t, "account_id")).unwrap_or_else(|| json!({"id":t["account_id"],"platform":t["platform"],"handle":t["account_id"],"display_name":t["account_id"],"auth":{"mode":"manual"}}));
+        let res = crate::social::adapters::publish(&crate::social::adapters::Ctx { project_id: &p, post_id: &pid, dry_run }, &acc, &t, post["media"].get(0)).await;
+        let tg = &mut post["targets"][i];
+        if res.status == "published" {
+            tg["status"] = json!("published"); tg["external_id"] = json!(res.external_id); tg["external_url"] = json!(res.url); tg["published_at"] = json!(now_iso());
+            st.append_audit("api", "publish_now_success", &pid, Some(s(&t, "id")), None, Some("published"), if dry_run { "dry_run" } else { "" });
+        } else {
+            tg["status"] = json!("failed"); tg["last_error"] = json!(res.error);
+            st.append_audit("api", "publish_now_failed", &pid, Some(s(&t, "id")), None, None, res.error.as_deref().unwrap_or(""));
+        }
+        results.push(json!({"target_id":t["id"],"platform":t["platform"],"status":tg["status"],"url":res.url,"error":res.error}));
+    }
+    if post["targets"].as_array().unwrap().iter().all(|t| s(t, "status") == "published") { post["status"] = json!("published"); }
+    let saved = st.save_post(post).map_err(ApiErr::invalid)?;
+    Ok(Json(json!({"post_id":pid,"status":saved["status"],"dry_run":dry_run,"targets":results})))
+}
+async fn mark_published(AxumPath((p, pid, tid)): AxumPath<(String, String, String)>, b: Bytes) -> R {
+    let st = store(&p)?;
+    let mut post = st.get_post(&pid).ok_or_else(|| ApiErr::not_found("Post not found"))?;
+    let b = jb_strict(&b)?;
+    let url = b["url"].as_str().filter(|x| !x.is_empty()).or(b["external_url"].as_str()).unwrap_or("").to_string();
+    let idx = post["targets"].as_array().and_then(|a| a.iter().position(|t| s(t, "id") == tid)).ok_or_else(|| ApiErr::not_found("Target not found"))?;
+    let tg = &mut post["targets"][idx];
+    tg["status"] = json!("published"); tg["external_url"] = json!(url); tg["published_at"] = json!(now_iso());
+    if post["targets"].as_array().unwrap().iter().all(|t| s(t, "status") == "published") { post["status"] = json!("published"); }
+    st.save_post(post).map_err(ApiErr::invalid)?;
+    st.append_audit("user", "manual_mark_published", &pid, Some(&tid), None, Some("published"), &format!("Manual URL: {url}"));
+    Ok(Json(json!({"post_id":pid,"target_id":tid,"status":"published","url":url})))
+}
+async fn scheduler_status(AxumPath(p): AxumPath<String>) -> R {
+    let st = store(&p)?;
+    Ok(Json(json!({"heartbeat":crate::social::scheduler::get_heartbeat(&p),"scheduled_count":st.list_posts(Some("scheduled"),None,None,None,None,None).len(),"recent_activity":st.get_audit_log(None,10)})))
+}
+/// Manual run of one scheduler cycle (extra; useful with ?dry_run=true).
+async fn scheduler_tick(AxumPath(p): AxumPath<String>, Query(q): Q) -> R {
+    store(&p)?;
+    let d = dry(&q);
+    Ok(Json(json!({"dry_run":d,"results":crate::social::scheduler::tick(&p, None, d).await})))
+}
+fn pkg_err(e: String) -> ApiErr { ApiErr::not_found(e) }
+async fn package_info(AxumPath((p, pid, plat)): AxumPath<(String, String, String)>) -> R {
+    store(&p)?;
+    if let Some(i) = crate::social::adapters::get_manual_package_info(&p, &pid, &plat) { return Ok(Json(i)); }
+    crate::social::adapters::create_manual_package(&p, &pid, &plat).map(Json).map_err(pkg_err)
+}
+async fn package_generate(AxumPath((p, pid, plat)): AxumPath<(String, String, String)>) -> R {
+    store(&p)?;
+    crate::social::adapters::create_manual_package(&p, &pid, &plat).map(Json).map_err(pkg_err)
+}
+/// Route is `/packages/{post_id}/{platform_zip}` where the last segment ends with `.zip` (axum can't mix param+suffix).
+async fn package_dispatch(AxumPath((p, pid, last)): AxumPath<(String, String, String)>) -> axum::response::Response {
+    use axum::response::IntoResponse;
+    if let Some(plat) = last.strip_suffix(".zip") {
+        let r = match crate::social::adapters::export_package_zip(&p, &pid, plat) {
+            Ok(z) => Ok(z),
+            Err(_) => crate::social::adapters::create_manual_package(&p, &pid, plat).and_then(|i| Ok(std::path::PathBuf::from(i["zip_path"].as_str().unwrap_or("")))),
+        };
+        return match r.and_then(|z| std::fs::read(&z).map(|b| (z, b)).map_err(|e| e.to_string())) {
+            Ok((z, bytes)) => ([("content-type", "application/zip".to_string()), ("content-disposition", format!("attachment; filename=\"{}\"", z.file_name().unwrap().to_string_lossy()))], bytes).into_response(),
+            Err(e) => pkg_err(e).into_response(),
+        };
+    }
+    package_info(AxumPath((p, pid, last))).await.into_response()
+}
+
+// ---------------- automation rules ----------------
+async fn list_rules(AxumPath(p): AxumPath<String>) -> R { Ok(Json(json!(store(&p)?.list_automation_rules()))) }
+async fn save_rule(AxumPath(p): AxumPath<String>, b: Bytes) -> R {
+    let r = norm_rule(jb_strict(&b)?).map_err(ApiErr::invalid)?;
+    store(&p)?.save_automation_rule(r.clone());
+    Ok(Json(r))
+}
+async fn toggle_rule(AxumPath((p, id)): AxumPath<(String, String)>) -> R {
+    let st = store(&p)?;
+    let mut r = st.list_automation_rules().into_iter().find(|r| s(r, "id") == id).ok_or_else(|| ApiErr::not_found("Rule not found"))?;
+    r["enabled"] = json!(r["enabled"] != json!(true));
+    st.save_automation_rule(r.clone());
+    Ok(Json(json!({"id":id,"enabled":r["enabled"]})))
+}
+async fn delete_rule(AxumPath((p, id)): AxumPath<(String, String)>) -> R {
+    if store(&p)?.delete_automation_rule(&id) { Ok(Json(json!({"status":"deleted","id":id}))) } else { Err(ApiErr::not_found("Rule not found")) }
+}
+
 async fn ping() -> Json<Value> { Json(json!({"status":"ok","module":"social"})) }
 
 // ---------------- notifications / automation rules (store-only parts) ----------------
@@ -349,12 +484,29 @@ async fn read_notif(AxumPath((p, id)): AxumPath<(String, String)>) -> R {
 async fn clear_notifs(AxumPath(p): AxumPath<String>) -> R { store(&p)?.clear_notifications(); Ok(Json(json!({"status":"cleared"}))) }
 
 pub fn router() -> Router<AppState> {
+    crate::social::scheduler::spawn();
     let pp = "/projects/{project_id}/social";
     Router::new()
         // legacy project publishing JSON (kept for dashboard)
         .route("/projects/{project_id}/publishing", get(get_project_publishing))
         .route("/projects/{project_id}/publishing/schedule", post(save_project_scheduled_post))
         .route("/social/_ping", get(ping))
+        .route(&format!("{pp}/accounts/{{account_id}}/connect"), get(oauth_connect))
+        .route("/social/oauth/callback/{platform}", get(oauth_callback))
+        .route(&format!("{pp}/accounts/{{account_id}}/refresh"), post(refresh_token))
+        .route(&format!("{pp}/posts/{{post_id}}/targets/{{target_id}}/validate"), post(validate_target))
+        .route(&format!("{pp}/posts/{{post_id}}/publish-now"), post(publish_now))
+        .route(&format!("{pp}/posts/{{post_id}}/targets/{{target_id}}/mark-published"), post(mark_published))
+        .route(&format!("{pp}/scheduler/status"), get(scheduler_status))
+        .route(&format!("{pp}/scheduler/tick"), post(scheduler_tick))
+        .route(&format!("{pp}/packages/{{post_id}}/{{platform}}"), get(package_dispatch))
+        .route(&format!("{pp}/packages/{{post_id}}/{{platform}}/generate"), post(package_generate))
+        .route(&format!("{pp}/automation/rules"), get(list_rules).post(save_rule))
+        .route(&format!("{pp}/automation/rules/{{rule_id}}/toggle"), post(toggle_rule))
+        .route(&format!("{pp}/automation/rules/{{rule_id}}"), delete(delete_rule))
+        .route(&format!("{pp}/queue"), get(queue_route))
+        .route("/social/queue", get(queue_alias))
+        .route("/api/social/schedule", get(queue_alias))
         .route(&format!("{pp}/overview"), get(overview)).route("/social/overview", get(overview_alias))
         .route(&format!("{pp}/targets/bulk"), post(bulk)).route("/social/targets/bulk", post(bulk_alias))
         .route(&format!("{pp}/accounts"), get(list_accounts).post(create_account))
