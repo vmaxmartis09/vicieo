@@ -41,7 +41,7 @@ dotenvy = "0.15"
 
 # Shared by feature tracks (added in Phase 0)
 async-trait = "0.1"
-tokio-util = "0.7"
+tokio-util = { version = "0.7", features = ["io"] }
 tempfile = "3"
 regex = "1"
 walkdir = "2"

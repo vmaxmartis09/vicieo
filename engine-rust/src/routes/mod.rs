@@ -15,7 +15,7 @@ pub mod voice;
 pub(crate) mod prelude {
     pub(crate) use crate::state::AppState;
     pub(crate) use crate::workspace;
-    pub(crate) use super::{guess_mime, is_valid_slug, ProjectQuery};
+    pub(crate) use super::{is_valid_slug, ProjectQuery};
     pub(crate) use axum::{
         extract::{Path as AxumPath, Query},
         response::sse::{Event, KeepAlive, Sse},
@@ -43,6 +43,17 @@ use utoipa_swagger_ui::SwaggerUi;
 
 pub(crate) fn is_valid_slug(s: &str) -> bool {
     !s.is_empty() && s.chars().all(|c| c.is_ascii_alphanumeric() || c == '-' || c == '_')
+}
+
+/// Stream a file from disk (no full read into RAM) with Content-Type/Length.
+pub(crate) async fn stream_file(path: &std::path::Path) -> axum::response::Response {
+    use axum::response::IntoResponse;
+    let Ok(f) = tokio::fs::File::open(path).await else {
+        return (axum::http::StatusCode::INTERNAL_SERVER_ERROR, "Failed to read file").into_response();
+    };
+    let len = f.metadata().await.map(|m| m.len()).unwrap_or(0);
+    let body = axum::body::Body::from_stream(tokio_util::io::ReaderStream::with_capacity(f, 64 * 1024));
+    ([(axum::http::header::CONTENT_TYPE, guess_mime(path).to_string()), (axum::http::header::CONTENT_LENGTH, len.to_string())], body).into_response()
 }
 
 pub(crate) fn guess_mime(path: &std::path::Path) -> &'static str {

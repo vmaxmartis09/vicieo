@@ -525,16 +525,7 @@ pub(crate) async fn serve_project_file(
         return Err((StatusCode::FORBIDDEN, "Access denied"));
     }
     
-    match fs::read(&canonical_target) {
-        Ok(bytes) => {
-            let mime = guess_mime(&canonical_target);
-            Ok((
-                [(axum::http::header::CONTENT_TYPE, mime)],
-                bytes,
-            ))
-        }
-        Err(_) => Err((StatusCode::INTERNAL_SERVER_ERROR, "Failed to read file")),
-    }
+    Ok(super::stream_file(&canonical_target).await)
 }
 
 pub(crate) async fn get_project_artifact(
