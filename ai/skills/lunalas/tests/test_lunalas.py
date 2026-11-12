@@ -44,9 +44,9 @@ class ClassifyTests(unittest.TestCase):
     def test_no_signal_defaults_to_sonnet(self):
         self.assertEqual(classify_mod.classify("hello there")[0], "sonnet")
 
-    def test_eleven_files_is_opus(self):
+    def test_eleven_files_is_sonnet(self):
         files = " ".join(f"src/m{i}.ts" for i in range(11))
-        self.assertEqual(classify_mod.classify(f"update {files}")[0], "opus")
+        self.assertEqual(classify_mod.classify(f"update {files}")[0], "sonnet")
 
 
 class ReviewTests(unittest.TestCase):
