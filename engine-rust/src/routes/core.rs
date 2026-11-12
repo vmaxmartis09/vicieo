@@ -818,12 +818,17 @@ fn write_unique(dir: &Path, name: &str, bytes: &[u8]) -> Result<String, ApiErr> 
     Ok(candidate)
 }
 
+/// DNA folder of a character. Rust-created characters live only in characters/studio_characters.json,
+/// so fall back to that list when project.json has no entry.
 fn character_dna(pid: &str, cid: &str) -> Result<PathBuf, ApiErr> {
-    let p: Value = fs::read_to_string(workspace::data_root().join("projects").join(pid).join("project.json"))
-        .ok().and_then(|t| serde_json::from_str(&t).ok()).unwrap_or(json!({}));
-    let c = p["characters"].get(cid).ok_or_else(|| api_err(StatusCode::NOT_FOUND, "Không có nhân vật này"))?;
+    let dir = workspace::data_root().join("projects").join(pid);
+    let read = |f: &str| fs::read_to_string(dir.join(f)).ok().and_then(|t| serde_json::from_str::<Value>(&t).ok());
+    let from_project = read("project.json").and_then(|p| p["characters"].get(cid).cloned());
+    let from_studio = read("characters/studio_characters.json")
+        .and_then(|v| v["characters"].as_array().and_then(|a| a.iter().find(|c| c["id"] == cid).cloned()));
+    let c = from_project.or(from_studio).ok_or_else(|| api_err(StatusCode::NOT_FOUND, "Không có nhân vật này"))?;
     let rel = c["dna_dir"].as_str().map(str::to_string).unwrap_or_else(|| format!("characters/{cid}"));
-    Ok(workspace::data_root().join("projects").join(pid).join(rel))
+    Ok(dir.join(rel))
 }
 
 pub(crate) async fn upload_character_image(AxumPath((pid, cid)): AxumPath<(String, String)>, Json(b): Json<Value>) -> Result<Json<Value>, ApiErr> {
