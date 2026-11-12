@@ -9,6 +9,7 @@ pub mod social;
 pub mod sources;
 pub mod video;
 pub mod voice;
+#[path = "../voice/mod.rs"] pub mod voice_impl;
 
 pub(crate) mod prelude {
     pub(crate) use crate::state::AppState;
