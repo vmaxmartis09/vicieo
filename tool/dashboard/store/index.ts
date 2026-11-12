@@ -68,10 +68,11 @@ export const useStudioStore = create<StudioStore>()(
           Array.isArray(list)
             ? list.map((n) => {
                 const st = n?.data?.status;
+                // failed/running là kết quả của phiên chạy trước, không phải trạng thái để khôi phục sau khi tải lại
                 const nextStatus =
                   st === "completed"
                     ? "succeeded"
-                    : st === "running" || st === "queued"
+                    : st === "running" || st === "queued" || st === "failed"
                     ? "idle"
                     : st || "idle";
                 // errorMessage là lỗi của lần chạy trước: không khôi phục từ bản lưu cũ (gây lỗi chung trên mọi node)
