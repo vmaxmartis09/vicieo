@@ -39,7 +39,6 @@ export function toCoreGraph(
       if (d.summaryText) ui.summaryText = d.summaryText;
       if (d.inputSummary) ui.inputSummary = d.inputSummary;
       if (d.outputSummary) ui.outputSummary = d.outputSummary;
-      if (d.errorMessage) ui.errorMessage = d.errorMessage;
       if (d.lastLog) ui.lastLog = d.lastLog;
       if (d.actualCostUsd !== undefined) ui.actualCostUsd = d.actualCostUsd;
       if (d.label) ui.label = d.label;
