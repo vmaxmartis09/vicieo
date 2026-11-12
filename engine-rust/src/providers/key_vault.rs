@@ -4,7 +4,7 @@ use crate::workspace;
 use std::collections::HashMap;
 
 /// (vault name, env vars, min length)
-const SPECS: &[(&str, &[&str], usize)] = &[
+pub(crate) const SPECS: &[(&str, &[&str], usize)] = &[
     ("gemini", &["GEMINI_API_KEY", "GOOGLE_API_KEY"], 20),
     ("fal", &["FAL_KEY"], 16),
     ("openai", &["OPENAI_API_KEY"], 16),
@@ -26,7 +26,7 @@ pub fn normalize(provider: &str) -> &'static str {
     }
 }
 
-fn parse_env(path: &std::path::Path) -> HashMap<String, String> {
+pub(crate) fn parse_env(path: &std::path::Path) -> HashMap<String, String> {
     let mut m = HashMap::new();
     if let Ok(t) = std::fs::read_to_string(path) {
         for l in t.lines() {

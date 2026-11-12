@@ -19,23 +19,27 @@ endpoints:
   - {method: GET, path: /graph, python: false, rust_expected: true, dashboard: false}
   - {method: GET, path: /graph/events, python: false, rust_expected: true, dashboard: false}
   - {method: GET, path: /health, python: true, rust_expected: true, dashboard: true}
-  - {method: GET, path: /intel/_ping, python: true, rust_expected: false, dashboard: false}
+  - {method: GET, path: /intel/_ping, python: true, rust_expected: true, dashboard: false}
   - {method: GET, path: /models, python: true, rust_expected: true, dashboard: false}
   - {method: GET, path: /node-types, python: true, rust_expected: true, dashboard: true}
+  - {method: GET, path: /policy-packs, python: false, rust_expected: true, dashboard: false}
   - {method: GET, path: /projects, python: true, rust_expected: true, dashboard: true}
   - {method: GET, path: /projects/active, python: false, rust_expected: true, dashboard: true}
   - {method: GET, path: /providers, python: true, rust_expected: true, dashboard: true}
-  - {method: GET, path: /settings/api-keys, python: true, rust_expected: false, dashboard: true}
-  - {method: GET, path: /social/_ping, python: true, rust_expected: false, dashboard: false}
-  - {method: GET, path: /social/accounts/stats, python: true, rust_expected: false, dashboard: false}
-  - {method: GET, path: /social/library, python: true, rust_expected: false, dashboard: false}
-  - {method: GET, path: /social/overview, python: true, rust_expected: false, dashboard: false}
-  - {method: GET, path: /social/queue, python: true, rust_expected: false, dashboard: false}
-  - {method: GET, path: /social/templates, python: true, rust_expected: false, dashboard: false}
-  - {method: GET, path: /social/videos, python: true, rust_expected: false, dashboard: false}
-  - {method: GET, path: /sources/_ping, python: true, rust_expected: false, dashboard: false}
-  - {method: GET, path: /video/_ping, python: true, rust_expected: false, dashboard: false}
-  - {method: GET, path: /video/platforms, python: true, rust_expected: false, dashboard: false}
+  - {method: GET, path: /settings/api-keys, python: true, rust_expected: true, dashboard: true}
+  - {method: GET, path: /social/_ping, python: true, rust_expected: true, dashboard: false}
+  - {method: GET, path: /social/accounts, python: false, rust_expected: true, dashboard: false}
+  - {method: GET, path: /social/accounts/stats, python: true, rust_expected: true, dashboard: false}
+  - {method: GET, path: /social/library, python: true, rust_expected: true, dashboard: false}
+  - {method: GET, path: /social/overview, python: true, rust_expected: true, dashboard: false}
+  - {method: GET, path: /social/posts, python: false, rust_expected: true, dashboard: false}
+  - {method: GET, path: /social/queue, python: true, rust_expected: true, dashboard: false}
+  - {method: GET, path: /social/templates, python: true, rust_expected: true, dashboard: false}
+  - {method: GET, path: /social/videos, python: true, rust_expected: true, dashboard: false}
+  - {method: GET, path: /sources/_ping, python: true, rust_expected: true, dashboard: false}
+  - {method: GET, path: /video/_ping, python: true, rust_expected: true, dashboard: false}
+  - {method: GET, path: /video/platforms, python: true, rust_expected: true, dashboard: false}
+  - {method: GET, path: /video/renders, python: false, rust_expected: true, dashboard: false}
   - {method: GET, path: /video/templates, python: true, rust_expected: true, dashboard: true}
   - {method: GET, path: /voice/speakers, python: false, rust_expected: true, dashboard: false}
   - {method: GET, path: /voices, python: true, rust_expected: true, dashboard: true}

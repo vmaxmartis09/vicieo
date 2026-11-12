@@ -5,6 +5,7 @@ pub mod editor;
 pub mod graph;
 pub mod intel;
 pub mod products;
+pub mod settings;
 pub mod social;
 pub mod sources;
 pub mod video;
@@ -122,6 +123,7 @@ pub fn build_router(state: AppState) -> Router {
         .merge(products::router())
         .merge(sources::router())
         .merge(social::router())
+        .merge(settings::router())
         .merge(batch::router())
         // NEW TRACK ROUTERS: add `.merge(xxx::router())` above this line
         .merge(SwaggerUi::new("/swagger-ui").url("/api-docs/openapi.json", ApiDoc::openapi()))

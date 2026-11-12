@@ -1,4 +1,5 @@
 use super::prelude::*;
+use super::graph::{api_err, ApiErr};
 
 #[utoipa::path(
     get,
@@ -698,8 +699,13 @@ pub fn router() -> Router<AppState> {
         .route("/api/v1/info", get(get_workspace_info))
         .route("/api/v1/projects", get(list_projects))
         .route("/projects", get(get_active_project_legacy))
-        .route("/data/projects", get(list_projects_data))
-        .route("/data/projects/{project_id}", get(get_project_detail))
+        .route("/data/projects", get(list_projects_data).post(create_data_project))
+        .route("/data/projects/{project_id}/characters/{character_id}/images", post(upload_character_image))
+        .route("/data/projects/{project_id}/characters/{character_id}/images/{file}", delete(delete_character_image))
+        .route("/data/voices/{voice_id}/samples", post(upload_voice_sample))
+        .route("/data/projects/{project_id}/episodes/{episode_id}/shot-pack", get(get_shot_pack))
+        .route("/data/projects/{project_id}/ai/character", post(ai_character))
+        .route("/data/projects/{project_id}", get(get_project_detail).put(put_data_project))
         .route("/data/projects/{project_id}/characters", get(get_project_characters).post(save_project_character))
         .route("/data/projects/{project_id}/characters/{character_id}", put(save_project_character_put).delete(delete_project_character))
         .route("/data/projects/{project_id}/channels", get(get_project_channels).put(save_project_channels))
@@ -719,4 +725,285 @@ pub fn router() -> Router<AppState> {
         .route("/api/data/characters", get(get_characters).post(save_character))
         .route("/api/data/assets", get(get_assets))
         .route("/api/data/library", get(get_library))
+}
+
+/// Create a project folder + project.json and register it in data/workspace.json (port of data_routes.create_data_project).
+pub(crate) async fn create_data_project(Json(b): Json<Value>) -> Result<Json<Value>, ApiErr> {
+    let pid = b["id"].as_str().unwrap_or("").trim().to_string();
+    let valid = !pid.is_empty() && pid.chars().next().is_some_and(|c| c.is_ascii_lowercase() || c.is_ascii_digit())
+        && pid.chars().all(|c| c.is_ascii_lowercase() || c.is_ascii_digit() || c == '_' || c == '-');
+    if !valid {
+        return Err(api_err(StatusCode::BAD_REQUEST, "id dự án chỉ gồm a-z, 0-9, _ và -"));
+    }
+    let dir = workspace::data_root().join("projects").join(&pid);
+    if dir.exists() {
+        return Err(api_err(StatusCode::CONFLICT, "Dự án đã tồn tại"));
+    }
+    for sub in ["characters", "content/episodes", "assets", "library", "output", "publishing"] {
+        fs::create_dir_all(dir.join(sub)).map_err(|e| api_err(StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
+    }
+    let name = b["name"].as_str().map(str::to_string).unwrap_or_else(|| pid.clone());
+    let description = b.get("description").cloned().unwrap_or(json!(""));
+    let project = json!({
+        "id": pid, "name": name, "description": description, "version": "1.0.0",
+        "language": b.get("language").cloned().unwrap_or(json!("vi")),
+        "target_platforms": b.get("targetPlatforms").cloned().unwrap_or(json!(["youtube", "tiktok"])),
+        "default_aspect_ratio": b.get("defaultAspectRatio").cloned().unwrap_or(json!("9:16")),
+        "default_character": "", "default_voice_id": "", "characters": {}
+    });
+    fs::write(dir.join("project.json"), serde_json::to_string_pretty(&project).unwrap_or_default())
+        .map_err(|e| api_err(StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
+    let ws_path = workspace::data_root().join("workspace.json");
+    let mut ws: Value = fs::read_to_string(&ws_path).ok().and_then(|t| serde_json::from_str(&t).ok()).unwrap_or(json!({}));
+    if let Some(list) = ws["projects"].as_array_mut() {
+        list.push(json!({"id": pid, "name": project["name"], "description": project["description"],
+            "path": format!("projects/{pid}"), "status": "active", "created_at": chrono::Utc::now().date_naive().to_string()}));
+        let _ = fs::write(&ws_path, serde_json::to_string_pretty(&ws).unwrap_or_default());
+    }
+    Ok(Json(project))
+}
+
+/// Update editable project fields (port of data_routes.put_data_project).
+pub(crate) async fn put_data_project(AxumPath(pid): AxumPath<String>, Json(b): Json<Value>) -> Result<Json<Value>, ApiErr> {
+    if !is_valid_slug(&pid) {
+        return Err(api_err(StatusCode::BAD_REQUEST, "Invalid project id"));
+    }
+    let path = workspace::data_root().join("projects").join(&pid).join("project.json");
+    let mut p: Value = fs::read_to_string(&path).ok().and_then(|t| serde_json::from_str(&t).ok())
+        .ok_or_else(|| api_err(StatusCode::NOT_FOUND, "Không tìm thấy dự án"))?;
+    for (src, dst) in [("name", "name"), ("description", "description"), ("language", "language"), ("targetPlatforms", "target_platforms"),
+        ("defaultAspectRatio", "default_aspect_ratio"), ("defaultVoiceId", "default_voice_id")] {
+        if let Some(v) = b.get(src) {
+            p[dst] = v.clone();
+        }
+    }
+    fs::write(&path, serde_json::to_string_pretty(&p).unwrap_or_default()).map_err(|e| api_err(StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
+    Ok(Json(p))
+}
+
+const IMAGE_EXT: [&str; 4] = ["png", "jpg", "jpeg", "webp"];
+
+/// Keep only [A-Za-z0-9._-] from a client file name (port of data_routes._safe_name).
+fn safe_name(name: &str) -> String {
+    let base = Path::new(name).file_name().and_then(|f| f.to_str()).unwrap_or("");
+    let cleaned: String = base.chars().map(|c| if c.is_ascii_alphanumeric() || "._-".contains(c) { c } else { '_' }).collect();
+    let t = cleaned.trim_matches(|c| c == '.' || c == '_').to_string();
+    if t.is_empty() { "file".into() } else { t }
+}
+
+fn ext_of(name: &str) -> String {
+    Path::new(name).extension().and_then(|e| e.to_str()).unwrap_or("").to_lowercase()
+}
+
+fn decode_b64(b: &Value) -> Result<Vec<u8>, ApiErr> {
+    use base64::Engine;
+    base64::engine::general_purpose::STANDARD
+        .decode(b["data"].as_str().unwrap_or(""))
+        .map_err(|_| api_err(StatusCode::BAD_REQUEST, "Dữ liệu tệp (base64) không hợp lệ"))
+}
+
+/// Write `name` into `dir` without overwriting: adds _1, _2… before the extension.
+fn write_unique(dir: &Path, name: &str, bytes: &[u8]) -> Result<String, ApiErr> {
+    let io = |e: std::io::Error| api_err(StatusCode::INTERNAL_SERVER_ERROR, e.to_string());
+    fs::create_dir_all(dir).map_err(io)?;
+    let stem = Path::new(name).file_stem().and_then(|s| s.to_str()).unwrap_or("file").to_string();
+    let ext = ext_of(name);
+    let mut candidate = name.to_string();
+    let mut n = 1;
+    while dir.join(&candidate).exists() {
+        candidate = if ext.is_empty() { format!("{stem}_{n}") } else { format!("{stem}_{n}.{ext}") };
+        n += 1;
+    }
+    fs::write(dir.join(&candidate), bytes).map_err(io)?;
+    Ok(candidate)
+}
+
+fn character_dna(pid: &str, cid: &str) -> Result<PathBuf, ApiErr> {
+    let p: Value = fs::read_to_string(workspace::data_root().join("projects").join(pid).join("project.json"))
+        .ok().and_then(|t| serde_json::from_str(&t).ok()).unwrap_or(json!({}));
+    let c = p["characters"].get(cid).ok_or_else(|| api_err(StatusCode::NOT_FOUND, "Không có nhân vật này"))?;
+    let rel = c["dna_dir"].as_str().map(str::to_string).unwrap_or_else(|| format!("characters/{cid}"));
+    Ok(workspace::data_root().join("projects").join(pid).join(rel))
+}
+
+pub(crate) async fn upload_character_image(AxumPath((pid, cid)): AxumPath<(String, String)>, Json(b): Json<Value>) -> Result<Json<Value>, ApiErr> {
+    let dna = character_dna(&pid, &cid)?;
+    let name = safe_name(b["name"].as_str().unwrap_or("image.png"));
+    if !IMAGE_EXT.contains(&ext_of(&name).as_str()) {
+        return Err(api_err(StatusCode::BAD_REQUEST, "Chỉ nhận ảnh png/jpg/webp"));
+    }
+    let saved = write_unique(&dna, &name, &decode_b64(&b)?)?;
+    Ok(Json(json!({ "ok": true, "file": saved })))
+}
+
+/// Soft delete: moves the image into _removed/ so it can be restored (port of delete_character_image).
+pub(crate) async fn delete_character_image(AxumPath((pid, cid, file)): AxumPath<(String, String, String)>) -> Result<Json<Value>, ApiErr> {
+    let dna = character_dna(&pid, &cid)?;
+    let name = safe_name(&file);
+    let src = dna.join(&name);
+    if !src.is_file() || !IMAGE_EXT.contains(&ext_of(&name).as_str()) {
+        return Err(api_err(StatusCode::NOT_FOUND, "Không có ảnh này"));
+    }
+    let trash = dna.join("_removed");
+    fs::create_dir_all(&trash).map_err(|e| api_err(StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
+    fs::rename(&src, trash.join(&name)).map_err(|e| api_err(StatusCode::INTERNAL_SERVER_ERROR, e.to_string()))?;
+    let side = dna.join("studio.json");
+    if let Some(mut sc) = fs::read_to_string(&side).ok().and_then(|t| serde_json::from_str::<Value>(&t).ok()) {
+        if sc["primaryImage"] == name {
+            sc.as_object_mut().map(|o| o.remove("primaryImage"));
+            let _ = fs::write(&side, serde_json::to_string_pretty(&sc).unwrap_or_default());
+        }
+    }
+    Ok(Json(json!({ "ok": true })))
+}
+
+pub(crate) async fn upload_voice_sample(AxumPath(vid): AxumPath<String>, Json(b): Json<Value>) -> Result<Json<Value>, ApiErr> {
+    if !is_valid_slug(&vid) {
+        return Err(api_err(StatusCode::BAD_REQUEST, "Invalid voice id"));
+    }
+    let name = safe_name(b["name"].as_str().unwrap_or("sample.mp3"));
+    if !["mp3", "wav"].contains(&ext_of(&name).as_str()) {
+        return Err(api_err(StatusCode::BAD_REQUEST, "Chỉ nhận mp3/wav"));
+    }
+    let dir = workspace::data_root().join("shared").join("voice_vault").join(&vid);
+    let saved = write_unique(&dir, &name, &decode_b64(&b)?)?;
+    Ok(Json(json!({ "ok": true, "file": saved })))
+}
+
+const CHARACTER_SYSTEM: &str = "Bạn là biên kịch nhân vật cho kênh hoạt hình 3D trẻ em Sóc Nhỏ TV (phong cách Pixar). \
+Từ mô tả của người dùng, trả về JSON hồ sơ nhân vật bằng tiếng Việt. promptLock là mô tả hình dáng \
+bằng tiếng Anh, ngắn gọn, bất biến, dùng để giữ nhận diện khi sinh ảnh.";
+
+/// Rule-based draft when no Gemini key or in mock mode (port of data_routes._mock_character).
+fn mock_character(prompt: &str) -> Value {
+    let text = prompt.trim();
+    let name = regex::Regex::new(r"(?:tên(?: là)?|named?|call(?:ed)?)\s+([A-ZÀ-Ỹ][\wÀ-ỹ]*(?:\s+[A-ZÀ-Ỹ][\wÀ-ỹ]*){0,2})")
+        .unwrap()
+        .captures(text)
+        .map(|c| c[1].to_string())
+        .unwrap_or_else(|| {
+            let head: String = text.split(',').next().unwrap_or("").split('.').next().unwrap_or("").chars().take(28).collect();
+            let t = head.trim().split_whitespace().map(|w| {
+                let mut cs = w.chars();
+                cs.next().map(|f| f.to_uppercase().collect::<String>() + &cs.as_str().to_lowercase()).unwrap_or_default()
+            }).collect::<Vec<_>>().join(" ");
+            if t.is_empty() { "Nhân vật mới".into() } else { t }
+        });
+    let height = regex::Regex::new(r"(\d{2,3})\s*cm").unwrap().captures(text).and_then(|c| c[1].parse::<f64>().ok()).unwrap_or(120.0);
+    let lower = text.to_lowercase();
+    let traits: Vec<&str> = ["vui", "nhút nhát", "thông minh", "tốt bụng", "nghịch ngợm", "hiền", "dũng cảm", "tò mò"]
+        .into_iter().filter(|w| lower.contains(w)).collect();
+    let personality = if traits.is_empty() { "thân thiện, tò mò".to_string() } else { traits.join(", ") };
+    let head: String = text.chars().take(200).collect();
+    json!({
+        "name": name, "role": "supporting", "heightCm": height,
+        "description": text.chars().take(240).collect::<String>(), "personality": personality,
+        "promptLock": format!("{head}, cute 3D Pixar-style woodland character, {} cm tall, soft studio lighting, plain light gray background", height as i64),
+        "catchphrases": [], "habits": []
+    })
+}
+
+/// Draft a character from a description: Gemini when a key exists and not in mock mode, else rules.
+pub(crate) async fn ai_character(AxumPath(pid): AxumPath<String>, Json(b): Json<Value>) -> Result<Json<Value>, ApiErr> {
+    if !is_valid_slug(&pid) {
+        return Err(api_err(StatusCode::BAD_REQUEST, "Invalid project id"));
+    }
+    let prompt = b["prompt"].as_str().unwrap_or("").trim().to_string();
+    if prompt.is_empty() {
+        return Err(api_err(StatusCode::BAD_REQUEST, "Thiếu mô tả nhân vật"));
+    }
+    let mock = b["mockMode"].as_bool().unwrap_or(true);
+    if !mock && crate::providers::key_vault::has_valid_key("gemini") {
+        let text = crate::providers::llm().generate(&prompt, Some(CHARACTER_SYSTEM), None, true).await
+            .map_err(|e| api_err(StatusCode::BAD_GATEWAY, e.to_string()))?;
+        let draft = serde_json::from_str::<Value>(&text).map_err(|_| api_err(StatusCode::BAD_GATEWAY, "Mô hình trả về dữ liệu không hợp lệ"))?;
+        return Ok(Json(json!({ "mode": "gemini", "draft": draft })));
+    }
+    Ok(Json(json!({ "mode": "mock", "draft": mock_character(&prompt) })))
+}
+
+/// ZIP for making clips by hand on a free web tool (port of data_routes.get_shot_pack).
+/// shortcut: keyframes are not looked up (Python _latest_keyframes); each shot uses the character's first DNA image, upgrade when keyframes are stored in Rust-readable form.
+pub(crate) async fn get_shot_pack(AxumPath((pid, eid)): AxumPath<(String, String)>, Query(q): Query<HashMap<String, String>>) -> Result<impl IntoResponse, ApiErr> {
+    use std::io::Write;
+    if !is_valid_slug(&pid) || !is_valid_slug(&eid) {
+        return Err(api_err(StatusCode::BAD_REQUEST, "episode_id không hợp lệ"));
+    }
+    let script: Value = fs::read_to_string(workspace::project_path(&pid, &["content", "episodes", &eid, "script.json"], false).map_err(|e| api_err(StatusCode::BAD_REQUEST, e.to_string()))?)
+        .ok().and_then(|t| serde_json::from_str(&t).ok())
+        .ok_or_else(|| api_err(StatusCode::NOT_FOUND, "Không có kịch bản tập này"))?;
+    let title = script["title"].as_str().unwrap_or(&eid).to_string();
+    let all_shots: Vec<Value> = script["scenes"].as_array().into_iter().flatten().flat_map(|sc| sc["shots"].as_array().cloned().unwrap_or_default()).collect();
+    let want: Vec<String> = q.get("shots").map(|s| s.split(',').map(|x| x.trim().to_uppercase()).filter(|x| !x.is_empty()).collect()).unwrap_or_default();
+    if want.iter().any(|s| !(s.len() == 3 && s.starts_with('S') && s[1..].chars().all(|c| c.is_ascii_digit()))) {
+        return Err(api_err(StatusCode::BAD_REQUEST, "shots chỉ nhận dạng S01,S07,..."));
+    }
+    let picked: Vec<Value> = if !want.is_empty() {
+        all_shots.into_iter().filter(|sh| want.contains(&sh["id"].as_str().unwrap_or("").to_uppercase())).collect()
+    } else if q.get("all").is_some_and(|a| a == "true") {
+        all_shots
+    } else {
+        let p1: Vec<Value> = all_shots.iter().filter(|sh| sh["priority"] == 1).cloned().collect();
+        if p1.is_empty() { all_shots.into_iter().take(5).collect() } else { p1 }
+    };
+    if picked.is_empty() {
+        return Err(api_err(StatusCode::NOT_FOUND, "Không có shot nào khớp"));
+    }
+    let clips_dir = format!("data/projects/{pid}/content/episodes/{eid}/clips");
+    let chars_dir = workspace::project_path(&pid, &["characters"], false).unwrap_or_default();
+    let mut buf = std::io::Cursor::new(Vec::new());
+    let mut manifest = vec![];
+    {
+        let mut z = zip::ZipWriter::new(&mut buf);
+        let opt = zip::write::SimpleFileOptions::default().compression_method(zip::CompressionMethod::Deflated);
+        let io = |e: std::io::Error| api_err(StatusCode::INTERNAL_SERVER_ERROR, e.to_string());
+        let zerr = |e: zip::result::ZipError| api_err(StatusCode::INTERNAL_SERVER_ERROR, e.to_string());
+        for sh in &picked {
+            let sid = sh["id"].as_str().unwrap_or("").to_string();
+            let cid = sh["speakerId"].as_str().or_else(|| sh["characterIds"][0].as_str()).unwrap_or("").to_string();
+            let dna_img = fs::read_dir(chars_dir.join(&cid)).ok().into_iter().flatten().flatten().map(|e| e.path())
+                .filter(|p| IMAGE_EXT.contains(&ext_of(&p.to_string_lossy()).as_str())).min();
+            let (img_name, img_src) = match dna_img {
+                Some(p) => {
+                    let ext = ext_of(&p.to_string_lossy());
+                    z.start_file(format!("{sid}.{ext}"), opt).map_err(zerr)?;
+                    z.write_all(&fs::read(&p).map_err(io)?).map_err(io)?;
+                    (format!("{sid}.{ext}"), format!("dna:{cid}"))
+                }
+                None => (String::new(), "none".to_string()),
+            };
+            let clip_sec = sh["clipDurationSec"].as_f64().unwrap_or(5.0);
+            let txt = [
+                format!("Shot {sid} · {title}"),
+                format!("Khung giờ trong tập: {}s → {}s (shot {}s)", sh["startSec"], sh["endSec"], sh["durationSec"]),
+                format!("Clip cần làm: {clip_sec} giây, 16:9, KHÔNG cần âm thanh (giọng OmniVoice ghép sau)"),
+                format!("Ảnh khung đầu: {img_name} ({img_src})"),
+                format!("Camera: {} · cỡ cảnh {}", sh["camera"].as_str().unwrap_or(""), sh["shotSize"].as_str().unwrap_or("")),
+                String::new(), "PROMPT (dán vào web làm video):".into(), sh["videoPrompt"].as_str().unwrap_or("").into(),
+                String::new(), "NEGATIVE:".into(), sh["negativePrompt"].as_str().unwrap_or("").into(), String::new(),
+                format!("Lời thoại (để canh khẩu hình): {}: {}", sh["speaker"].as_str().unwrap_or(""), sh["dialogue"].as_str().unwrap_or("")),
+            ].join("\n");
+            z.start_file(format!("{sid}.txt"), opt).map_err(zerr)?;
+            z.write_all(txt.as_bytes()).map_err(io)?;
+            manifest.push(json!({"shotId": sid, "image": img_src, "clipDurationSec": clip_sec, "priority": sh["priority"]}));
+        }
+        let ids: Vec<&str> = manifest.iter().filter_map(|m| m["shotId"].as_str()).collect();
+        let readme = format!(
+            "GÓI SHOT — {title} ({eid})\n\n1. Mở web làm video có credit miễn phí (danh sách: ai/knowledge/free_ai_sources.md).\n\
+2. Với mỗi shot: tải ảnh SXX.png làm khung đầu (image-to-video), dán prompt trong SXX.txt.\n\
+3. Tắt âm thanh của clip nếu web cho chọn (giọng nhân vật do OmniVoice đọc, ghép sau).\n\
+4. Tải clip về, đổi tên ĐÚNG theo shot: S07.mp4 (chữ S hoa, 2 chữ số).\n5. Thả vào: {clips_dir}/\n\
+6. Chạy lại flow trong Studio: bộ dựng tự dùng clip có sẵn, shot không có clip thì giữ ảnh.\n\nShot trong gói: {}",
+            ids.join(", "));
+        z.start_file("README.txt", opt).map_err(zerr)?;
+        z.write_all(readme.as_bytes()).map_err(io)?;
+        z.start_file("manifest.json", opt).map_err(zerr)?;
+        z.write_all(serde_json::to_string_pretty(&json!({"episodeId": eid, "shots": manifest})).unwrap_or_default().as_bytes()).map_err(io)?;
+        z.finish().map_err(zerr)?;
+    }
+    let headers = [
+        (axum::http::header::CONTENT_TYPE, "application/zip".to_string()),
+        (axum::http::header::CONTENT_DISPOSITION, format!("attachment; filename=\"{eid}_shot-pack.zip\"")),
+    ];
+    Ok((headers, buf.into_inner()))
 }

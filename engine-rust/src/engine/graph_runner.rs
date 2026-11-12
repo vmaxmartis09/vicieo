@@ -512,7 +512,14 @@ fn write_graph(project: &str, graph: &mut Value) {
 pub async fn run_graph(tx: broadcast::Sender<String>, registry: ExecutorRegistry, project: String, mut graph: Value, req: RunReq) -> Result<Value, String> {
     let v = validator::validate(&graph);
     if !v.is_valid {
-        return Err(format!("Đồ thị không hợp lệ: {}", v.errors.join("; ")));
+        // Per-node errors go back as a normal run summary so the UI marks each node; global-only errors stay a hard failure.
+        if v.node_errors.is_empty() {
+            return Err(format!("Đồ thị không hợp lệ: {}", v.errors.join("; ")));
+        }
+        let failed: Vec<&String> = v.node_errors.keys().collect();
+        return Ok(json!({"runId": format!("run_{}", chrono::Utc::now().timestamp_millis()), "projectId": project,
+            "isSuccess": false, "executedNodes": [], "failedNodes": failed, "skippedNodes": [], "staleNodes": [],
+            "errors": v.node_errors, "detail": format!("Đồ thị không hợp lệ: {}", v.errors.join("; ")), "createdAt": now()}));
     }
     if active_run(&project).is_some() {
         return Err("Dự án đang có một phiên chạy khác. Hãy dừng hoặc chờ phiên đó xong.".into());
@@ -861,4 +868,29 @@ mod tests {
         assert_eq!(r["prompt"], "hi");
         assert_eq!(r["x"], "hi!");
     }
+}
+
+/// One run's saved state (runs/<id>/state.json). Ids are restricted to [A-Za-z0-9_-] so they cannot escape runs/.
+pub fn get_run(project: &str, run_id: &str) -> Option<Value> {
+    if !valid_run_id(run_id) {
+        return None;
+    }
+    let p = workspace::project_path(project, &["runs", run_id, "state.json"], false).ok()?;
+    serde_json::from_str(&std::fs::read_to_string(p).ok()?).ok()
+}
+
+/// Remove a run's record (not its outputs). A running run is cancelled first.
+pub fn delete_run(project: &str, run_id: &str) -> bool {
+    if !valid_run_id(run_id) {
+        return false;
+    }
+    if active_run(project).map(|a| a["runId"] == run_id).unwrap_or(false) {
+        cancel_project(project);
+    }
+    let Ok(dir) = workspace::project_path(project, &["runs", run_id], false) else { return false };
+    dir.is_dir() && std::fs::remove_dir_all(dir).is_ok()
+}
+
+fn valid_run_id(id: &str) -> bool {
+    !id.is_empty() && id.chars().all(|c| c.is_ascii_alphanumeric() || c == '_' || c == '-')
 }

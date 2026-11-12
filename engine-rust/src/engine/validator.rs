@@ -3,14 +3,24 @@
 //! data/shared/node_types.json as declared. Upgrade if custom-port nodes appear in saved graphs.
 use crate::workspace;
 use regex::Regex;
-use serde_json::{json, Value};
+use serde_json::{json, Map, Value};
 use std::collections::{HashMap, HashSet};
 
 pub struct Validation {
     pub is_valid: bool,
     pub errors: Vec<String>,
+    /// Same errors keyed by the node they belong to, so the UI can show each one on its own node.
+    pub node_errors: Map<String, Value>,
     pub warnings: Vec<String>,
     pub topological_order: Vec<String>,
+}
+
+fn blame(m: &mut Map<String, Value>, id: &str, msg: &str) {
+    let joined = match m.get(id).and_then(|v| v.as_str()) {
+        Some(prev) => format!("{prev}; {msg}"),
+        None => msg.to_string(),
+    };
+    m.insert(id.to_string(), json!(joined));
 }
 
 impl Validation {
@@ -141,24 +151,47 @@ fn compatible(src: &str, tgt: &str) -> bool {
     src == tgt || (src == "image" && tgt == "image[]") || (src == "dialogue" && tgt == "text")
 }
 
+/// Ports incl. enabled capabilities (params[cap].enabled), mirroring Python NodeRegistry.effective_ports.
+fn effective(def: &Value, params: &Value) -> Value {
+    let mut d = def.clone();
+    for cap in def["capabilities"].as_array().into_iter().flatten() {
+        if params[cap["name"].as_str().unwrap_or("")]["enabled"] != true {
+            continue;
+        }
+        for (key, extra) in [("inputPorts", &cap["inputPorts"]), ("outputPorts", &cap["outputPorts"])] {
+            for p in extra.as_array().into_iter().flatten() {
+                let exists = d[key].as_array().into_iter().flatten().any(|q| q["name"] == p["name"]);
+                if !exists {
+                    d[key].as_array_mut().map(|a| a.push(p.clone()));
+                }
+            }
+        }
+    }
+    d
+}
+
 fn port<'a>(def: &'a Value, key: &str, name: &str) -> Option<&'a Value> {
     def[key].as_array()?.iter().find(|p| p["name"] == name)
 }
 
 pub fn validate(graph: &Value) -> Validation {
     let types = node_types();
-    let (mut errors, mut warnings) = (vec![], vec![]);
+    let (mut errors, mut warnings, mut node_errors) = (vec![], vec![], Map::new());
     let nodes = graph["nodes"].as_array().cloned().unwrap_or_default();
     let mut map: HashMap<String, &Value> = HashMap::new();
     for n in &nodes {
         let id = str_of(n, "id");
         if map.contains_key(id) {
-            errors.push(format!("Trùng lặp mã Node ID '{}' trong đồ thị.", id));
+            let msg = format!("Trùng lặp mã Node ID '{}' trong đồ thị.", id);
+            blame(&mut node_errors, id, &msg);
+            errors.push(msg);
             continue;
         }
         map.insert(id.to_string(), n);
         if !types.contains_key(str_of(n, "type")) {
-            errors.push(format!("Loại node '{}' tại node '{}' không có trong NodeRegistry.", str_of(n, "type"), id));
+            let msg = format!("Loại node '{}' tại node '{}' không có trong NodeRegistry.", str_of(n, "type"), id);
+            blame(&mut node_errors, id, &msg);
+            errors.push(msg);
         }
     }
     let mut connected: HashSet<(String, String)> = HashSet::new();
@@ -166,27 +199,39 @@ pub fn validate(graph: &Value) -> Validation {
         let (sid, tid, eid) = (str_of(e, "sourceNodeId"), str_of(e, "targetNodeId"), str_of(e, "id"));
         let (Some(sn), Some(tn)) = (map.get(sid), map.get(tid)) else {
             if !map.contains_key(sid) {
-                errors.push(format!("Dây nối '{}' trỏ từ node không tồn tại '{}'.", eid, sid));
+                let msg = format!("Dây nối '{}' trỏ từ node không tồn tại '{}'.", eid, sid);
+                blame(&mut node_errors, tid, &msg);
+                errors.push(msg);
             } else {
-                errors.push(format!("Dây nối '{}' trỏ tới node không tồn tại '{}'.", eid, tid));
+                let msg = format!("Dây nối '{}' trỏ tới node không tồn tại '{}'.", eid, tid);
+                blame(&mut node_errors, sid, &msg);
+                errors.push(msg);
             }
             continue;
         };
         connected.insert((tid.to_string(), str_of(e, "targetPort").to_string()));
         let (Some(sd), Some(td)) = (types.get(str_of(sn, "type")), types.get(str_of(tn, "type"))) else { continue };
-        let sp = port(sd, "outputPorts", str_of(e, "sourcePort"));
-        let tp = port(td, "inputPorts", str_of(e, "targetPort"));
+        let (sd, td) = (effective(sd, &sn["params"]), effective(td, &tn["params"]));
+        let sp = port(&sd, "outputPorts", str_of(e, "sourcePort"));
+        let tp = port(&td, "inputPorts", str_of(e, "targetPort"));
         if sp.is_none() {
-            errors.push(format!("Node '{}' ({}) không có cổng ra tên '{}'.", sid, str_of(sn, "type"), str_of(e, "sourcePort")));
+            let msg = format!("Không có cổng ra tên '{}' (loại {}).", str_of(e, "sourcePort"), str_of(sn, "type"));
+            blame(&mut node_errors, sid, &msg);
+            errors.push(format!("Node '{}' {}", sid, msg));
         }
         if tp.is_none() {
-            errors.push(format!("Node '{}' ({}) không có cổng vào tên '{}'.", tid, str_of(tn, "type"), str_of(e, "targetPort")));
+            let msg = format!("Không có cổng vào tên '{}' (loại {}).", str_of(e, "targetPort"), str_of(tn, "type"));
+            blame(&mut node_errors, tid, &msg);
+            errors.push(format!("Node '{}' {}", tid, msg));
         }
         if let (Some(sp), Some(tp)) = (sp, tp) {
             let (a, b) = (str_of(sp, "portType"), str_of(tp, "portType"));
             if !compatible(a, b) {
-                errors.push(format!("Không tương thích kiểu cổng: Dây nối '{}' từ cổng ra '{}' ({}) của node '{}' không thể nối vào cổng vào '{}' ({}) của node '{}'.",
-                    eid, str_of(e, "sourcePort"), a, sid, str_of(e, "targetPort"), b, tid));
+                let msg = format!("Không tương thích kiểu cổng: Dây nối '{}' từ cổng ra '{}' ({}) của node '{}' không thể nối vào cổng vào '{}' ({}) của node '{}'.",
+                    eid, str_of(e, "sourcePort"), a, sid, str_of(e, "targetPort"), b, tid);
+                blame(&mut node_errors, tid, &msg);
+                blame(&mut node_errors, sid, &msg);
+                errors.push(msg);
             }
         }
     }
@@ -202,13 +247,15 @@ pub fn validate(graph: &Value) -> Validation {
     let order = match topo_sort(&ids, &parents) {
         Ok(o) => o,
         Err(stuck) => {
-            errors.push(format!("Phát hiện chu trình (vòng lặp vô hạn) trong đồ thị liên quan đến các node: {:?}. Đồ thị phải là DAG để có thể thực thi.", stuck));
+            let msg = format!("Phát hiện chu trình (vòng lặp vô hạn) trong đồ thị liên quan đến các node: {:?}. Đồ thị phải là DAG để có thể thực thi.", stuck);
+            for id in &stuck { blame(&mut node_errors, id, &msg); }
+            errors.push(msg);
             vec![]
         }
     };
     for n in &nodes {
         let id = str_of(n, "id");
-        let Some(def) = types.get(str_of(n, "type")) else { continue };
+        let Some(def) = types.get(str_of(n, "type")).map(|d| effective(d, &n["params"])) else { continue };
         if is_bypassed(n) {
             continue;
         }
@@ -239,7 +286,7 @@ pub fn validate(graph: &Value) -> Validation {
             }
         }
     }
-    Validation { is_valid: errors.is_empty(), errors, warnings, topological_order: order }
+    Validation { is_valid: errors.is_empty(), errors, node_errors, warnings, topological_order: order }
 }
 
 #[cfg(test)]
@@ -249,6 +296,23 @@ mod tests {
     fn g(edges: &[(&str, &str)], ids: &[&str]) -> Value {
         json!({"nodes": ids.iter().map(|i| json!({"id": i, "type": "x", "params": {}})).collect::<Vec<_>>(),
                "edges": edges.iter().map(|(a, b)| json!({"id": format!("{a}{b}"), "sourceNodeId": a, "targetNodeId": b})).collect::<Vec<_>>()})
+    }
+
+    #[test]
+    fn bad_port_is_blamed_on_its_node() {
+        let graph = json!({"nodes": [{"id": "c", "type": "character", "params": {}}, {"id": "t", "type": "image_gen", "params": {}}],
+            "edges": [{"id": "e", "sourceNodeId": "c", "sourcePort": "nope", "targetNodeId": "t", "targetPort": "prompt"}]});
+        let v = validate(&graph);
+        assert!(!v.is_valid && v.node_errors.contains_key("c"), "{:?}", v.node_errors);
+    }
+
+    #[test]
+    fn capability_ports_only_when_enabled() {
+        let def = json!({"inputPorts": [], "outputPorts": [{"name": "character"}],
+            "capabilities": [{"name": "speak", "inputPorts": [{"name": "lines"}], "outputPorts": [{"name": "voice"}]}]});
+        assert!(port(&effective(&def, &json!({"speak": {"enabled": false}})), "outputPorts", "voice").is_none());
+        let on = effective(&def, &json!({"speak": {"enabled": true}}));
+        assert!(port(&on, "outputPorts", "voice").is_some() && port(&on, "inputPorts", "lines").is_some());
     }
 
     #[test]

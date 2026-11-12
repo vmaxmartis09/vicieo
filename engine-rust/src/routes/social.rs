@@ -579,7 +579,7 @@ pub fn router() -> Router<AppState> {
     let pp = "/projects/{project_id}/social";
     Router::new()
         // legacy project publishing JSON (kept for dashboard)
-        .route("/projects/{project_id}/publishing", get(get_project_publishing))
+        .route("/projects/{project_id}/publishing", get(get_project_publishing).post(save_project_publishing))
         .route("/projects/{project_id}/publishing/schedule", post(save_project_scheduled_post))
         .route("/social/_ping", get(ping))
         .route(&format!("{pp}/automation/run"), post(automation_run))
@@ -660,4 +660,14 @@ pub(crate) async fn save_project_scheduled_post(AxumPath(project_id): AxumPath<S
     if let Some(a) = raw.get_mut("posts").and_then(|x| x.as_array_mut()) { a.push(body); } else { raw["posts"] = json!([body]); }
     let _ = crate::social::store::atomic_write_json(&p, &raw);
     Json(json!({"ok": true}))
+}
+
+/// Save the publishing schedule to publishing/schedule.json (port of save_project_publishing).
+pub(crate) async fn save_project_publishing(AxumPath(pid): AxumPath<String>, Json(b): Json<Value>) -> Result<Json<Value>, ApiErr> {
+    if !is_valid_slug(&pid) {
+        return Err(ApiErr::bad("invalid project id"));
+    }
+    let path = workspace::project_path(&pid, &["publishing", "schedule.json"], true).map_err(|e| ApiErr::bad(e.to_string()))?;
+    fs::write(path, serde_json::to_string_pretty(&b).unwrap_or_default()).map_err(|e| ApiErr::bad(e.to_string()))?;
+    Ok(Json(json!({ "status": "saved" })))
 }

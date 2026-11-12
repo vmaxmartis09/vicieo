@@ -116,7 +116,7 @@ pub(crate) async fn save_graph(Query(q): Query<ProjectQuery>, Json(body): Json<V
 
 pub(crate) type ApiErr = (StatusCode, Json<Value>);
 
-fn api_err(code: StatusCode, msg: impl Into<String>) -> ApiErr {
+pub(crate) fn api_err(code: StatusCode, msg: impl Into<String>) -> ApiErr {
     (code, Json(json!({ "detail": msg.into(), "error": "run_failed", "isSuccess": false })))
 }
 
@@ -236,6 +236,18 @@ pub(crate) async fn run_project_graph(
     Json(payload): Json<Value>,
 ) -> Result<Json<Value>, ApiErr> {
     run_for(&state, project_id, payload).await
+}
+
+pub(crate) async fn get_project_run(AxumPath((project_id, run_id)): AxumPath<(String, String)>) -> Result<Json<Value>, ApiErr> {
+    crate::engine::graph_runner::get_run(&project_id, &run_id).map(Json).ok_or_else(|| api_err(StatusCode::NOT_FOUND, format!("Không tìm thấy phiên chạy {run_id}")))
+}
+
+pub(crate) async fn delete_project_run(AxumPath((project_id, run_id)): AxumPath<(String, String)>) -> Result<Json<Value>, ApiErr> {
+    if crate::engine::graph_runner::delete_run(&project_id, &run_id) {
+        Ok(Json(json!({ "status": "deleted", "runId": run_id })))
+    } else {
+        Err(api_err(StatusCode::NOT_FOUND, format!("Không tìm thấy phiên chạy {run_id}")))
+    }
 }
 
 pub(crate) async fn get_project_runs(AxumPath(project_id): AxumPath<String>) -> Json<Value> {
@@ -429,6 +441,7 @@ pub fn router() -> Router<AppState> {
         .route("/projects/{project_id}/estimate", post(estimate_project_cost))
         .route("/projects/{project_id}/runs", get(get_project_runs))
         .route("/projects/{project_id}/runs/active", get(get_project_active_run))
+        .route("/projects/{project_id}/runs/{run_id}", get(get_project_run).delete(delete_project_run))
         .route("/projects/{project_id}/outputs", get(get_project_outputs))
         .route("/node-types", get(get_node_types_list))
         .route("/models", get(list_models))
