@@ -71,7 +71,7 @@ fn scan_refs(v: &Value, re: &Regex, out: &mut HashSet<String>) {
 
 /// parents[child] = node ids it depends on (edges, node.inputs refs, `{{ $node.<id> }}` refs), in stable order.
 /// Returns (node ids in file order, parents, self-reference errors).
-pub fn build_deps(graph: &Value) -> (Vec<String>, HashMap<String, Vec<String>>, Vec<String>) {
+pub fn build_deps(graph: &Value) -> (Vec<String>, HashMap<String, Vec<String>>, Vec<(String, String)>) {
     let nodes = graph["nodes"].as_array().cloned().unwrap_or_default();
     let ids: Vec<String> = nodes.iter().map(|n| str_of(n, "id").to_string()).filter(|i| !i.is_empty()).collect();
     let set: HashSet<&String> = ids.iter().collect();
@@ -106,7 +106,7 @@ pub fn build_deps(graph: &Value) -> (Vec<String>, HashMap<String, Vec<String>>, 
         found.sort();
         for s in found {
             if s == t {
-                errors.push(format!("Node '{}' tự tham chiếu chính nó qua biểu thức '$node.{}'.", t, t));
+                errors.push((t.to_string(), format!("Node '{}' tự tham chiếu chính nó qua biểu thức '$node.{}'.", t, t)));
             } else if set.contains(&s) {
                 add(&mut parents, &s, t);
             }
@@ -243,7 +243,10 @@ pub fn validate(graph: &Value) -> Validation {
         }
     }
     let (ids, parents, self_errs) = build_deps(graph);
-    errors.extend(self_errs);
+    for (id, msg) in self_errs {
+        blame(&mut node_errors, &id, &msg);
+        errors.push(msg);
+    }
     let order = match topo_sort(&ids, &parents) {
         Ok(o) => o,
         Err(stuck) => {
@@ -296,6 +299,13 @@ mod tests {
     fn g(edges: &[(&str, &str)], ids: &[&str]) -> Value {
         json!({"nodes": ids.iter().map(|i| json!({"id": i, "type": "x", "params": {}})).collect::<Vec<_>>(),
                "edges": edges.iter().map(|(a, b)| json!({"id": format!("{a}{b}"), "sourceNodeId": a, "targetNodeId": b})).collect::<Vec<_>>()})
+    }
+
+    #[test]
+    fn self_reference_is_blamed_on_its_node() {
+        let graph = json!({"nodes": [{"id": "a", "type": "text", "params": {"content": "{{ $node.a.out }}"}}], "edges": []});
+        let v = validate(&graph);
+        assert!(v.node_errors.get("a").and_then(|m| m.as_str()).is_some_and(|m| m.contains("tự tham chiếu")), "{:?}", v.node_errors);
     }
 
     #[test]
