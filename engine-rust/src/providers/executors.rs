@@ -2,7 +2,7 @@
 //! quality_check, policy. `ctx.params` is the RESOLVED input map (node params overlaid with wired port
 //! values); `ctx.inputs` holds the raw upstream outputs keyed by source node id.
 //! Artifacts in outputs are `{kind, uri, url, provider, model}` objects (uri is project-relative).
-use super::{fal, key_vault, media, models, pollinations, router::resolve_provider_for_model, spend_guard::SpendGuard};
+use super::{cloudflare, fal, google_media, key_vault, media, models, pollinations, replicate, router::resolve_provider_for_model, spend_guard::SpendGuard};
 use crate::engine::executor::{ExecutorRegistry, FallbackExecutor, NodeCtx, NodeExecutor, NodeOutput};
 use crate::workspace;
 use async_trait::async_trait;
@@ -200,6 +200,17 @@ impl NodeExecutor for ScriptExec {
     }
 }
 
+fn art_bytes(project: &str, a: &Value) -> Option<(Vec<u8>, String)> {
+    let rel = a["uri"].as_str()?;
+    let path = workspace::project_path(project, &[rel], false).ok()?;
+    let mime = if rel.ends_with("jpg") || rel.ends_with("jpeg") { "image/jpeg" } else if rel.ends_with("webp") { "image/webp" } else { "image/png" };
+    Some((std::fs::read(path).ok()?, mime.to_string()))
+}
+
+fn ref_bytes(project: &str, v: &Value) -> Vec<(Vec<u8>, String)> {
+    v.as_array().into_iter().flatten().take(4).filter_map(|a| art_bytes(project, a)).collect()
+}
+
 // ---------------------------------------------------------------- image
 pub struct ImageExec;
 
@@ -234,7 +245,21 @@ async fn gen_one_inner(ctx: &NodeCtx, model: &str, name: &str, prompt: &str, asp
             let (rel, m) = pollinations::generate_image(&ctx.project_id, &ctx.run_id, name, prompt, model, aspect, seed).await?;
             Ok((artifact("image", &ctx.project_id, &rel, "pollinations", &m), 0.0))
         }
-        other => anyhow::bail!("Provider '{}' (model '{}') chưa được port sang Rust (hiện có: fal, pollinations).", other, model),
+        "google" | "gemini" => {
+            let refs = ref_bytes(&ctx.project_id, &ctx.params["references"]);
+            let g = google_media::generate_image(&guard(&ctx.project_id), &ctx.project_id, &ctx.run_id, name, prompt, model, aspect, seed, &refs).await?;
+            Ok((artifact("image", &ctx.project_id, &g.rel, "google", &g.model), g.cost_usd))
+        }
+        "replicate" => {
+            let g = replicate::generate_image(&guard(&ctx.project_id), &ctx.project_id, &ctx.run_id, name, prompt, model, aspect, 1, &ctx.cancel).await?;
+            let g = g.into_iter().next().ok_or_else(|| anyhow::anyhow!("không có ảnh"))?;
+            Ok((artifact("image", &ctx.project_id, &g.rel, "replicate", &g.model), g.cost_usd))
+        }
+        "cloudflare" => {
+            let rel = cloudflare::generate_image(&ctx.project_id, &ctx.run_id, name, prompt, seed).await?;
+            Ok((artifact("image", &ctx.project_id, &rel, "cloudflare", "flux-1-schnell"), 0.0))
+        }
+        other => anyhow::bail!("Provider '{}' (model '{}') chưa được port sang Rust (hiện có: fal, google, replicate, cloudflare, pollinations; local MLX còn thiếu).", other, model),
     }
 }
 
@@ -311,8 +336,8 @@ impl NodeExecutor for VideoExec {
         let raw = s(p, "model").trim();
         let model = if raw.is_empty() || raw.starts_with("mock") { "fal-kling-v3-std" } else { raw };
         let prov = resolve_provider_for_model(model, "fal");
-        if prov != "fal" {
-            anyhow::bail!("Provider '{}' (model '{}') cho video chưa port sang Rust (hiện có: fal; google Veo/replicate còn thiếu).", prov, model);
+        if prov != "fal" && prov != "google" {
+            anyhow::bail!("Provider '{}' (model '{}') cho video chưa port sang Rust (hiện có: fal, google Veo).", prov, model);
         }
         let prompt = ["prompt", "videoPrompt"].iter().map(|k| s(p, k)).find(|x| !x.is_empty()).unwrap_or("").to_string();
         if prompt.is_empty() {
@@ -320,19 +345,15 @@ impl NodeExecutor for VideoExec {
         }
         let aspect = if s(p, "aspectRatio").is_empty() { "9:16" } else { s(p, "aspectRatio") };
         let dur = p["durationSec"].as_f64().unwrap_or(8.0);
-        let first = p.get("image").and_then(|a| a["uri"].as_str()).or_else(|| p.get("first_frame").and_then(|a| a["uri"].as_str()));
-        let data_uri = match first {
-            Some(rel) => {
-                use base64::Engine;
-                let path = workspace::project_path(&ctx.project_id, &[rel], false)?;
-                let bytes = std::fs::read(&path)?;
-                let mime = if rel.ends_with("jpg") || rel.ends_with("jpeg") { "image/jpeg" } else { "image/png" };
-                Some(format!("data:{};base64,{}", mime, base64::engine::general_purpose::STANDARD.encode(bytes)))
-            }
-            None => None,
+        let first = ["image", "first_frame"].iter().find_map(|k| p.get(*k).filter(|a| a["uri"].is_string())).and_then(|a| art_bytes(&ctx.project_id, a));
+        let g = if prov == "google" {
+            google_media::generate_video(&guard(&ctx.project_id), &ctx.project_id, &ctx.run_id, &ctx.node_id, &prompt, model, aspect, dur, first, &ctx.cancel).await?
+        } else {
+            use base64::Engine;
+            let data_uri = first.map(|(d, m)| format!("data:{};base64,{}", m, base64::engine::general_purpose::STANDARD.encode(d)));
+            fal::generate_video(&guard(&ctx.project_id), &ctx.project_id, &ctx.run_id, &ctx.node_id, &prompt, model, aspect, dur, data_uri, &ctx.cancel).await?
         };
-        let g = fal::generate_video(&guard(&ctx.project_id), &ctx.project_id, &ctx.run_id, &ctx.node_id, &prompt, model, aspect, dur, data_uri, &ctx.cancel).await?;
-        let a = artifact("video", &ctx.project_id, &g.rel, "fal", &g.model);
+        let a = artifact("video", &ctx.project_id, &g.rel, &prov, &g.model);
         let url = a["url"].as_str().map(String::from);
         Ok(out("video", url, format!("Hoàn thành tạo video ({})", model), g.cost_usd, json!({"video": a})))
     }

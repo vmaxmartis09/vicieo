@@ -1,3 +1,4 @@
+#![allow(clippy::too_many_arguments)] // provider entry points mirror the Python keyword-arg signatures
 //! fal.ai queue client: submit -> poll status_url -> fetch response_url -> download -> save.
 use super::{key_vault, media, models, spend_guard::SpendGuard};
 use serde_json::{json, Value};
