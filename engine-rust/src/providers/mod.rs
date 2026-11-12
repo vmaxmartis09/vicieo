@@ -1,6 +1,14 @@
 //! Provider gateway traits. Track A implements real backends (google/fal/replicate/...);
 //! until then everything resolves to `Mock*` so callers never break.
+pub mod executors;
+pub mod fal;
 pub mod google;
+pub mod key_vault;
+pub mod media;
+pub mod models;
+pub mod pollinations;
+pub mod router;
+pub mod spend_guard;
 
 use async_trait::async_trait;
 use serde_json::Value;

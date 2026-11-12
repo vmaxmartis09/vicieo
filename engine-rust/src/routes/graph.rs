@@ -114,6 +114,37 @@ pub(crate) async fn save_graph(Query(q): Query<ProjectQuery>, Json(body): Json<V
     Json(json!({ "ok": true, "saved": true, "project": proj }))
 }
 
+pub(crate) type ApiErr = (StatusCode, Json<Value>);
+
+fn api_err(code: StatusCode, msg: impl Into<String>) -> ApiErr {
+    (code, Json(json!({ "detail": msg.into(), "error": "run_failed", "isSuccess": false })))
+}
+
+/// Graph from the request body (`graph`), else the project's graph.json.
+fn load_graph(project: &str, body: &Value) -> Value {
+    let mut g = body.get("graph").filter(|g| g.is_object()).cloned().unwrap_or_else(|| {
+        workspace::project_path(project, &["graph.json"], false).ok()
+            .and_then(|p| fs::read_to_string(p).ok()).and_then(|t| serde_json::from_str(&t).ok())
+            .unwrap_or(json!({ "nodes": [], "edges": [] }))
+    });
+    if g["id"].as_str().unwrap_or("").is_empty() {
+        g["id"] = json!(format!("graph_{}", project));
+    }
+    g["projectId"] = json!(project);
+    g
+}
+
+async fn run_for(state: &AppState, project: String, body: Value) -> Result<Json<Value>, ApiErr> {
+    if !is_valid_slug(&project) {
+        return Err(api_err(StatusCode::BAD_REQUEST, "Invalid project id"));
+    }
+    let graph = load_graph(&project, &body);
+    let req = crate::engine::graph_runner::RunReq::from_value(&project, &body);
+    let reg = crate::engine::graph_runner::registry_with_track_a(&state.executors);
+    crate::engine::graph_runner::run_graph(state.tx.clone(), reg, project, graph, req).await
+        .map(Json).map_err(|e| api_err(StatusCode::BAD_REQUEST, e))
+}
+
 #[utoipa::path(
     post,
     path = "/graph/run",
@@ -122,16 +153,13 @@ pub(crate) async fn save_graph(Query(q): Query<ProjectQuery>, Json(body): Json<V
         (status = 200, description = "Execute graph workflow", body = inline(Value))
     )
 )]
-pub(crate) async fn run_graph(Query(q): Query<ProjectQuery>, Json(body): Json<Value>) -> Json<Value> {
+pub(crate) async fn run_graph(
+    axum::extract::State(state): axum::extract::State<AppState>,
+    Query(q): Query<ProjectQuery>,
+    Json(body): Json<Value>,
+) -> Result<Json<Value>, ApiErr> {
     let proj = q.project.unwrap_or_else(workspace::active_project_id);
-    let run_id = format!("run_{}", chrono::Utc::now().timestamp());
-    Json(json!({
-        "ok": true,
-        "runId": run_id,
-        "project": proj,
-        "status": "started",
-        "nodesQueued": body.get("nodes").and_then(|n| n.as_array()).map(|a| a.len()).unwrap_or(0)
-    }))
+    run_for(&state, proj, body).await
 }
 
 #[utoipa::path(
@@ -142,7 +170,14 @@ pub(crate) async fn run_graph(Query(q): Query<ProjectQuery>, Json(body): Json<Va
     )
 )]
 pub(crate) async fn cancel_graph(Query(q): Query<ProjectQuery>) -> Json<Value> {
-    Json(json!({ "ok": true, "cancelled": true }))
+    let proj = q.project.unwrap_or_else(workspace::active_project_id);
+    let cancelled = crate::engine::graph_runner::cancel_project(&proj);
+    Json(json!({ "ok": true, "cancelled": cancelled, "project": proj }))
+}
+
+pub(crate) async fn cancel_project_run(AxumPath(project_id): AxumPath<String>) -> Json<Value> {
+    let cancelled = crate::engine::graph_runner::cancel_project(&project_id);
+    Json(json!({ "ok": true, "cancelled": cancelled, "project": project_id }))
 }
 
 pub(crate) async fn sse_events(
@@ -166,8 +201,15 @@ pub(crate) async fn sse_events(
         (status = 200, description = "Validate graph nodes and connections", body = inline(Value))
     )
 )]
-pub(crate) async fn validate_graph(Json(_body): Json<Value>) -> Json<Value> {
-    Json(json!({ "valid": true, "errors": [] }))
+pub(crate) async fn validate_graph(Json(body): Json<Value>) -> Json<Value> {
+    let g = body.get("graph").cloned().unwrap_or(body);
+    Json(crate::engine::validator::validate(&g).to_json())
+}
+
+fn estimate_for(project: &str, body: &Value) -> Result<Json<Value>, ApiErr> {
+    let graph = load_graph(project, body);
+    let req = crate::engine::graph_runner::RunReq::from_value(project, body);
+    crate::engine::cost::plan(project, &graph, &req).map(Json).map_err(|e| api_err(StatusCode::BAD_REQUEST, e))
 }
 
 #[utoipa::path(
@@ -178,8 +220,12 @@ pub(crate) async fn validate_graph(Json(_body): Json<Value>) -> Json<Value> {
         (status = 200, description = "Estimate graph run cost", body = inline(Value))
     )
 )]
-pub(crate) async fn estimate_cost(Json(body): Json<Value>) -> Json<Value> {
-    Json(json!({ "totalCostUsd": 0.0, "currency": "USD", "isFreeMode": true }))
+pub(crate) async fn estimate_cost(Query(q): Query<ProjectQuery>, Json(body): Json<Value>) -> Result<Json<Value>, ApiErr> {
+    estimate_for(&q.project.unwrap_or_else(workspace::active_project_id), &body)
+}
+
+pub(crate) async fn estimate_project_cost(AxumPath(project_id): AxumPath<String>, Json(body): Json<Value>) -> Result<Json<Value>, ApiErr> {
+    estimate_for(&project_id, &body)
 }
 
 // Data Catalog & Character Handlers
@@ -188,193 +234,16 @@ pub(crate) async fn run_project_graph(
     AxumPath(project_id): AxumPath<String>,
     axum::extract::State(state): axum::extract::State<AppState>,
     Json(payload): Json<Value>,
-) -> Json<Value> {
-    if !is_valid_slug(&project_id) {
-        return Json(json!({ "error": "Invalid project id", "isSuccess": false }));
-    }
-    let run_id = format!("run_{}", chrono::Utc::now().timestamp_millis());
-    let graph_path = workspace::project_path(&project_id, &["graph.json"], true).unwrap_or_default();
-    
-    // Load base graph from disk or payload
-    let mut current_graph: Value = if let Some(g) = payload.get("graph") {
-        g.clone()
-    } else if graph_path.exists() {
-        fs::read_to_string(&graph_path)
-            .ok()
-            .and_then(|t| serde_json::from_str(&t).ok())
-            .unwrap_or(json!({ "nodes": [], "edges": [] }))
-    } else {
-        json!({ "nodes": [], "edges": [] })
-    };
-
-    let target_node_id = payload.get("targetNodeId").and_then(|s| s.as_str());
-    let mut executed_nodes: Vec<String> = Vec::new();
-    let now_str = chrono::Utc::now().to_rfc3339();
-
-    if let Some(nodes_arr) = current_graph.get_mut("nodes").and_then(|n| n.as_array_mut()) {
-        for n in nodes_arr.iter_mut() {
-            let node_id = n.get("id").and_then(|i| i.as_str()).unwrap_or("").to_string();
-            if node_id.is_empty() {
-                continue;
-            }
-            if let Some(tid) = target_node_id {
-                if tid != node_id {
-                    continue;
-                }
-            }
-
-            let node_type = n.get("type").and_then(|t| t.as_str()).unwrap_or("generic").to_string();
-            let custom_name = n.get("params")
-                .and_then(|p| p.get("_customName"))
-                .and_then(|cn| cn.as_str())
-                .unwrap_or(&node_type)
-                .to_string();
-            let model = n.get("params")
-                .and_then(|p| p.get("model"))
-                .and_then(|m| m.as_str())
-                .unwrap_or("default")
-                .to_string();
-
-            // 1. Broadcast starting event
-            let start_msg = json!({
-                "projectId": project_id,
-                "nodeId": node_id,
-                "status": "running",
-                "state": "running",
-                "progress": 0.35,
-                "progressPct": 35,
-                "message": format!("Đang thực thi node {}", custom_name)
-            }).to_string();
-            let _ = state.tx.send(start_msg);
-
-            // Determine preview and summary
-            let params = n.get("params").cloned().unwrap_or(json!({}));
-            let ctx = crate::engine::executor::NodeCtx {
-                project_id: project_id.clone(),
-                run_id: run_id.clone(),
-                node_id: node_id.clone(),
-                node_type: node_type.clone(),
-                custom_name: custom_name.clone(),
-                params: params.clone(),
-                inputs: Default::default(),
-                tx: state.tx.clone(),
-                cancel: tokio_util::sync::CancellationToken::new(),
-                mock: true,
-            };
-            let (preview_type, preview_url, summary_text) = match state.executors.get(&node_type) {
-                Some(ex) => match ex.execute(&ctx).await {
-                    Ok(o) => (o.preview_type, o.preview_url, o.summary),
-                    Err(e) => ("text".to_string(), None, format!("Lỗi: {}", e)),
-                },
-                None => unreachable!("fallback executor always resolves"),
-            };
-
-            let gen_id = format!("gen_{}", &uuid::Uuid::new_v4().to_string().replace('-', "")[..8]);
-            let new_gen = json!({
-                "id": gen_id,
-                "createdAt": now_str,
-                "previewUrl": preview_url,
-                "previewType": preview_type,
-                "summaryText": summary_text,
-                "costUsd": 0.0,
-                "isPinned": true,
-                "nodeId": node_id,
-                "params": params
-            });
-
-            // Update node fields
-            n["state"] = json!("completed");
-            n["pinnedGenerationId"] = json!(gen_id);
-            n["isStale"] = json!(false);
-
-            if let Some(gens) = n.get_mut("generations").and_then(|g| g.as_array_mut()) {
-                gens.insert(0, new_gen);
-            } else {
-                n["generations"] = json!([new_gen]);
-            }
-
-            let mut ui = n.get("ui").cloned().unwrap_or(json!({}));
-            if let Some(ref p_url) = preview_url {
-                ui["previewUrl"] = json!(p_url);
-            }
-            ui["previewType"] = json!(preview_type);
-            ui["summaryText"] = json!(summary_text);
-            ui["outputSummary"] = json!({
-                "status": "ok",
-                "completedAt": now_str
-            });
-            n["ui"] = ui;
-
-            // 2. Broadcast completed event
-            let finish_msg = json!({
-                "projectId": project_id,
-                "nodeId": node_id,
-                "status": "succeeded",
-                "state": "succeeded",
-                "progress": 1.0,
-                "progressPct": 100,
-                "message": format!("Hoàn thành {}", custom_name),
-                "model": model,
-                "previewUrl": preview_url,
-                "previewType": preview_type,
-                "summaryText": summary_text,
-                "outputsSummary": {
-                    "status": "ok",
-                    "completedAt": now_str
-                }
-            }).to_string();
-            let _ = state.tx.send(finish_msg);
-
-            executed_nodes.push(node_id);
-        }
-    }
-
-    current_graph["updatedAt"] = json!(now_str);
-    let _ = fs::write(&graph_path, serde_json::to_string_pretty(&current_graph).unwrap_or_default());
-
-    // Save run summary to data/projects/{project_id}/runs/{run_id}.json
-    let runs_dir = workspace::project_path(&project_id, &["runs"], true).unwrap_or_default();
-    let run_file = runs_dir.join(format!("{}.json", run_id));
-    let summary = json!({
-        "runId": run_id,
-        "projectId": project_id,
-        "totalNodes": executed_nodes.len(),
-        "executedNodes": executed_nodes,
-        "skippedNodes": [],
-        "failedNodes": [],
-        "totalCostUsd": 0.0,
-        "isSuccess": true,
-        "errors": {},
-        "staleNodes": [],
-        "createdAt": now_str
-    });
-    let _ = fs::write(run_file, serde_json::to_string_pretty(&summary).unwrap_or_default());
-
-    Json(summary)
+) -> Result<Json<Value>, ApiErr> {
+    run_for(&state, project_id, payload).await
 }
 
 pub(crate) async fn get_project_runs(AxumPath(project_id): AxumPath<String>) -> Json<Value> {
-    let runs_dir = workspace::project_path(&project_id, &["runs"], false).unwrap_or_default();
-    let mut runs = Vec::new();
-    if runs_dir.exists() {
-        if let Ok(entries) = fs::read_dir(runs_dir) {
-            for entry in entries.flatten() {
-                let p = entry.path();
-                if p.extension().and_then(|e| e.to_str()) == Some("json") {
-                    if let Ok(txt) = fs::read_to_string(&p) {
-                        if let Ok(v) = serde_json::from_str::<Value>(&txt) {
-                            runs.push(v);
-                        }
-                    }
-                }
-            }
-        }
-    }
-    Json(json!(runs))
+    Json(json!(crate::engine::graph_runner::list_runs(&project_id, 20)))
 }
 
-pub(crate) async fn get_project_active_run(AxumPath(_project_id): AxumPath<String>) -> Json<Value> {
-    Json(Value::Null)
+pub(crate) async fn get_project_active_run(AxumPath(project_id): AxumPath<String>) -> Json<Value> {
+    Json(crate::engine::graph_runner::active_run(&project_id).unwrap_or(Value::Null))
 }
 
 pub(crate) async fn get_project_outputs(AxumPath(project_id): AxumPath<String>) -> Json<Value> {
@@ -555,9 +424,9 @@ pub fn router() -> Router<AppState> {
         .route("/data/projects/{project_id}/graph", get(get_project_graph_by_path).post(save_project_graph_by_path))
         .route("/projects/{project_id}/graph", get(get_project_graph_by_path).post(save_project_graph_by_path))
         .route("/projects/{project_id}/run", post(run_project_graph))
-        .route("/projects/{project_id}/run/cancel", post(cancel_graph))
+        .route("/projects/{project_id}/run/cancel", post(cancel_project_run))
         .route("/projects/{project_id}/events", get(sse_events))
-        .route("/projects/{project_id}/estimate", post(estimate_cost))
+        .route("/projects/{project_id}/estimate", post(estimate_project_cost))
         .route("/projects/{project_id}/runs", get(get_project_runs))
         .route("/projects/{project_id}/runs/active", get(get_project_active_run))
         .route("/projects/{project_id}/outputs", get(get_project_outputs))
