@@ -111,3 +111,29 @@ impl AudioMastering {
     }
 }
 
+
+impl AudioMastering {
+    /// Loudness-normalise the audio track of a rendered video in place (video stream copied).
+    /// Returns Ok(false) when the file has no audio stream.
+    pub fn normalize_video_audio(&self, video: &Path, target_lufs: f64) -> Result<bool> {
+        let has_audio = crate::video::util::probe_sync(video).map(|p| p.has_audio).unwrap_or(false);
+        if !has_audio {
+            return Ok(false);
+        }
+        let tmp = video.with_extension("norm.mp4");
+        let status = Command::new(&self.ffmpeg_bin)
+            .args(["-hide_banner", "-y", "-i"])
+            .arg(video)
+            .args(["-map", "0:v:0", "-map", "0:a:0", "-c:v", "copy", "-af"])
+            .arg(format!("loudnorm=I={}:LRA=11:TP=-1.5", target_lufs))
+            .args(["-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart"])
+            .arg(&tmp)
+            .output()?;
+        if !status.status.success() || std::fs::metadata(&tmp).map(|m| m.len() == 0).unwrap_or(true) {
+            let _ = std::fs::remove_file(&tmp);
+            bail!("loudnorm thất bại: {}", String::from_utf8_lossy(&status.stderr).chars().rev().take(300).collect::<String>().chars().rev().collect::<String>());
+        }
+        std::fs::rename(&tmp, video)?;
+        Ok(true)
+    }
+}

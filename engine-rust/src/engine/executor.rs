@@ -53,7 +53,7 @@ pub struct ExecutorRegistry {
 impl ExecutorRegistry {
     pub fn with_defaults() -> Self {
         let mut r = Self { map: HashMap::new(), fallback: Some(Arc::new(FallbackExecutor)) };
-        // TRACK REGISTRATION POINT: e.g. `crate::video::register(&mut r);`
+        crate::video::register(&mut r);
         let _ = &mut r;
         r
     }

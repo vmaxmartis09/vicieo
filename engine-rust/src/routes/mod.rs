@@ -99,7 +99,6 @@ pub(crate) struct ProjectQuery {
         graph::estimate_cost,
         video::get_video_templates,
         video::render_video,
-        video::get_render_status,
         intel::generate_ideas,
         intel::generate_script,
         intel::check_compliance,
