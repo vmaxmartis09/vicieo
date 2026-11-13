@@ -1,22 +1,43 @@
-# Cài Visual Studio Build Tools (link.exe) trên Windows
+# Bộ cài đặt Windows (đã kiểm checksum)
 
-Cargo cần `link.exe` để build engine-rust. File này nằm trong `setup/windows/vs_BuildTools.exe`.
+File trong thư mục này lấy từ nguồn chính thức. `SHA256SUMS` là checksum của từng file.
 
-Kiểm tra checksum (PowerShell):
+| File | Dùng cho | Nguồn |
+|---|---|---|
+| `vs_BuildTools.exe` | `link.exe` cho cargo | aka.ms/vs/17/release |
+| `node-v22.23.5-x64.msi` | Node.js 22 LTS (yêu cầu ≥ 20.19) | nodejs.org |
+| `yt-dlp.exe` | tải nguồn video | github.com/yt-dlp/yt-dlp |
+| `ffmpeg-release-essentials.zip.part-00`, `part-01` | ffmpeg + ffprobe (zip gốc 114 MB, tách để nhỏ hơn 100 MB) | gyan.dev |
 
-```powershell
-(Get-FileHash .\setup\windows\vs_BuildTools.exe -Algorithm SHA256).Hash.ToLower()
-# phải ra: 8aaf70d164808d313ee6226af5d1e3b2db43c60be551bfeb2b70ce139d792c37
-```
-
-Cài (chạy PowerShell **Administrator**, cần internet, mất vài GB):
+## 1. Visual Studio Build Tools (PowerShell Administrator)
 
 ```powershell
 .\setup\windows\vs_BuildTools.exe --add Microsoft.VisualStudio.Workload.VCTools --includeRecommended --passive --norestart --wait
 ```
 
-Sau khi cài, mở terminal mới và kiểm tra:
+Mở terminal mới, chạy `where.exe link` để kiểm tra.
+
+## 2. Node.js 22
+
+Chạy `node-v22.23.5-x64.msi` (double-click, hoặc `msiexec /i setup\windows\node-v22.23.5-x64.msi`). Mở terminal mới, chạy `node -v` (phải ≥ v20.19).
+
+## 3. yt-dlp
 
 ```powershell
-where.exe link
+New-Item -ItemType Directory -Force D:\tools\bin | Out-Null
+Copy-Item .\setup\windows\yt-dlp.exe D:\tools\bin\
+[Environment]::SetEnvironmentVariable("Path", $env:Path + ";D:\tools\bin", "User")
 ```
+
+## 4. ffmpeg + ffprobe
+
+Ghép hai phần thành zip, rồi giải nén:
+
+```powershell
+cmd /c copy /b setup\windows\ffmpeg-release-essentials.zip.part-00+setup\windows\ffmpeg-release-essentials.zip.part-01 setup\windows\ffmpeg-release-essentials.zip
+Expand-Archive setup\windows\ffmpeg-release-essentials.zip -DestinationPath D:\tools\ffmpeg
+$bin = (Get-ChildItem D:\tools\ffmpeg -Recurse -Filter ffmpeg.exe | Select-Object -First 1).DirectoryName
+[Environment]::SetEnvironmentVariable("Path", $env:Path + ";$bin", "User")
+```
+
+Kiểm tra checksum zip ghép: `(Get-FileHash setup\windows\ffmpeg-release-essentials.zip -Algorithm SHA256).Hash` phải ra `60F467265B1E312373DBCD92200C2618A74850F98D3D078E94296BB3FA2047BA`. Xoá zip sau khi giải nén nếu muốn.
