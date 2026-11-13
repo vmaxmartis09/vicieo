@@ -4,7 +4,11 @@
 use crate::workspace;
 use regex::Regex;
 use serde_json::{json, Map, Value};
+use once_cell::sync::Lazy;
+use std::borrow::Cow;
 use std::collections::{HashMap, HashSet};
+use std::sync::{Arc, Mutex};
+use std::time::SystemTime;
 
 pub struct Validation {
     pub is_valid: bool,
@@ -29,11 +33,24 @@ impl Validation {
     }
 }
 
-pub fn node_types() -> HashMap<String, Value> {
-    workspace::shared_path(&["node_types.json"], false).ok()
+type Registry = Arc<HashMap<String, Value>>;
+static REGISTRY: Lazy<Mutex<Option<(SystemTime, Registry)>>> = Lazy::new(|| Mutex::new(None));
+static NODE_REF: Lazy<Regex> = Lazy::new(|| Regex::new(r"\{\{\s*\$node\.([a-zA-Z0-9_-]+)").unwrap());
+
+/// Node registry cached in memory; re-read only when node_types.json's mtime changes (one stat per call).
+pub fn node_types() -> Registry {
+    let path = workspace::shared_path(&["node_types.json"], false).ok();
+    let mtime = path.as_ref().and_then(|p| std::fs::metadata(p).ok()).and_then(|m| m.modified().ok());
+    let mut slot = REGISTRY.lock().unwrap();
+    if let (Some((t, r)), Some(m)) = (slot.as_ref(), mtime) {
+        if *t == m { return r.clone(); }
+    }
+    let reg: Registry = Arc::new(path
         .and_then(|p| std::fs::read_to_string(p).ok())
         .and_then(|t| serde_json::from_str::<Vec<Value>>(&t).ok()).unwrap_or_default()
-        .into_iter().filter_map(|d| d["typeName"].as_str().map(|n| (n.to_string(), d.clone()))).collect()
+        .into_iter().filter_map(|d| d["typeName"].as_str().map(|n| (n.to_string(), d.clone()))).collect());
+    if let Some(m) = mtime { *slot = Some((m, reg.clone())); }
+    reg
 }
 
 pub fn is_bypassed(node: &Value) -> bool {
@@ -72,7 +89,7 @@ fn scan_refs(v: &Value, re: &Regex, out: &mut HashSet<String>) {
 /// parents[child] = node ids it depends on (edges, node.inputs refs, `{{ $node.<id> }}` refs), in stable order.
 /// Returns (node ids in file order, parents, self-reference errors).
 pub fn build_deps(graph: &Value) -> (Vec<String>, HashMap<String, Vec<String>>, Vec<(String, String)>) {
-    let nodes = graph["nodes"].as_array().cloned().unwrap_or_default();
+    let nodes: &[Value] = graph["nodes"].as_array().map(|v| v.as_slice()).unwrap_or(&[]);
     let ids: Vec<String> = nodes.iter().map(|n| str_of(n, "id").to_string()).filter(|i| !i.is_empty()).collect();
     let set: HashSet<&String> = ids.iter().collect();
     let mut parents: HashMap<String, Vec<String>> = ids.iter().map(|i| (i.clone(), vec![])).collect();
@@ -90,8 +107,8 @@ pub fn build_deps(graph: &Value) -> (Vec<String>, HashMap<String, Vec<String>>, 
             add(&mut parents, s, t);
         }
     }
-    let re = Regex::new(r"\{\{\s*\$node\.([a-zA-Z0-9_-]+)").unwrap();
-    for n in &nodes {
+    let re = &*NODE_REF;
+    for n in nodes {
         let t = str_of(n, "id");
         for r in n["inputs"].as_object().into_iter().flat_map(|m| m.values()) {
             if let Some(s) = r.get("nodeId").and_then(|x| x.as_str()) {
@@ -101,7 +118,7 @@ pub fn build_deps(graph: &Value) -> (Vec<String>, HashMap<String, Vec<String>>, 
             }
         }
         let mut found = HashSet::new();
-        scan_refs(&n["params"], &re, &mut found);
+        scan_refs(&n["params"], re, &mut found);
         let mut found: Vec<_> = found.into_iter().collect();
         found.sort();
         for s in found {
@@ -152,12 +169,13 @@ fn compatible(src: &str, tgt: &str) -> bool {
 }
 
 /// Ports incl. enabled capabilities (params[cap].enabled), mirroring Python NodeRegistry.effective_ports.
-fn effective(def: &Value, params: &Value) -> Value {
-    let mut d = def.clone();
+fn effective<'a>(def: &'a Value, params: &Value) -> Cow<'a, Value> {
+    let mut d: Cow<Value> = Cow::Borrowed(def);
     for cap in def["capabilities"].as_array().into_iter().flatten() {
         if params[cap["name"].as_str().unwrap_or("")]["enabled"] != true {
             continue;
         }
+        let d = d.to_mut();
         for (key, extra) in [("inputPorts", &cap["inputPorts"]), ("outputPorts", &cap["outputPorts"])] {
             for p in extra.as_array().into_iter().flatten() {
                 let exists = d[key].as_array().into_iter().flatten().any(|q| q["name"] == p["name"]);
@@ -177,9 +195,9 @@ fn port<'a>(def: &'a Value, key: &str, name: &str) -> Option<&'a Value> {
 pub fn validate(graph: &Value) -> Validation {
     let types = node_types();
     let (mut errors, mut warnings, mut node_errors) = (vec![], vec![], Map::new());
-    let nodes = graph["nodes"].as_array().cloned().unwrap_or_default();
+    let nodes: &[Value] = graph["nodes"].as_array().map(|v| v.as_slice()).unwrap_or(&[]);
     let mut map: HashMap<String, &Value> = HashMap::new();
-    for n in &nodes {
+    for n in nodes {
         let id = str_of(n, "id");
         if map.contains_key(id) {
             let msg = format!("Trùng lặp mã Node ID '{}' trong đồ thị.", id);
@@ -235,7 +253,7 @@ pub fn validate(graph: &Value) -> Validation {
             }
         }
     }
-    for n in &nodes {
+    for n in nodes {
         for (pn, r) in n["inputs"].as_object().into_iter().flatten() {
             if r.get("nodeId").is_some() {
                 connected.insert((str_of(n, "id").to_string(), pn.clone()));
@@ -256,7 +274,7 @@ pub fn validate(graph: &Value) -> Validation {
             vec![]
         }
     };
-    for n in &nodes {
+    for n in nodes {
         let id = str_of(n, "id");
         let Some(def) = types.get(str_of(n, "type")).map(|d| effective(d, &n["params"])) else { continue };
         if is_bypassed(n) {
@@ -344,5 +362,11 @@ mod tests {
         let graph = json!({"nodes": [{"id": "a", "type": "x", "params": {}}, {"id": "b", "type": "x", "params": {"t": "{{ $node.a.text }}"}}], "edges": []});
         let (_, parents, _) = build_deps(&graph);
         assert_eq!(parents["b"], vec!["a".to_string()]);
+    }
+
+    #[test]
+    fn registry_is_cached_between_calls() {
+        let (a, b) = (node_types(), node_types());
+        assert!(a.is_empty() || Arc::ptr_eq(&a, &b));
     }
 }

@@ -202,8 +202,8 @@ pub(crate) async fn sse_events(
     )
 )]
 pub(crate) async fn validate_graph(Json(body): Json<Value>) -> Json<Value> {
-    let g = body.get("graph").cloned().unwrap_or(body);
-    Json(crate::engine::validator::validate(&g).to_json())
+    let g = body.get("graph").unwrap_or(&body);
+    Json(crate::engine::validator::validate(g).to_json())
 }
 
 fn estimate_for(project: &str, body: &Value) -> Result<Json<Value>, ApiErr> {

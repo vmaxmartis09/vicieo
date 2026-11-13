@@ -504,6 +504,7 @@ pub(crate) async fn get_script_data(AxumPath((project_id, episode_id)): AxumPath
 
 pub(crate) async fn serve_project_file(
     AxumPath((project_id, file_path)): AxumPath<(String, String)>,
+    req: axum::extract::Request,
 ) -> impl IntoResponse {
     if !is_valid_slug(&project_id) {
         return Err((StatusCode::BAD_REQUEST, "Invalid project id"));
@@ -525,7 +526,13 @@ pub(crate) async fn serve_project_file(
         return Err((StatusCode::FORBIDDEN, "Access denied"));
     }
     
-    Ok(super::stream_file(&canonical_target).await)
+    // ServeFile streams from disk and honours Range (video seeking) + Content-Length.
+    use tower::ServiceExt;
+    let mime: mime_type::Mime = super::guess_mime(&canonical_target).parse().unwrap_or(mime_type::APPLICATION_OCTET_STREAM);
+    match tower_http::services::ServeFile::new_with_mime(&canonical_target, &mime).oneshot(req).await {
+        Ok(r) => Ok(r.into_response()),
+        Err(_) => Err((StatusCode::INTERNAL_SERVER_ERROR, "Failed to read file")),
+    }
 }
 
 pub(crate) async fn get_project_artifact(

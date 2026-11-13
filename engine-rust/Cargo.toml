@@ -14,6 +14,8 @@ async-stream = "0.3"
 # Web Server & REST API (Port 9000 & Full Route Suite)
 axum = { version = "0.8", features = ["macros"] }
 tower-http = { version = "0.6", features = ["cors", "trace", "fs"] }
+tower = { version = "0.5", features = ["util"] }
+mime_type = { package = "mime", version = "0.3" }
 utoipa = { version = "6.0", features = ["axum_extras"] }
 utoipa-swagger-ui = { version = "10.0", features = ["axum"] }
 
