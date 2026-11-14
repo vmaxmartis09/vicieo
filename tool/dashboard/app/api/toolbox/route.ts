@@ -131,7 +131,12 @@ export async function POST(request: Request) {
     const cliPath = path.join(REPO_ROOT, "tool", "toolbox", "toolbox_cli", "cli.py");
     let stderr = "";
     try {
-      const r = await execFileAsync("py", ["-3.11", cliPath, "run", toolId, "--in", tmpIn, "--out", tmpOut], {
+      // Windows: launcher "py -3.11"; macOS/Linux: .venv gốc nếu có, không thì python3
+      const venvPy = path.join(REPO_ROOT, ".venv", process.platform === "win32" ? "Scripts/python.exe" : "bin/python");
+      const [pyCmd, pyArgs] = fs.existsSync(venvPy)
+        ? [venvPy, [] as string[]]
+        : process.platform === "win32" ? ["py", ["-3.11"]] : ["python3", [] as string[]];
+      const r = await execFileAsync(pyCmd, [...pyArgs, cliPath, "run", toolId, "--in", tmpIn, "--out", tmpOut], {
         cwd: REPO_ROOT,
         timeout: 15 * 60 * 1000,
         maxBuffer: 16 * 1024 * 1024,

@@ -1,0 +1,90 @@
+{"ts": "2026-11-12T07:38:21.339317+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 18}
+{"ts": "2026-11-12T07:39:25.943801+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 66}
+{"ts": "2026-11-12T07:40:41.614390+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 75}
+{"ts": "2026-11-12T07:41:24.755137+00:00", "tier": "opus", "reasons": ["haiku:\\b(fix|sửa|bug|lỗi|updat", "11+ files"], "prompt_chars": 2305}
+{"ts": "2026-11-12T07:42:42.519292+00:00", "tier": "sonnet", "reasons": ["sonnet:\\b(implement|triển khai|"], "prompt_chars": 110}
+{"ts": "2026-11-12T07:44:04.285943+00:00", "tier": "native", "reasons": ["native:\\b(find|search|tìm|grep|"], "prompt_chars": 149}
+{"ts": "2026-11-12T07:44:22.279270+00:00", "tier": "haiku", "reasons": ["haiku:\\b(fix|sửa|bug|lỗi|updat", "haiku:\\b(comment|typo|docs?|re"], "prompt_chars": 18}
+{"ts": "2026-11-12T07:44:22.300467+00:00", "tier": "opus", "reasons": ["opus:\\b(debug|gỡ lỗi|root cau"], "prompt_chars": 49}
+{"ts": "2026-11-12T07:44:26.101769+00:00", "tier": "haiku", "reasons": ["haiku:\\b(fix|sửa|bug|lỗi|updat", "haiku:\\b(comment|typo|docs?|re"], "prompt_chars": 18}
+{"ts": "2026-11-12T07:46:08.582344+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 91}
+{"ts": "2026-11-12T07:46:39.528416+00:00", "tier": "haiku", "reasons": ["haiku:\\b(fix|sửa|bug|lỗi|updat", "haiku:\\b(comment|typo|docs?|re"], "prompt_chars": 18}
+{"ts": "2026-11-12T07:47:27.388799+00:00", "tier": "opus", "reasons": ["sonnet:\\b(implement|triển khai|", "haiku:\\b(fix|sửa|bug|lỗi|updat", "long prompt +1"], "prompt_chars": 1698}
+{"ts": "2026-11-12T07:48:07.143350+00:00", "tier": "native", "reasons": ["native:\\b(find|search|tìm|grep|"], "prompt_chars": 30}
+{"ts": "2026-11-12T07:48:12.175933+00:00", "tier": "opus", "reasons": ["opus:\\b(debug|gỡ lỗi|root cau"], "prompt_chars": 49}
+{"ts": "2026-11-12T07:48:17.549366+00:00", "tier": "sonnet", "reasons": ["haiku:\\b(fix|sửa|bug|lỗi|updat", "native:\\b(find|search|tìm|grep|", "long prompt +1"], "prompt_chars": 1217}
+{"ts": "2026-11-12T07:49:18.846904+00:00", "tier": "sonnet", "reasons": ["haiku:\\b(fix|sửa|bug|lỗi|updat", "long prompt +1"], "prompt_chars": 1508}
+{"ts": "2026-11-12T07:49:41.988473+00:00", "tier": "opus", "reasons": ["sonnet:\\b(implement|triển khai|", "haiku:\\b(fix|sửa|bug|lỗi|updat", "native:\\b(find|search|tìm|grep|", "long prompt +1"], "prompt_chars": 1314}
+{"ts": "2026-11-12T07:51:40.295369+00:00", "tier": "opus", "reasons": ["sonnet:\\b(write tests?|viết tes", "haiku:\\b(fix|sửa|bug|lỗi|updat", "native:\\b(find|search|tìm|grep|", "long prompt +1"], "prompt_chars": 1058}
+{"ts": "2026-11-12T07:56:17.399599+00:00", "tier": "haiku", "reasons": ["haiku:\\b(fix|sửa|bug|lỗi|updat"], "prompt_chars": 71}
+{"ts": "2026-11-12T07:56:39.134608+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 8}
+{"ts": "2026-11-12T07:57:17.291601+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 8}
+{"ts": "2026-11-12T07:59:03.728626+00:00", "tier": "haiku", "reasons": ["haiku:\\b(fix|sửa|bug|lỗi|updat"], "prompt_chars": 11}
+{"ts": "2026-11-12T08:01:28.557657+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 101}
+{"ts": "2026-11-12T08:02:36.469127+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 132}
+{"ts": "2026-11-12T08:03:53.304043+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 172}
+{"ts": "2026-11-12T08:08:44.692352+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 14}
+{"ts": "2026-11-12T08:09:01.587317+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 330}
+{"ts": "2026-11-12T08:11:27.832566+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 349}
+{"ts": "2026-11-12T08:11:48.145600+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 56}
+{"ts": "2026-11-12T08:15:10.786613+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 16}
+{"ts": "2026-11-12T08:15:28.832242+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 349}
+{"ts": "2026-11-12T08:17:53.516028+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 91}
+{"ts": "2026-11-12T08:18:04.905052+00:00", "tier": "opus", "reasons": ["opus:\\b(debug|gỡ lỗi|root cau", "native:\\b(find|search|tìm|grep|"], "prompt_chars": 1171}
+{"ts": "2026-11-12T08:18:16.828350+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 2}
+{"ts": "2026-11-12T08:18:43.979335+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 21}
+{"ts": "2026-11-12T08:19:07.219259+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 14}
+{"ts": "2026-11-12T08:19:12.559329+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 14}
+{"ts": "2026-11-12T08:19:31.887511+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 14}
+{"ts": "2026-11-12T08:19:37.703734+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 14}
+{"ts": "2026-11-12T08:20:00.377413+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 57}
+{"ts": "2026-11-12T08:21:07.997570+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 14}
+{"ts": "2026-11-12T08:24:19.697368+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 14}
+{"ts": "2026-11-12T08:24:46.713117+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 57}
+{"ts": "2026-11-12T08:25:14.493613+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 14}
+{"ts": "2026-11-12T08:27:40.410297+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 55}
+{"ts": "2026-11-12T08:32:06.447685+00:00", "tier": "haiku", "reasons": ["haiku:\\b(fix|sửa|bug|lỗi|updat"], "prompt_chars": 141}
+{"ts": "2026-11-12T08:35:19.036035+00:00", "tier": "sonnet", "reasons": ["haiku:\\b(fix|sửa|bug|lỗi|updat", "native:\\b(find|search|tìm|grep|", "long prompt +1"], "prompt_chars": 929}
+{"ts": "2026-11-12T08:37:56.745490+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 18}
+{"ts": "2026-11-12T08:45:15.064022+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 35}
+{"ts": "2026-11-12T09:03:03.709842+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 8}
+{"ts": "2026-11-12T09:09:04.133510+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 8}
+{"ts": "2026-11-12T09:10:29.493958+00:00", "tier": "haiku", "reasons": ["haiku:\\b(fix|sửa|bug|lỗi|updat", "native:\\b(find|search|tìm|grep|"], "prompt_chars": 33}
+{"ts": "2026-11-12T09:10:37.696342+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 43}
+{"ts": "2026-11-12T09:11:01.871536+00:00", "tier": "haiku", "reasons": ["haiku:\\b(fix|sửa|bug|lỗi|updat", "native:\\b(find|search|tìm|grep|"], "prompt_chars": 47}
+{"ts": "2026-11-12T09:18:10.188327+00:00", "tier": "haiku", "reasons": ["haiku:\\b(fix|sửa|bug|lỗi|updat"], "prompt_chars": 37}
+{"ts": "2026-11-12T12:02:42.717417+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 9}
+{"ts": "2026-11-12T12:09:07.046707+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 9}
+{"ts": "2026-11-12T12:10:07.375974+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 9}
+{"ts": "2026-11-12T12:10:22.667621+00:00", "tier": "opus", "reasons": ["opus:\\b(debug|gỡ lỗi|root cau", "opus:\\b(architect|kiến trúc|d", "haiku:\\b(fix|sửa|bug|lỗi|updat", "haiku:\\b(comment|typo|docs?|re", "native:\\b(find|search|tìm|grep|", "11+ files"], "prompt_chars": 5515}
+{"ts": "2026-11-12T12:12:30.669355+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 48}
+{"ts": "2026-11-12T12:12:30.703363+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 405}
+{"ts": "2026-11-12T12:13:37.432789+00:00", "tier": "opus", "reasons": ["opus:\\b(debug|gỡ lỗi|root cau", "opus:\\b(architect|kiến trúc|d", "haiku:\\b(fix|sửa|bug|lỗi|updat", "haiku:\\b(comment|typo|docs?|re", "native:\\b(find|search|tìm|grep|", "11+ files"], "prompt_chars": 5228}
+{"ts": "2026-11-12T12:14:40.983474+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 69}
+{"ts": "2026-11-12T12:14:55.119481+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 21}
+{"ts": "2026-11-12T12:16:12.314031+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 411}
+{"ts": "2026-11-12T12:20:12.957387+00:00", "tier": "sonnet", "reasons": ["sonnet:\\b(implement|triển khai|"], "prompt_chars": 157}
+{"ts": "2026-11-12T12:20:31.093917+00:00", "tier": "opus", "reasons": ["sonnet:\\b(implement|triển khai|", "haiku:\\b(fix|sửa|bug|lỗi|updat", "haiku:\\b(comment|typo|docs?|re", "native:\\b(find|search|tìm|grep|", "long prompt +1"], "prompt_chars": 1904}
+{"ts": "2026-11-12T12:21:51.079012+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 80}
+{"ts": "2026-11-12T12:24:01.509945+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 87}
+{"ts": "2026-11-12T12:25:02.291584+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 91}
+{"ts": "2026-11-12T12:28:29.619159+00:00", "tier": "opus", "reasons": ["opus:\\b(architect|kiến trúc|d"], "prompt_chars": 111}
+{"ts": "2026-11-12T12:30:13.256645+00:00", "tier": "haiku", "reasons": ["haiku:\\b(comment|typo|docs?|re"], "prompt_chars": 82}
+{"ts": "2026-11-12T12:30:19.672749+00:00", "tier": "haiku", "reasons": ["haiku:\\b(fix|sửa|bug|lỗi|updat"], "prompt_chars": 34}
+{"ts": "2026-11-12T12:32:15.613887+00:00", "tier": "haiku", "reasons": ["haiku:\\b(fix|sửa|bug|lỗi|updat"], "prompt_chars": 86}
+{"ts": "2026-11-12T12:32:34.176702+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 29}
+{"ts": "2026-11-12T12:37:00.761491+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 47}
+{"ts": "2026-11-12T12:37:31.346663+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 35}
+{"ts": "2026-11-12T12:38:18.605134+00:00", "tier": "haiku", "reasons": ["haiku:\\b(fix|sửa|bug|lỗi|updat"], "prompt_chars": 39}
+{"ts": "2026-11-13T01:00:11.748935+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 99}
+{"ts": "2026-11-13T01:54:22.681596+00:00", "tier": "opus", "reasons": ["opus:\\b(architect|kiến trúc|d", "sonnet:\\b(implement|triển khai|", "sonnet:\\b(write tests?|viết tes", "haiku:\\b(fix|sửa|bug|lỗi|updat", "long prompt +1"], "prompt_chars": 6193}
+{"ts": "2026-11-13T02:01:34.623693+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 44}
+{"ts": "2026-11-13T02:05:09.375932+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 14}
+{"ts": "2026-11-13T02:06:56.174954+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 49}
+{"ts": "2026-11-13T02:07:22.287445+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 13}
+{"ts": "2026-11-13T02:09:47.027999+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 98}
+{"ts": "2026-11-13T02:10:42.816026+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 34}
+{"ts": "2026-11-13T02:11:23.057018+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 115}
+{"ts": "2026-11-13T02:11:45.250460+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 6}
+{"ts": "2026-11-13T14:55:55.272192+00:00", "tier": "opus", "reasons": ["opus:\\b(architect|kiến trúc|d"], "prompt_chars": 162}
+{"ts": "2026-11-14T09:05:07.107532+00:00", "tier": "sonnet", "reasons": ["no signal, default sonnet"], "prompt_chars": 41}

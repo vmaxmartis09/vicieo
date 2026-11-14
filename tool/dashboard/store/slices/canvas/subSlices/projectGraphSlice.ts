@@ -10,6 +10,7 @@ import type {
 import { RUN_PRESETS } from "@/lib/core-contracts";
 import type { Episode } from "@/lib/repositories/types";
 import {
+  CORE_URL,
   FALLBACK_NODE_TYPES,
   fetchGraphFromCore,
   fetchCustomNodeTypes,

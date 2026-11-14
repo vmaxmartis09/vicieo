@@ -1,0 +1,89 @@
+{
+  "best_posting_slots": [
+    {
+      "hour": 19,
+      "median_views": 0.0,
+      "sample_count": 0,
+      "score": 80.0,
+      "weekday": 5
+    },
+    {
+      "hour": 20,
+      "median_views": 0.0,
+      "sample_count": 0,
+      "score": 80.0,
+      "weekday": 5
+    },
+    {
+      "hour": 21,
+      "median_views": 0.0,
+      "sample_count": 0,
+      "score": 80.0,
+      "weekday": 5
+    },
+    {
+      "hour": 19,
+      "median_views": 0.0,
+      "sample_count": 0,
+      "score": 80.0,
+      "weekday": 6
+    },
+    {
+      "hour": 20,
+      "median_views": 0.0,
+      "sample_count": 0,
+      "score": 80.0,
+      "weekday": 6
+    }
+  ],
+  "next_episode_suggestions": {
+    "character_ratio": "Sóc Bi 100cm / Koala 150cm",
+    "hook_recommendation": "Chưa có đủ số liệu retention, dùng hook hành động chuẩn của Sóc Bi.",
+    "hook_strategy": "standard_action",
+    "prime_window": {
+      "hour": 19,
+      "median_views": 0.0,
+      "sample_count": 0,
+      "score": 80.0,
+      "weekday": 5
+    },
+    "recommended_shot_pacing_s": 3.0,
+    "recommended_template": "tiktok-sales-v1",
+    "target_duration_s": 45,
+    "voice_profile": "soc-nho (-14 LUFS, OmniVoice)"
+  },
+  "priority_blueprints_for_session_b": [],
+  "priority_templates_for_session_a": [
+    "tiktok-sales-v1",
+    "koc-review-v1",
+    "shorts-fact-v1"
+  ],
+  "recommended_posting_windows": [
+    {
+      "end": "21:00",
+      "start": "19:00",
+      "weekday": 5
+    },
+    {
+      "end": "22:00",
+      "start": "20:00",
+      "weekday": 5
+    },
+    {
+      "end": "23:00",
+      "start": "21:00",
+      "weekday": 5
+    },
+    {
+      "end": "21:00",
+      "start": "19:00",
+      "weekday": 6
+    },
+    {
+      "end": "21:00",
+      "start": "19:00",
+      "weekday": 0
+    }
+  ],
+  "updated_at": "2026-11-12T15:56:41.188357+07:00"
+}

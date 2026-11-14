@@ -2,9 +2,12 @@
 .env
 .env.*
 !.env.example
+.venv
 .venv/
 **/.venv/
 tool/.venv/
+target/
+engine-rust/target/
 node_modules/
 tool/dashboard/node_modules/
 .claude/worktrees/

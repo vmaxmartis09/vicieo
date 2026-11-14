@@ -1,37 +1,37 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "schema_version": "1.0.0",
   "active_project": "soc-nho-tv",
   "projects": [
     {
-      "id": "soc-nho-tv",
-      "name": "Sóc Nhỏ TV",
-      "description": "Kênh hoạt hình 3D giáo dục kỹ năng và khám phá cho trẻ em",
-      "path": "projects/soc-nho-tv",
-      "status": "active",
+      "created_at": "2026-11-03",
       "default_character": "soc_nho",
       "default_voice_id": "soc-nho",
+      "description": "Kênh hoạt hình 3D giáo dục kỹ năng và khám phá cho trẻ em",
+      "id": "soc-nho-tv",
+      "name": "Sóc Nhỏ TV",
+      "path": "projects/soc-nho-tv",
+      "status": "active",
       "target_platforms": [
         "youtube",
         "tiktok"
-      ],
-      "created_at": "2026-11-03"
+      ]
     },
     {
-      "id": "gobi",
-      "name": "Gobi KOC",
-      "description": "KOC AI thử đồ review thời trang",
-      "path": "projects/gobi",
-      "status": "active",
+      "created_at": "2026-11-07",
       "default_character": "gobi",
       "default_voice_id": "koc-lyly",
+      "description": "KOC AI thử đồ review thời trang",
+      "id": "gobi",
+      "name": "Gobi KOC",
+      "path": "projects/gobi",
+      "status": "active",
       "target_platforms": [
         "tiktok",
         "youtube"
-      ],
-      "created_at": "2026-11-07"
+      ]
     }
   ],
+  "schema_version": "1.0.0",
   "storage": {
     "projects_root": "data/projects",
     "shared_root": "data/shared"

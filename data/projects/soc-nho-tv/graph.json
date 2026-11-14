@@ -77,6 +77,25 @@
     {
       "generations": [
         {
+          "artifactId": "gen_7e300f29",
+          "costUsd": 0,
+          "createdAt": "2026-11-12T04:00:07.556944+00:00",
+          "id": "gen_7e300f29",
+          "isPinned": true,
+          "nodeId": "n_script",
+          "params": {
+            "_customName": "Kịch bản phân cảnh",
+            "episodeId": "ep01-nui-lua-trong-bung-bi",
+            "granularity": "shot",
+            "mode": "episode",
+            "targetDurationSec": 600,
+            "targetSceneCount": 30
+          },
+          "previewType": "text",
+          "previewUrl": null,
+          "summaryText": "Kịch bản phân cảnh (30 cảnh)"
+        },
+        {
           "artifactId": "art_b01e9b004e30",
           "costUsd": 0,
           "createdAt": "2026-11-08T10:56:01Z",
@@ -97,7 +116,6 @@
       "inputs": {},
       "isStale": false,
       "params": {
-        "_collapsed": true,
         "_customName": "Kịch bản phân cảnh",
         "episodeId": "ep01-nui-lua-trong-bung-bi",
         "granularity": "shot",
@@ -105,14 +123,21 @@
         "targetDurationSec": 600,
         "targetSceneCount": 30
       },
-      "pinnedGenerationId": "gen_c169f6a2",
+      "pinnedGenerationId": "gen_7e300f29",
       "position": {
         "x": 40,
         "y": 121
       },
-      "state": "completed",
+      "state": "failed",
       "type": "script",
-      "ui": {}
+      "ui": {
+        "outputSummary": {
+          "completedAt": "2026-11-12T07:40:44.392101+00:00",
+          "status": "ok"
+        },
+        "previewType": "text",
+        "summaryText": "Kịch bản phân cảnh (30 cảnh)"
+      }
     },
     {
       "generations": [
@@ -134,7 +159,6 @@
       "inputs": {},
       "isStale": false,
       "params": {
-        "_collapsed": true,
         "_customName": "Kiểm định chính sách (chặn trước khi dựng)",
         "blockOnFail": true,
         "policyAutoScan": true
@@ -142,9 +166,9 @@
       "pinnedGenerationId": "gen_5bdbb558",
       "position": {
         "x": 460,
-        "y": 448
+        "y": 622
       },
-      "state": "completed",
+      "state": "queued",
       "type": "quality_check",
       "ui": {}
     },
@@ -171,7 +195,6 @@
       "inputs": {},
       "isStale": false,
       "params": {
-        "_collapsed": true,
         "_customName": "Keyframe theo shot (lặp)",
         "aspectRatio": "16:9",
         "model": "mock-image",
@@ -184,7 +207,7 @@
         "x": 880,
         "y": 149
       },
-      "state": "completed",
+      "state": "queued",
       "type": "image_gen",
       "ui": {}
     },
@@ -212,7 +235,6 @@
       "inputs": {},
       "isStale": false,
       "params": {
-        "_collapsed": true,
         "_customName": "Dựng phim HyperFrames (10 phút)",
         "aspectRatio": "16:9",
         "gapSec": 0.35,
@@ -226,7 +248,7 @@
         "x": 1300,
         "y": 136
       },
-      "state": "completed",
+      "state": "queued",
       "type": "hyperframes_render",
       "ui": {}
     },
@@ -252,7 +274,6 @@
       "inputs": {},
       "isStale": false,
       "params": {
-        "_collapsed": true,
         "_customName": "Xuất (tên theo tập)",
         "outputFileName": "",
         "platforms": [
@@ -265,7 +286,7 @@
         "x": 1760,
         "y": 144
       },
-      "state": "completed",
+      "state": "queued",
       "type": "export",
       "ui": {}
     },
@@ -275,7 +296,6 @@
       "inputs": {},
       "isStale": true,
       "params": {
-        "_collapsed": true,
         "exclude": [],
         "include": [],
         "onMissingVoice": "stop",
@@ -288,11 +308,11 @@
         "x": 460,
         "y": 40
       },
-      "state": "idle",
+      "state": "queued",
       "type": "cast",
       "ui": {}
     }
   ],
   "projectId": "soc-nho-tv",
-  "updatedAt": "2026-11-11T15:05:37.961Z"
+  "updatedAt": "2026-11-12T12:18:54.162417+00:00"
 }

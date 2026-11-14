@@ -87,7 +87,7 @@
       "inputs": {},
       "isStale": false,
       "params": {
-        "_collapsed": true,
+        "_collapsed": false,
         "_customName": "Gobi (KOC thời trang) (giọng koc-lyly)",
         "characterId": "gobi",
         "lines": "Cùng Gobi thử ngay set kaki NAVIE giá 99k xem có tôn dáng như lời đồn không nha! Chất kaki đứng form giữ dáng cực đẹp, áo cổ vuông tay phồng xinh xắn, dây đan khoen kim loại siết eo ôm dáng gọn hơ, nhớ check bảng size chọn cho chuẩn nhé. Mọi người nhấn vào giỏ hàng góc trái săn deal 99k liền nhé!",
@@ -106,20 +106,39 @@
       "pinnedGenerationId": null,
       "position": {
         "x": 480,
-        "y": 192.5
+        "y": 273.5
       },
       "state": "idle",
       "type": "character",
-      "ui": {}
+      "ui": {
+        "lastLog": "Bỏ qua node 'n_char' do node cha [\"n_script\"] bị lỗi."
+      }
     },
     {
       "generations": [
+        {
+          "artifactId": "art_virtual_12d5c0d6",
+          "costUsd": 0,
+          "createdAt": "2026-11-12T09:13:27Z",
+          "id": "gen_12d5c0d6",
+          "isPinned": true,
+          "nodeId": "n_product",
+          "params": {
+            "_collapsed": false,
+            "_customName": "Sản phẩm: NAVIE - SET kaki YIYU",
+            "productId": "1737761170095572882",
+            "variant": "products/1737761170095572882/images/cutout/set_den.png"
+          },
+          "previewType": "image",
+          "previewUrl": "/data/projects/gobi/files/products/1737761170095572882/images/cutout/set_den.png",
+          "summaryText": "Sản phẩm 1737761170095572882"
+        },
         {
           "artifactId": "art_1dfa87dd1353",
           "costUsd": 0,
           "createdAt": "2026-11-11T07:34:54Z",
           "id": "gen_5b7f8ef3",
-          "isPinned": true,
+          "isPinned": false,
           "nodeId": "n_product",
           "params": {
             "_collapsed": true,
@@ -153,27 +172,28 @@
       "inputs": {},
       "isStale": false,
       "params": {
-        "_collapsed": true,
+        "_collapsed": false,
         "_customName": "Sản phẩm: NAVIE - SET kaki YIYU",
         "productId": "1737761170095572882",
         "variant": "products/1737761170095572882/images/cutout/set_den.png"
       },
-      "pinnedGenerationId": "gen_5b7f8ef3",
+      "pinnedGenerationId": "gen_12d5c0d6",
       "position": {
         "x": 40,
-        "y": 508
+        "y": 670
       },
-      "state": "idle",
+      "state": "completed",
       "type": "product",
       "ui": {
         "inputSummary": {},
+        "lastLog": "6 ảnh đã tách nền",
         "outputSummary": {
-          "image": "1 ảnh",
-          "images": "6 ảnh",
-          "product": "34 trường"
+          "completedAt": "2026-11-12T09:13:27Z",
+          "status": "ok"
         },
-        "previewType": "text",
-        "summaryText": "Hoàn tất xử lý"
+        "previewType": "image",
+        "previewUrl": "/data/projects/gobi/files/products/1737761170095572882/images/cutout/set_den.png",
+        "summaryText": "Sản phẩm 1737761170095572882"
       }
     },
     {
@@ -183,7 +203,7 @@
       "isStale": false,
       "params": {
         "_bypass": false,
-        "_collapsed": true,
+        "_collapsed": false,
         "_customName": "Kịch bản KOC Review (3 cảnh)",
         "content": "[KỊCH BẢN KOC REVIEW - PHONG CÁCH: TRY-ON]\nSản phẩm: NAVIE - SET kaki YIYU cổ vuông tay phồng đan dây thời trang nữ\nGiá bán: 99.000₫ (Thương hiệu: NAVIE)\nĐiểm nổi bật: Vải kaki đứng form, bề mặt chắc chắn, giữ dáng đẹp · Áo cổ vuông bo cong, tay ngắn nhún phồng nhẹ ở vai · Dáng ôm nhẹ, eo may chiết gọn thân; dây xỏ đan chéo qua khoen kim loại, chỉnh được độ ôm\nNhân vật thực hiện: Gobi (KOC thời trang)\nNhịp điệu: 8 cuts (2.4s/shot) | Tông giọng: tươi trẻ, chân thực, gần gũi\n\nCẤU TRÚC PHÂN CẢNH VÀ CHUYỂN ĐỘNG:\n--- Cảnh 1 (HOOK | 0.0s - 3.0s) ---\n• Góc quay & Camera: close-up, chuyển động zoom-in\n• Text hiển thị: Set kaki 99k có đẹp?\n• Lời thoại KOC: \"Cùng Gobi thử ngay set kaki NAVIE giá 99k xem có tôn dáng như lời đồn không nha!\"\n• Chuyển động: Gobi (KOC thời trang) trong phòng khách hiện đại, cầm set đồ giới thiệu hào hứng trước ống kính.\n\n--- Cảnh 2 (DEMO & TRY-ON | 3.0s - 15.0s) ---\n• Góc quay & Camera: full-body & medium-shot, chuyển động xoay 360 độ\n• Text hiển thị: Form dáng & chi tiết siết eo\n• Lời thoại KOC: \"Chất kaki đứng form giữ dáng cực đẹp, áo cổ vuông tay phồng xinh xắn, dây đan khoen kim loại siết eo ôm dáng gọn hơ, nhớ check bảng size chọn cho chuẩn nhé.\"\n• Chuyển động: Gobi mặc set kaki NAVIE đứng trong phòng khách (sofa be, cây xanh), xoay người khoe form dáng và kéo nhẹ dây đan siết eo.\n\n--- Cảnh 3 (CTA | 15.0s - 20.0s) ---\n• Góc quay & Camera: medium-shot, chuyển động chỉ tay xuống góc trái\n• Text hiển thị: Săn deal 99k góc trái!\n• Lời thoại KOC: \"Mọi người nhấn vào giỏ hàng góc trái săn deal 99k liền nhé!\"\n• Chuyển động: Gobi tươi cười tương tác, chỉ tay xuống góc màn hình kêu gọi nhấn giỏ hàng.",
         "granularity": "scene",
@@ -200,17 +220,18 @@
       "state": "idle",
       "type": "script",
       "ui": {
-        "inputSummary": {}
+        "inputSummary": {},
+        "lastLog": "Node dừng lại: Node 'n_script' (script) ở chế độ dán nhưng rawScript rỗng."
       }
     },
     {
       "generations": [],
       "id": "n_tryon",
       "inputs": {},
-      "isStale": false,
+      "isStale": true,
       "params": {
         "_bypass": false,
-        "_collapsed": true,
+        "_collapsed": false,
         "_customName": "Ảnh mẫu Gobi mặc đồ trong phòng",
         "aspectRatio": "9:16",
         "image": "assets/290bcb9b6efb68c074469d1c42b0144954150371fe8988a49d8c70d12f5cf0d9.jpg",
@@ -221,11 +242,15 @@
       "pinnedGenerationId": null,
       "position": {
         "x": 920,
-        "y": 252
+        "y": 200
       },
       "state": "idle",
       "type": "image_gen",
-      "ui": {}
+      "ui": {
+        "lastLog": "Bỏ qua node 'n_tryon' do node cha [\"n_char\"] bị lỗi.",
+        "previewType": "image",
+        "previewUrl": "http://127.0.0.1:9000/data/projects/gobi/files/assets/290bcb9b6efb68c074469d1c42b0144954150371fe8988a49d8c70d12f5cf0d9.jpg"
+      }
     },
     {
       "generations": [],
@@ -234,7 +259,7 @@
       "isStale": true,
       "params": {
         "_bypass": false,
-        "_collapsed": true,
+        "_collapsed": false,
         "_customName": "Tạo video chuyển động",
         "aspectRatio": "9:16",
         "durationSec": 30,
@@ -247,11 +272,13 @@
       "pinnedGenerationId": null,
       "position": {
         "x": 1400,
-        "y": 145.5
+        "y": 215.5
       },
       "state": "idle",
       "type": "video_gen",
-      "ui": {}
+      "ui": {
+        "lastLog": "Bỏ qua node 'n_video' do node cha [\"n_tryon\", \"n_script\"] bị lỗi."
+      }
     },
     {
       "generations": [],
@@ -259,7 +286,7 @@
       "inputs": {},
       "isStale": true,
       "params": {
-        "_collapsed": true,
+        "_collapsed": false,
         "_customName": "Dựng KOC review",
         "aspect": "9:16",
         "bgm": "dramatic",
@@ -302,12 +329,14 @@
       },
       "pinnedGenerationId": null,
       "position": {
-        "x": 1968,
-        "y": 192
+        "x": 1940,
+        "y": 304.5
       },
       "state": "idle",
       "type": "template_render",
-      "ui": {}
+      "ui": {
+        "lastLog": "Bỏ qua node 'n_render' do node cha [\"n_video\", \"n_char\"] bị lỗi."
+      }
     },
     {
       "generations": [],
@@ -315,7 +344,7 @@
       "inputs": {},
       "isStale": true,
       "params": {
-        "_collapsed": true,
+        "_collapsed": false,
         "_customName": "Xuất TikTok 9:16",
         "fit_strategy": "contain",
         "target_platforms": [
@@ -324,14 +353,16 @@
       },
       "pinnedGenerationId": null,
       "position": {
-        "x": 2976,
-        "y": 283.5
+        "x": 2400,
+        "y": 364.5
       },
       "state": "idle",
       "type": "platform_export",
-      "ui": {}
+      "ui": {
+        "lastLog": "Bỏ qua node 'n_export' do node cha [\"n_render\"] bị lỗi."
+      }
     }
   ],
   "projectId": "gobi",
-  "updatedAt": "2026-11-12T01:20:54.926Z"
+  "updatedAt": "2026-11-12T12:25:28.862841+00:00"
 }
