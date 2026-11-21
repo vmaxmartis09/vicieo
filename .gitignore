@@ -8,6 +8,9 @@
 tool/.venv/
 target/
 engine-rust/target/
+ai/fe-core/target/
+ai/state/
+elegans-repo/
 node_modules/
 tool/dashboard/node_modules/
 .claude/worktrees/

@@ -1,0 +1,11 @@
+{
+  "name": "fe-master-team",
+  "displayName": "FE-Master 5-Agent Team (100% Rust Core)",
+  "version": "1.0.0",
+  "description": "Elite 5-Agent Frontend Master Team (Senior Multi-Stack Dev, Web/Responsive/Emulator QA, Ruthless Code Auditor, Anti-AI-Slop UI/UX Critic, Multi-Cloud Auto-Deployer) powered by the Rust fe-core binary and Zero-Token Bus.",
+  "suggestedPrompts": [
+    "Build a high-craft Dashboard / CRM / Landing Page with ViciEO Signature UI & Full SEO",
+    "Audit UI for AI-Slop and run multi-viewport Responsive & Mobile QA",
+    "Verify .env safety and auto-deploy to Vercel or Cloudflare"
+  ]
+}

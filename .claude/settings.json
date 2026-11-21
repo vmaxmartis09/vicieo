@@ -5,28 +5,22 @@
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"$CLAUDE_PROJECT_DIR/ai/skills/lunalas/hooks/classify_prompt.py\""
+            "command": "/Volumes/Data/vicieo/ai/bin/fe-core route",
+            "timeout": 5,
+            "statusMessage": "🦀 fe-core route (0-Token Rust Classifier & Ponytail Matrix)..."
           }
         ]
       }
     ],
-    "PreToolUse": [
+    "PostToolUse": [
       {
-        "matcher": "Agent",
+        "matcher": "Write|Edit",
         "hooks": [
           {
             "type": "command",
-            "command": "python3 \"$CLAUDE_PROJECT_DIR/ai/skills/lunalas/hooks/task-model-guard.py\""
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "python3 \"$CLAUDE_PROJECT_DIR/ai/skills/lunalas/hooks/report_turn.py\""
+            "command": "/Volumes/Data/vicieo/ai/bin/fe-core check-edit",
+            "timeout": 5,
+            "statusMessage": "🦀 fe-core check-edit (S3 Real-Time UI/State/Security Guard)..."
           }
         ]
       }

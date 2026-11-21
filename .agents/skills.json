@@ -1,0 +1,19 @@
+{
+  "entries": [
+    {
+      "path": "ai/skills",
+      "include_only": [
+        "fe-tonadus",
+        "nguyen-tac-tra-loi",
+        "design-taste-frontend",
+        "vicieo-signature-ui",
+        "multi-stack-fe-senior",
+        "web-genres-playbooks",
+        "fe-seo-geo-master",
+        "fe-qa-responsive-emu",
+        "fe-code-quality-gate",
+        "fe-multi-cloud-deploy"
+      ]
+    }
+  ]
+}

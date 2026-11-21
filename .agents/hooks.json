@@ -1,0 +1,27 @@
+{
+  "fe-core-prompt-router": {
+    "enabled": true,
+    "PreInvocation": [
+      {
+        "type": "command",
+        "command": "/Volumes/Data/vicieo/ai/bin/fe-core route --agy",
+        "timeout": 5
+      }
+    ]
+  },
+  "fe-core-s3-guard": {
+    "enabled": true,
+    "PostToolUse": [
+      {
+        "matcher": "write_file|edit_file",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "/Volumes/Data/vicieo/ai/bin/fe-core check-edit",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}
